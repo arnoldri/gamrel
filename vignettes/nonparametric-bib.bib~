@@ -1,0 +1,2882 @@
+﻿@article{Miller.Harrison:2018,
+  author = {Jeffrey W. Miller and Matthew T. Harrison},
+  title = {Mixture Models With a Prior on the Number of Components},
+  journal = {Journal of the American Statistical Association},
+  volume = {113},
+  number = {521},
+  pages = {340-356},
+  year  = {2018},
+  publisher = {Taylor & Francis},
+  doi = {10.1080/01621459.2016.1255636},
+}
+
+@article{James:2003,
+   title = "{Bayesian Calculus for Gamma Processes with 
+             Applications to Semiparametric Intensity Models}",
+   author = {Lancelot F. James},
+   journal = {Sankhy\=a: The Indian Journal of Statistics},
+   year = 2003,
+   volume = 65,
+   pages = {179-206},
+}
+
+@article{Hjort:1990,
+   title = "{Nonparametric Bayes Estimators Based on Beta Processes  
+             in Models for Life History Data}",
+   author = {Nils Lid Hjort},
+   journal = {The Annals of Statistics},
+   volume = 18, 
+   year = 1990,
+   pages = {1259-1294},
+}
+
+@article{Ishwaran.James:2004,
+   title = "{Computational Methods for Multiplicative 
+             Intensity Models Using Weighted Gamma Processes}",
+   author = {Hemant Ishwaran and Lancelot F. James},
+   journal = {Journal of the American Statistical Association}, 
+   volume = 99,
+   pages = {175-190},
+   year = 2004,
+   doi = {10.1198/016214504000000179},
+}
+
+@techreport{Paisley:2010,
+   title = "{A Simple Proof of the Stick-Breaking Construction 
+             of the Dirichlet Process}",
+   author = {John Paisley},
+   institution = {Princeton University},
+   address = {Department of Computer Science, Princeton University, 
+              Princeton, NJ},
+   year = 2010,
+   url = {http://www.columbia.edu/~jwp2128/Teaching/E6892/papers/SimpleProof.pdf},
+   pages = {1--6},   
+}
+
+@article{Sethuruman:1994,
+   title = "{A constructive definition of Dirichlet priors}",
+   author = {Jayaram Sethuraman},
+   journal = {Statistica Sinica},
+   volume = 4, 
+   year = 1994,
+   pages = {639-650},
+}
+
+@article{Ishwaran.Zarepour:2002-CanJStat,
+   title = "{Exact and Approximate Sum Representations for the Dirichlet Process}",
+   author = {Hemant Ishwaran and Mahmoud Zarepour},
+   journal = {The Canadian Journal of Statistics},
+   year = 2002,
+   volume = 30,
+   pages = {269-283},
+}
+
+@article{Ishwaran.Zarepour:2002-StatSinica,
+   author = {H. Ishwaran and M. Zarepour},
+   year = 2002,
+   title = "{Dirichlet prior sieves in finite normal mixtures}",
+   journal = {Statistica Sinica},
+   volume = 12,
+   pages = {941-963},
+}
+
+@article{Brunner.Lo:1989,
+   journal = {Annals of Statistics},
+   year = 1989,
+   volume = 17,
+   pages = {1550-1566},
+   author = {Lawrence J. Brunner and Albert Y. Lo},
+   title = "{Bayes methods for a symmetric unimodal density and its mode}",
+}
+
+@inproceedings{Paisley.Zaas.Woods.Ginsburg.Carin:2010,
+   title = "{A Stick-Breaking Construction of the Beta Process}",
+   author = {John Paisley and Aimee Zaas and Christopher W. Woods
+             and Geoffrey S. Ginsburg and Lawrence Carin},
+   year = 2010,
+   booktitle = {Proceedings of the 26th International 
+                Conference on Machine Learning, Haifa, Israel, 2010},
+   pages = {1-8},
+}
+
+@article{Dong.Liu.Fang.Cao.Ding:2018,
+   title = "{A model based on hidden graphic evaluation and review 
+             technique network to evaluate reliability and lifetime 
+             of multi-state systems}",
+   author = {Dong, W. and Liu, S. and Fang, Z. and Cao, Y. and Ding, Y.},
+   journal = {Journal of Risk and Reliability},
+   year = 2018,
+   volume = {Online early},
+   pages = {1-10},
+   doi = {10.1177/1748006X18788414},
+}
+
+@article{Broderick.Wilson.Jordan:2018,
+   journal = {Bernoulli},
+   volume = 24,
+   year = 2018,
+   pages = {3181-3221},
+   doi = {10.3150/16-BEJ855},
+   title = "{Posteriors, conjugacy, and exponential 
+             families for completely random measures}",
+   author = {Tamara Broderick and Ashia C. Wilson and Michael Jordan},
+}
+
+@inproceedings{Paisley.Blei.Jordan:2012,
+   author = {J. Paisley and D. M. Blei and M. I. Jordan},
+   title = "{Stick-Breaking Beta Processes and the Poisson Process}",
+   booktitle = {Proceedings of the 15th International Conference on
+                Artificial Intelligence and Statistics (AISTATS) 2012, La Palma,
+                Canary Islands},
+   year = 2012,
+   pages = {850-858},
+}
+
+@unpublished{Roychowdhury.Kulis:2014,
+   year = 2014, 
+   title = "{Gamma Processes, Stick-Breaking, and Variational Inference}",
+   author = {Anirban Roychowdhury and Brian Kulis},
+   note = {Technical report},
+   url = {https://arxiv.org/abs/1410.1068},
+}
+@inproceedings{Roychowdhury.Kulis:2015,
+   year = 2015, 
+   title = "{Gamma Processes, Stick-Breaking, and Variational Inference}",
+   author = {Anirban Roychowdhury and Brian Kulis},
+   booktitle = {Proceedings of the 18th International Conference 
+                on Artificial Intelligence and Statistics (AISTATS)},
+   pages = {800-808},
+}
+
+@article{Favaro.Teh:2013,
+   journal = {Statistical Science},
+   year = 2013,
+   volume = 28,
+   pages = {335-359},
+   doi = {10.1214/13-STS422},
+   title = "{MCMC for Normalized Random Measure Mixture Models}",
+   author = {Stefano Favaro and Yee Whye Teh},
+}
+
+@article{Sinha.Chi.Chen:2015,
+   journal = {Statistica Sinica},
+   volume = 25,
+   year = 2015,
+   pages = {1613-1635},
+   doi = {10.5705/ss.2012.351},
+   title = "{Bayesian Inference of Hidden Gamma Wear
+             Process Model for Survival Data with Ties}",
+   author = {Arijit Sinha and Zhiyi Chi and Ming-Hui Chen},
+}
+
+@article{Yang.Yuan.Kuo.Kuo:2012,
+   title = "{Non-parametric Bayesian modeling of hazard rate
+             with a change point for nanoelectronic devices}",
+   author = {Chia-Han Yang and Tao Yuan and Way Kuo and Yue Kuo},
+   year = 2012,
+   journal = {IIE Transactions},
+   volume = 44,
+   pages = {496-506},
+   doi = {10.1080/0740817X.2011.587864},
+}
+
+@article{Arbel.Lijoi.Nipoti:2016,
+   title = "{Full Bayesian inference with hazard mixture models}",
+   author = {Julyan Arbel and, Antonio Lijoi and Bernardo Nipoti},
+   journal = {Computational Statistics and Data Analysis},
+   volume = 93, 
+   year = 2016, 
+   pages = {359-372},
+}
+
+@book{MullerQuintanaJaraHanson:2015,
+   author = {Peter M\"ller and Fernando Andr\'es Quintana 
+             and Alejandro Jara and Tim Hanson},
+   title = "{Bayesian Nonparametric Data Analysis}",
+   year = 2015,
+   publisher = Springer,
+   address = {New York, NY},
+}
+
+@incollection{Singpurwalla:1997,
+   author = {Nozer Singpurwalla},
+   title = "{Gamma Processes and Their Generalizations: An Overview}",
+   year = 1997,
+   editor = {R. Cooke and M. Mendel and J. K. Vrijling}, 
+   pages = {67-75},
+   booktitle = {Engineering Probabilistic Design and Maintenance
+                for Flood Protection},
+   publisher = {Kluwer Academic Publishers},
+   address = {The Netherlands},
+}
+
+@article{VanNoortwijk:2009,
+   title = "{A survey of the application of gamma processes in maintenance}",
+   author = {J. M. van Noortwijk},
+   journal = {Reliability Engineering and System Safety},
+   volume = 94,
+   year = 2009,
+   pages = {2-21},
+}
+
+@article{LoWeng:1989,
+   title = "{On a class of Bayesian non-parametric estimates II.
+             Hazard rate estimates}",
+   author = {Albert Y. Lo and Chung-Sing Weng},
+   journal = {Annals of the Institute of Statistical Mathematics},
+   volume = 41,
+   pages = {221-245},
+   year = 1989,
+}
+
+@article{Lo:1982,
+   title = "{Bayesian Nonparametric Statistical Inference
+             for Poisson Point Processes}",
+   author = {Albert Y. Lo},
+   year = 1982,
+   journal = {Zeitschrift f\"ur Wahrscheinlichkeitstheorie 
+              und Verwandte Gebiete},
+   volume = 59,
+   pages = {55-66},
+}
+
+@article{Ho:2011,
+   journal = {Annals of the Institute of Statistical Mathematics},
+   doi = {10.1007/s10463-009-0253-1},
+   title = "{On Bayes inference for a bathtub failure rate via S-paths}",
+   author = {Man-Wai Ho},
+   year = 2011,
+   volume = 63,
+   pages = {827-850},
+}
+
+@article{Lo:1984,
+   title = "{On a Class of Bayesian Nonparametric Estimates: 
+             I. Density Estimates}",
+   author = {Albert Y. Lo},
+   journal = {The Annals of Statistics},
+   volume = 12,
+   year = 1984,
+   pages = {351-357},
+}
+
+@incollection{HoLo:2001,
+   title = "{Bayesian non-parametric estimation of a monotone hazard rate}",
+   author = {{Man-wai} Ho and A. Y. Lo},
+   pages = {301-314},
+   booktitle = {System and Bayesian Reliability},
+   series = {Series on Quality, Reliability and Engineering Statistics},
+   volume = {5},
+   editor = {Yu Haykawa and Telba Z. Irony and Min Xie},
+   publisher = {World Scientific},
+   address = {Singapore},
+   year = 2001,
+}
+
+@incollection{Hayakawa.etal:2001,
+   title = "{Bayesian non-parametric testing of constant 
+             versus non-decreasing hazard rates}",
+   author = {Yu Hayakawa and Jonathan Zukerman and Sue Paul and Tony Vignaux},
+   pages = {391-406},
+   booktitle = {System and Bayesian Reliability},
+   series = {Series on Quality, Reliability and Engineering Statistics},
+   volume = {5},
+   editor = {Yu Haykawa and Telba Z. Irony and Min Xie},
+   publisher = {World Scientific},
+   address = {Singapore},
+   year = 2001,
+}
+
+@article{AbdelHameed:1975,
+   title = "{A Gamma Wear Process}",
+   year = 1975,
+   pages = {152-153},
+   journal = {IEEE Transactions on Reliability},
+   volume = R-24,
+   author = {Mohamed Abdel-Hameed}
+}
+
+@article{DykstraLaud:1981,
+   title = "{A Bayesian Non-parametric Approach to Reliability}",
+   author = {R. L. Dykstra and Purushottam Laud},
+   year = 1981,
+   journal = {Annals of Statistics},
+   volume = 9,
+   pages = {356-367},
+}
+
+@article{AlMasry.Mercier.Verdier:2017,
+   journal = {Methodol Comput Appl Probab},
+   year = 2017,
+   volume = 19,
+   pages = {213-235},
+   doi = {10.1007/s11009-015-9474-3},
+   title = "{Approximate Simulation Techniques and Distribution
+             of an Extended Gamma Process}",
+   author = {Zeina Al Masry and Sophie Mercier1 and Ghislain Verdier},
+}
+
+@incollection{VanNoortwijk.Kallen:2005,
+   title = "{Gamma processes for time-dependent reliability of structures}",
+   author = {J. M. van Noortwijk and M. J. Kallen and M. D. Pandey},
+   year = 2005,
+   pages = {1-18},
+   editor = {K. Kolowrocki},
+   booktitle = {Advances in Safety and Reliability, 
+                Proceedings of ESREL 2005 - European Safety and Reliability
+                Conference 2005},
+}
+
+@book{Singpurwalla:2006,
+   author = {N. D. Singpurwalla},
+   title = "{Reliability and risk A Bayesian Perspective}",
+   publisher = {Wiley},
+   year = 2006,
+}
+
+@book{Phadia:2016,
+   author = {Eswar G. Phadia},
+   title = "{Prior Processes and Their Applications: 
+             Nonparametric Bayesian Estimation}",
+   edition = {2nd ed.},
+   year = 2016,
+   publisher = {Springer},
+   address = {New York, NY},
+}
+
+@article{Leemis:2004,
+   author = {Lawrence M. Leemis},
+   title = "{Nonparametric Estimation and Variate Generation 
+             for a Nonhomogeneous Poisson Process from Event Count Data}",
+   journal = {IIE Transactions},
+   volume = 36,
+   year = 2004, 
+   pages = {1155-1160},
+   doi = {10.1080/07408170490507693},
+}
+
+@incollection{Sullivan:2010,
+   author = {Steven Sullivan},
+   title = "{The Space Shuttle and its Operations}",
+   year = 2010,
+   pages = {74-93},
+   booktitle = "{Wings in Orbit: Scientific and Engineering Legacies of the Space Shuttle 1971-2010}",
+   editor = {Wayne Hale and Helen Woods Lane}, 
+   publisher = {United States National Aeronautics and Space Administration},
+}
+
+@article{Nadarajah.Mitov:2005,
+   journal = {Communications in Applied Analysis},
+   volume = 9,
+   year = 2005,
+   pages = {555-562},
+   title = "{Moments and L-Moments of the Linear Hazard Function Distribution}",
+   author = {Saralees Nadarajah and Kosto Mitov},
+}
+
+
+@article{Henze.Meintanis:2005,
+   journal = {Metrika},
+   year = 2005,
+   volume = 61,
+   pages = {29-45},
+   doi = {10.1007/s001840400322},
+   title = "{Recent and classical tests for exponentiality:
+             a partial review with comparisons}",
+   author = {Norbert Henze and Simos G. Meintanis},
+}
+
+@article{Arnold.Chukova.Hayakawa.Marshall-JRR:2019,
+   author = {Richard Arnold and Stefanka Chukova and Yu Hayakawa 
+             and Sarah Marshall},
+   title = "{Warranty cost analysis with an alternating geometric process}",
+   journal = {Journal of Risk and Reliability},
+   year = 2019,
+   volume = {Online early, January 2019},
+   pages = {1--18},
+   doi = {DOI: 10.1177/1748006X18820379},
+}
+
+@incollection{Arnold.Chukova.Hayakawa.Marshall-Chapter:2019,
+   author = {Richard Arnold and Stefanka Chukova and Yu Hayakawa 
+             and Sarah Marshall},
+   title = "{Geometric and Geometric-Like Processes and their Applications 
+             in Warranty Analysis}",
+   booktitle = "{Mathematics Applied to Engineering and Management}",
+   editor = {Mangey Ram and S. B. Singh},
+   publisher = {CRC Press (in press)},
+   year = 2019,
+   pages = {1--24},
+}
+
+@misc{NIST.DLMF,
+  author = {NIST},
+  title = "{NIST Digital Library of Mathematical Functions}",
+  year = 2018,
+  url = {https://dlmf.nist.gov/},
+  note = {Accessed 20 September 2018},
+}
+
+@article{Kadri.Smaili:2015,
+    author = {Therrar Kadri and Khaled Smaili},
+    title = "{Convolutions of Hyper-Erland and of Erlang Distributions}",
+    journal = {International Journal of Pure and Applied Mathematics},
+    volume = 98,
+    pages = {81-98},
+    year = 2015,
+}
+
+@article{Chukova.Hayakawa:2004,
+    author = {Stefanka Chukova and Yu Hayakawa},
+    title = "{Warranty Cost Analaysis: Renewing Warranty with Non-zero
+              Repair Time}",
+    journal = {International Journal of Reliability, Quality and Safety
+               Engineeering},
+    volume = 11,
+    pages = {93-112},
+    year = 2004,
+}
+
+@article{Moschopoulos:1984,
+    author = {P. G. Moschopoulos},
+    title = "{The distribution of the sum of independent gamma random
+              variables}",
+    journal = {Annals of the Institute of Statistical Mathematics},
+    volume = 37,
+    pages = {541-544},
+    year = 1984,
+}
+
+@article{Bibinger:2013,
+    author = {Markus Bibinger},
+    title = "{Notes on the sum and maximum of independent exponentially
+              distributed random variables with different scale parameters}",
+    journal = {Preprint: arXiv:1307.3945v1},
+    volume = {},
+    pages = {1-9},
+    year = 2013,
+}
+
+@article{Akkouchi:2008,
+    author = {Mohamed Akkouchi},
+    title = "{On the convolution of exponential distributions}",
+    journal = {Journal of the Chungcheong Mathematical Society},
+    volume = 21,
+    year = 2008,
+    pages = {501-510},
+}
+
+@article{Akkouchi:2005,
+    author = {Mohamed Akkouchi},
+    title = "{On the convolution of gamma distributions}",
+    journal = {Soochow Journal of Mathematics},
+    volume = 31,
+    year = 2005,
+    pages = {205-211},
+}
+
+@article{Rai.Singh:2004,
+    author = {Bharatendra Rai and Nanua Singh},
+    title = "{Modeling and analysis of automobile warranty data in the
+              presence of bias due to customer-rush near warranty 
+              expiration limit}",
+    journal = {Reliability Engineering and System Safety},
+    volume = 86,
+    pages = {83-94},
+    year = 2004,
+}
+
+@article{Rai.Singh:2006,
+    author = {Bharatendra Rai and Nanua Singh},
+    title = "{Customer-rush near warranty expieration limit, 
+              and nonparametric hazard rate estimation from
+              known mileage accumulation rates}",
+    journal = {IEEE Transactions on Reliability},
+    volume = 55,
+    pages = {480-489},
+    year = 2006,
+}
+
+@inproceedings{Arnold_Chukova_Hayakawa_APARM:2016,
+    author = {R. Arnold and S. Chukova and Y. Hayakawa},
+    title  ="{Delayed reporting of faults in warranty claims}",
+    booktitle = "{Advanced Reliability Modeling VII, 
+                  Proceedings of the 7th Asia-Pacific
+                  Symposium on Advanced Reliability and Maintenance Modelling 
+                  (APARM 2016), 
+                  Seoul, Korea, August 24-26, 2016}",
+    address = {Taiwan},
+    publisher = {McGraw-Hill},
+    pages = {9-16},
+    year = 2016,
+}
+
+@inproceedings{Jeng.Horng:2016,
+    author = {Shuen-Lin Jeng and Chia-Tsung Horng},
+    title  ="{Field-failure modeling with ancilliary information for
+              warranty data analysis}",
+    booktitle = "{Advanced Reliability Modeling VII, 
+                  Proceedings of the 7th Asia-Pacific
+                  Symposium on Advanced Reliability and Maintenance Modelling 
+                  (APARM 2016), 
+                  Seoul, Korea, August 24-26, 2016}",
+    address = {Taiwan},
+    publisher = {McGraw-Hill},
+    pages = {187-193},
+    year = 2016,
+}
+
+@article{Rafiee.Feng.Coit:2015,
+  title = "{Condition-Based Maintenance for Repairable Deteriorating 
+            Systems Subject to a Generalized Mixed Shock Model}",
+  author = {Rafiee, Koosha and Feng, Qianmei and Coit, David W.},
+  journal = {IEEE Transactions on Reliability}, 
+  year = 2015, 
+  volume = 64,
+  pages = {1164-1174},
+}
+
+@ARTICLE{Bian2014286,
+author={Bian, L. and Gebraeel, N.},
+title={Stochastic framework for partially degradation systems with continuous component degradation-rate-interactions},
+journal={Naval Research Logistics},
+year={2014},
+volume={61},
+number={4},
+pages={286-303},
+}
+
+@ARTICLE{Guo2013461,
+author={Guo, J. and Wilson, A.G.},
+title={Bayesian methods for estimating system reliability using heterogeneous multilevel information},
+journal={Technometrics},
+year={2013},
+volume={55},
+number={4},
+pages={461-472},
+}
+
+@ARTICLE{ShaneReese2011127,
+author={Shane Reese, C. and Wilson, A.G. and Guo, J. and Hamada, M.S. and Johnson, V.E.},
+title={A Bayesian model for integrating multiple sources of lifetime information in system-reliability assessments},
+journal={Journal of Quality Technology},
+year={2011},
+volume={43},
+number={2},
+pages={127-141},
+}
+
+@ARTICLE{Rao2014367,
+author={Rao, G.S.},
+title={Estimation of reliability in multicomponent stress-strength based on generalized rayleigh distribution},
+journal={Journal of Modern Applied Statistical Methods},
+year={2014},
+volume={13},
+number={1},
+pages={367-379},
+}
+
+@inproceedings{Castro.Mercier:2014,
+   author = {Castro, I.T. and Mercier, S.},
+   title = "{Two models of imperfect delayed repair for a continuously 
+             monitored system subject to an accumulative deterioration}",
+   year = 2014,
+   booktitle = {Safety, Reliability and Risk Analysis: Beyond the Horizon
+                - Proceedings of the European Safety
+		and Reliability Conference, ESREL 2013},
+   pages = {661-668},
+   publisher = {Boca Raton, FL: CRC Press},
+   editors = {R.D.J.M. Steenbergen, P.H.A.J.M. van Gelder, S. Miraglia,
+              and A.C.W.M. Ton Vrouwenvelder eds.},
+}
+@article{Zhao.Bai:2009,
+   author = {Zhao, J.-M. and Bai, J.-D.},
+   title = "{Optimal functional inspection policy with considering 
+             delay of repair}",
+   year = 2009,
+   journal = {Systems Engineering and Electronics},
+   volme = 31,
+   pages = {1255-1258},
+}
+@article{Castro.Sanjuan:2008,
+   author = {Castro, I.T. and Sanju\'an, E.L.},
+   title = "{An optimal maintenance policy for repairable systems 
+             with delayed repairs}",
+   year = 2008,
+   journal = {Operations Research Letters},
+   volme = 36,
+   pages = {561-564},
+}
+@article{Castro.Sanjuan:2007,
+   author = {Castro, I.T. and Sanju\'an, E.L.},
+   title = "{The type I delayed repair policy}",
+   year = 2007,
+   journal = {Asia-Pacific Journal of Operational Research},
+   volme = 24,
+   pages = {57-81},
+}
+@article{Chang.Sheu.Chen.CIS:2013,
+   author = {Chang, C.-C. and Sheu, S.-H. and Chen, Y.-L.},
+   title = "{A bivariate optimal replacement policy for a system 
+             with age-dependent minimal repair and cumulative repair-cost 
+             limit}",
+   year = 2013,
+   journal = {Communications in Statistics -- Theory and Methods},
+   volme = 42,
+   pages = {4108-4126},
+}
+@article{Chang.Sheu.Chen.AMM:2013,
+   author = {Chang, C.-C. and Sheu, S.-H. and Chen, Y.-L.},
+   title = "{Optimal replacement model with age-dependent failure 
+             type based on a cumulative repair-cost limit policy}",
+   year = 2013,
+   journal = {Applied Mathematical Modelling},
+   volume = 37,
+   pages = {308-317},
+}
+@article{Sheu.Chang.Chien:2011,
+   author = {Sheu, S.-H. and Chang, C.-C. and Chien, Y.-H.},
+   title = "{Optimal age-replacement time with minimal repair based 
+             on cumulative repair-cost limit for a system subject 
+             to shocks}",
+   year = 2011,
+   journal = {Annals of Operations Research},
+   volume = 186,
+   pages = {317-329},
+}
+@article{Chang.Sheu.Chen:2010,
+   author = {Chang, C.-C. and Sheu, S.-H. and Chen, Y.-L.},
+   title = "{Optimal number of minimal repairs before replacement 
+             based on a cumulative repair-cost limit policy}",
+   year = 2010,
+   journal = {Computers and Industrial Engineering},
+   volume = 59,
+   pages = {603-610},
+}
+@article{Sheu.Chang.Chen.Zhang:2010,
+   author = {Sheu, S.-H. and Chang, C.-C. and Chen, Y.-L. and Zhang, Z.G.},
+   title = "{A periodic replacement model based on cumulative repair-cost
+             limit for a system subjected to shocks}",
+   year = 2010,
+   journal = {IEEE Transactions on Reliability},
+   volume = 59,
+   pages = {374-382},
+}
+@article{Liu.Tang.Zhu.Yu:2015,
+   author = {Liu, J.-Y. and Tang, Y.-H. and Zhu, Y.-L. and Yu, M.-M.},
+   title = "{Reliability indices of $M=G=1$ repairable queueing system
+             with warm standby failure and delayed repair}", 
+   year = 2015,
+   journal = {System Engineering Theory and Practice},
+   volume = 35,
+   pages = {413-423},
+}
+@article{Peng.Liu.Wu:2014,
+   author = {Peng, Y. and Liu, Z. and Wu, J.},
+   title = "{An $M/G/1$ retrial $G$-queue with pre-emptive resume 
+             priority and collisions subject to the server breakdowns 
+             and delayed repairs}",
+   year = 2014,
+   journal = {Journal of Applied Mathematics and Computing},
+   volume = 44,
+   pages = {187-213},
+}
+@article{Gopalan.Waghmare:1992,
+   author = {Gopalan, M.N. and Waghmare, S.S.},
+   title = "{Cost-benefit analysis of single server $n$-unit imperfect 
+             switch system with delayed repair}",
+   year = 1992,
+   journal = {Microelectronics Reliability},
+   volume = 32,
+   pages = {5-9},
+}
+@article{Kumar.Agarwal:1980,
+   author = {Kumar, A. and Agarwal, M.},
+   title = "{Behaviour of a two-unit standby redundant system 
+             with imperfect switching and delayed repair}",
+   year = 1980,
+   journal = {Microelectronics Reliability},
+   volume = 20,
+   pages = {315-321},
+}
+
+
+
+@inproceedings{XiaoXiao_APARM:2014,
+    author = {Xiao Xiao},
+    title  ="{On applying Marshall-Olkin distribution to NHPP
+              software reliability modeling}",
+    booktitle = "{Advanced Reliability Modeling VI, 
+                  Proceedings of the 6th Asia-Pacific
+                  Symposium on Advanced Reliability and Maintenance Modelling 
+                  (APARM 2014), 
+                  Sapporo, Japan, August 21-23, 2014}",
+    address = {Taiwan},
+    publisher = {McGraw-Hill},
+    pages = {514-521},
+    year = 2014,
+}
+@book{Blischke_Murthy:1996,
+   author = {W. R. Blischke and D. N. P. Murthy},
+   year = 1996, 
+   title = "{Product Warranty Handbook}",
+   publisher = {Marcel Dekker},
+   address = {New York, NY},
+}
+@inbook{Kalbfleisch_Lawless:1996,
+   author = {Kalbfleisch and Lawless},
+   year = 1996,
+   title = "{Statistical Analysis of Warranty Claims Data}",
+   booktitle = {Product Warranty Handbook},
+   editors = {W. R. Blischke and D. N. P. Murthy, eds.},
+   pages = {231-259},
+   publisher = {Marcel Dekker},
+   address = {New York, NY},
+}
+
+@book{Hayakawa_Irony_Xie:2001,
+   author = {Yu Hayakawa and Telba Irony and Min Xie},
+   year = 2001,
+   title = "{System and Bayesian Reliability}",
+   publisher = {World Scientific},
+   address = {London, UK},
+}
+@inbook{Hayakawa_Zukerman_Paul_Vignaux:2001,
+   author = {Yu Hayakawa and Jonathan Zukermand and Sue Paul and Tony Vignaux},
+   year = 2001,
+   title = "{Bayesian nonparametric testing of constant versus nondecreasing
+             hazard rates}",
+   booktitle = {System and Bayesian Reliability},
+   editors = {Yu Hayakawa and Telba Irony and Min Xie eds.},
+   pages = {391-406},
+   publisher = {World Scientific},
+   address = {London, UK},
+}
+
+
+@article{Bayramoglu_Ozkut:2015,
+  journal = {IEEE Transactions on Reliability},
+  volume = 64,
+  year = 2015,
+  pages = {435-443},
+  title = "{The Reliability of Coherent Systems Subjected to 
+            Marshall–Olkin Type Shocks}",
+  author = {Ismihan Bayramoglu and Murat Ozkut},
+}
+
+
+@article{Hanagal_Ahmadi:2009,
+   author = {D. D. Hanagal and K. A. Ahmadi},
+   title = "{Bayesian Estimation of the Parameters of 
+             Bivariate Exponential Distributions}",
+   journal = {Communications in Statistics - Simulation and Computation},
+   volume = 38,
+   page = {1391-1413},
+   year = 2009,
+   }
+
+@article{Karlis:2003,
+   author = {D. Karlis},
+   title = "{ML Estimation for Multivariate Shock Models via an EM Algorithm}",
+   journal = {Annals of the Institute of Statistical Mathematics},
+   volume = 55,
+   pages = {817-830},
+   year = 2003,
+}
+
+@article{Shamseldin_Press:1984,
+   author = {A. Shamseldin and S. Press},
+   title = "{Bayesian Parameter and Reliability Estimation for a 
+             Bivariate Exponential Distribution}",
+   journal = {Journal of Econometrics},
+   volume = 24,
+   pages = {363-378},
+   year = {1984},
+}
+
+@article{Kijima:1989,
+  title = "{Some Results for Repairable Systems with General Repair}",
+  author = {Masaaki Kijima},
+  journal = {Journal of Applied Probability},
+  volume = 26, 
+  year = 1989, 
+  pages = {89-102},
+}
+
+@article{Spivey:2008,
+  author = {Michael Z. Spivey},
+  title = "{A Generalized Recurrence for Bell Numbers}",
+  journal = {Journal of Integer Sequences},
+  volume = 11,  
+  pages = {08.2.5; 1-2},
+  year = 2008,
+}
+
+@article{Marshall_Olkin:1967,
+  title = "{A Multivariate Exponential Distribution}",
+  author ={Albert W. Marshall and Ingram Olkin},
+  journal = {Journal of the American Statistical Association}, 
+  volume = 62, 
+  year = 1967,
+  pages = {30-44},
+}
+
+@article{Zequeira_Berenguer:2005,
+  author = {R\'omulo I. Zequeira and Christophe B\'erenguer},
+  year = 2005,
+  title = "{On the inspection policy of a two-component parallel system with
+                  failure interaction}",
+  journal = {Reliability Engineering and System Safety},
+  volume = 88,
+  pages = {99-107},
+  doi = {10.1016/j.ress.2004.07.009},
+}
+
+@article{Golmakani_Moakedi:2012,
+  author = {Hamid Reza Golmakani and Hamid Moakedi},
+  year = 2012,
+  title = "{Periodic inspection optimization model for a two-component
+            repairable system with failure interaction}",
+  journal = {Computers and Industrial Engineering},
+  volume = 63,
+  pages = {540-545},
+  doi = {10.1016/j.cie.2011.07.020},
+}
+
+@article{OCinneide:1999,
+  author = {Colm Art O'Cinneide},
+  year = 1999,
+  title = "{Phase-type distributions: open problems and a few properties}",
+  journal = {Communications in Statistics. Stochastic Models}, 
+  volume = 15,
+  pages = {731-757}, 
+  doi = {10.1080/15326349908807560},
+}
+
+@article{Wang_Banjevic_Pecht:2010,
+  title = "{A multi-component and multi-failure mode inspection model based 
+            on the delay time concept}",
+  journal = {Reliability Engineering and System Safety}, 
+  volume = 95, 
+  year = 2010, 
+  pages = {912-920},
+  author = {Wenbin Wang and Dragan Banjevic and Michael Pecht},
+}
+
+@article{Pham_Wang:1996,
+   author = {Pham, H. and Wang, H.},
+   year = 1996,
+   title = "{Imperfect maintenance}",
+   journal = {European Journal of Operational Research},
+   volume = 94,
+   pages = {425-428},
+}
+@article{Proschan:1963,
+   author = {Proschan, F.},
+   year = 1963,
+   title = "{Theoretical explanation of observed decreasing failure rate}",
+   journal = {Technometrics},
+   volume = 5,
+   pages = {375-383},
+}
+@article{Nelson:1995,
+   author = {Nelson, W.},
+   year = 1995,
+   title = "{Confidence limits for recurrence data
+             applied to cost or number of product repairs}",
+   journal = {Technometrics},
+   volume = 37,
+   pages = {147-157},
+}
+@article{Shaked_Shantikumar:1986,
+   author = {Shaked, M. and Shanthikumar, J. G.},
+   year = 1986,
+   title = "{Multivariate imperfect repair}",
+   journal = {Operations Research},
+   volume = 34,
+   pages = {437-448},
+}
+@inbook{Langseth_Lindqvist:2003,
+   author = {Langseth, H. and Lindqvist, B. H.},
+   year = 2003,
+   title = "{A maintenance model for components exposed to several failure 
+             mechanisms and imperfect repair}",
+   booktitle = {Mathematical and Statistical Methods in Reliability},
+   editors = {B. H. Lindqvist and K. A. Doksum, eds.},
+   pages = {415-430},
+   publisher = {World Scientific},
+   address = {River Edge, NJ},
+}
+@article{Langseth_Lindqvist:2006,
+    author = {Langseth, H. and Lindqvist, B. H.},
+    year = 2006,
+    title = "{Competing risks for repairable systems: A data study}",
+    journal = {Journal of Statistical Planning and Inference},
+    volume = 136,
+    pages = {1687-1700},
+}
+@article{Brown_Mahoney_Sivalzian:1998,
+    author = {Brown, J. F. and Mahoney, J. F. and Sivalzian, B. D.},
+    year = 1998,
+    title = "{Hysteresis repair in discounted replacement problems}",
+    journal = {IIE Transactions},
+    volume = 15, 
+    pages = {156-165},
+}
+@article{Brown_Proschan:1983,
+    author = {Brown, M. and Proschan, F.},
+    year = 1983,
+    title = "{Imperfect repair}",
+    journal = {Journal of Applied Probability},
+    volume = 20, 
+    pages = {851-859},
+}
+
+
+
+
+@article{Oakes:1989,
+  title = "{Bivariate survival models induced by frailties}",
+  year = 1989,
+  journal = {Journal of the American Statistical Association},
+  volume = 84, 
+  pages = {487-493},
+  author = {David Oakes},
+}
+@article{Doyen_Gaudoin:2006,
+  title = "{Imperfect Maintenance in a Generalized Competing Risks 
+            Framework}",
+  author = {Laurent Doyen and Olivier Gaudoin},
+  journal = {Journal of Applied Probability}, 
+  volume = 43, 
+  year = 2006, 
+  pages = {825-839},
+}
+@article{Lindqvist:2006,
+  title = "{On the Statistical Modeling and Analysis of Repairable 
+            Systems}",
+  author = {Bo Henry Lindqvist},
+  journal = {Statistical Science}, 
+  volume = 21, 
+  year = 2006,
+  pages = {532-551},
+}
+@article{Whitaker_Samaniego:1989,
+  title = "{Estimating the Reliability of Systems Subject to 
+            Imperfect Repair}",
+  author = {Lyn R. Whitaker and Francisco J. Samaniego},
+  journal = {Journal of the American Statistical Association}, 
+  volume = 84, 
+  year = 1989,
+  pages = {301-309},
+}
+
+@article{Abbring_VandenBerg:2003,
+   author = {Abbring, J. H. and Van den Berg, G. J.},
+   year = 2003, 
+   title = "{The identifiability of the mixed proportional hazards competing 
+             risks model}",
+   journal = {Journal of the Royal Statistical Society, Series B}, 
+   volume = 65, 
+   pages = {701-710},
+}
+@article{Bedford_Lindqvist:2004,
+   author = {Bedford, T. and Lindqvist, B. H.},
+   year = 2004, 
+   title = "{The identifiability problem for repairable systems subject to 
+             competing risks}",
+   journal = {Advances in Applied Probability}, 
+   volume = 36,
+   pages = {774-790},
+}
+@article{Borgan:1984,
+   author = {Borgan, \O.},
+   year = 1984, 
+   title = "{Maximum likelihood estimation in parametric counting process 
+             models, with applications to censored failure time data}",
+   journal = {Scandinavian Journal of Statistics}, 
+   volume = 11, 
+   pages = {1-16},
+}
+@book{Crowder:2001,
+   author = {Crowder, M. J.},
+   year = 2001, 
+   title = "{Classical Competing Risks}",
+   publisher = {Chapman and Hall/CRC},
+   address = {Boca Raton, NY},
+}
+@article{Dauxois_Sencey:2009,
+   author = {Dauxois, J. Y. and Sencey, S.},
+   year = 2009, 
+   title = "{Non-parametric tests for recurrent events under competing risks}",
+   journal = {Scandinvaian Journal of Statistics},
+   volume = 36,
+   pages = {649-670},
+}
+@article{Hollander_Pena:2004,
+   author = {Hollander, M. and Pe\~na, E. A.},
+   year = 2004, 
+   title = "{Nonparametric methods in reliability}",
+   journal = {Statistical Science}, 
+   volume = 19,
+   pages = {644-651},
+}
+@article{Jacod:1975,
+   author = {Jacod, J.},
+   year = 1975, 
+   title = "{Multivariate point processes: predictable projection,
+             Radon-Nikodym derivatives, Representation of Martingales}",
+   journal = {Zeitschrift f\"r Wahrscheinlichkeit und verwandete Gebiete}, 
+   volume = 34, 
+   pages = {225-244},
+}
+@book{Kalbfleisch_Prentice:2002,
+   author = {Kalbfleisch, J. D. and Prentice, R. L.},
+   year = 2002, 
+   title = "{The statistical analysis of failure time data}",
+   publisher = {Wiley-Interscience},
+   address = {Hoboken, NJ},
+   edition = {2nd edition},
+}
+@article{Lawless_Wigg_etal:2001,
+   author = {Lawless, J. F. and Wigg, M. B. and Tuli, S. and Drake, J. 
+             and Lamberti-Pasculli, M.},
+   year = 2001, 
+   title = "{Analysis of repeated failures of durations,
+             with application to shunt failures for patients with 
+             paediatric hydrocephalus}",
+   journal = {Applied Statistics}, 
+   volume = 50,
+   pages = {449-465},
+}
+@article{Lo_Wilke:2010,
+   author = {Lo, S. M. S. and Wilke, R. A.},
+   year = 2010, 
+   title = "{A copula model for dependent competing risks}",
+   journal = {Applied Statistics}, 
+   volume = 59, 
+   pages = {359-376},
+}
+@article{Pena_Strawderman_Hollander:2001,
+   author = {Pe\~na, E. A. and Strawderman, R. L. and Hollander, M.},
+   year = 2001, 
+   title = "{Nonparametric estimation with recurrent event data}",
+   journal = {Journal of the American Statistical Association}, 
+   volume = 96,
+   pages = {1299-1315},
+}
+@book{Serfling:1980,
+   author = {Serfling, R.},
+   year = 1980, 
+   title = "{Approximation Theorems of Mathematical Statistics}",
+   publisher = {Wiley},
+   address = {Hoboken, NJ},
+}
+@techreport{Taylor_Pena:2012,
+   author = {Taylor, L. and Pe\~na, E. A.},
+   year = 2012, 
+   title = "{Nonparametric estimation with recurrent competing risks data}",
+   type = {Technical report}, 
+   institution = {Elon University},
+}
+@article{Tsiatis:1975,
+   author = {Tsiatis, A.},
+   year = 1975, 
+   title = "{A nonidentifiability aspect of the problem of competing risks}",
+   journal = {Proceedings of the National Academy of Sciences, U.S.A.}, 
+   volume = 72, 
+   pages = {20-22},
+}
+@article{Tuli_Drake_etal:1992,
+   author = {Tuli, S. and Drake, J. and Lawless, J. F. and Wigg, M.
+             and Lamberti-Pasculli, M.},
+   year = 1992, 
+   title = "{Risk factors for repeat cerebrospinal shunt failures in
+             pediatric hydrocephalus}",
+   journal = {Journal of Neurosurgery}, 
+   pages = {31-38},
+}
+@article{Zheng_Klein:1995,
+   author = {Zheng, M. and Klein, J. P.},
+   year = 1995, 
+   title = "{Estimates of marginal survival for dependent competing risks 
+             based on an assumed copula}",
+   journal = {Biometrika}, 
+   volume = 82, 
+   pages = {127–138},
+}
+@article{Miller:1977,
+  title = "{A Note on Independence of Multivariate Lifetimes in 
+            Competing Risks Models}",
+  author = {Douglas R. Miller},
+  journal = {The Annals of Statistics}, 
+  volume = 5, 
+  year = 1977,
+  pages = {576-579},
+}
+@article{BandeenRoche_Liang:2002,
+  title = "{Modelling Multivariate Failure Time Associations in the 
+            Presence of a Competing Risk}",
+  author = {Karen Bandeen-Roche and Kung-Yee Liang},
+  journal = {Biometrika}, 
+  volume = 89, 
+  year = 2002,
+  pages = {299-314},
+}
+
+
+@article{Heckman_Honore:1989,
+    title = "{The Identifiability of the Competing Risks Model}",
+    author = {James J. Heckman and Bo E. Honor\'{e}},
+    journal = {Biometrika}, 
+    volume = 76, 
+    year = 1989,
+    pages = {325-330},
+}
+
+@inproceedings{Arnold_Chukova_Hayakawa_Liu_APARM:2014,
+    author = {R. Arnold and S. Chukova and Y. Hayakawa and I. Liu},
+    title  ="{Joint Modelling of Failure Times and Severities Using
+              Fuzzy Clustering}",
+    booktitle = "{Advanced Reliability Modeling VI, 
+                  Proceedings of the 6th Asia-Pacific
+                  Symposium on Advanced Reliability and Maintenance Modelling 
+                  (APARM 2014), 
+                  Sapporo, Japan, August 21-23, 2014}",
+    address = {Taiwan},
+    publisher = {McGraw-Hill},
+    pages = {1-8},
+    year = 2014,
+}
+
+@inproceedings{Arnold_Chukova_Hayakawa_WarrantyCost_APARM:2014,
+    author = {R. Arnold and S. Chukova and Y. Hayakawa},
+    title  ="{Warranty Cost Analysis: Non-Zero Geometric Repair Times}",
+    booktitle = "{Advanced Reliability Modeling VI, 
+                  Proceedings of the 6th Asia-Pacific
+                  Symposium on Advanced Reliability and Maintenance Modelling 
+                  (APARM 2014), 
+                  Sapporo, Japan, August 21-23, 2014}",
+    address = {Taiwan},
+    publisher = {McGraw-Hill},
+    pages = {9-16},
+    year = 2014,
+}
+
+@inproceedings{Arnold_Chukova_Hayakawa_APARM:2014,
+    author = {R. Arnold and S. Chukova and Y. Hayakawa},
+    title  ="{Failure Distributions in Multicomponent Systems with Imperfect
+              Repairs}",
+    booktitle = "{Advanced Reliability Modeling VI, 
+                  Proceedings of the 6th Asia-Pacific
+                  Symposium on Advanced Reliability and Maintenance Modelling 
+                  (APARM 2014), 
+                  Sapporo, Japan, August 21-23, 2014}",
+    address = {Taiwan},
+    publisher = {McGraw-Hill},
+    pages = {17-24},
+    year = 2014,
+}
+
+@article{Arnold_Chukova_Hayakawa:2016,
+  title = "{Failure distributions in multicomponent systems 
+            with imperfect repairs}",
+  author = {Richard Arnold and Yu Hayakawa and Stefanka Chukova},
+  year = 2016,
+  journal = {Journal of Risk and Reliability},
+  volume = {230},
+  pages = {4-17},
+}
+
+@inproceedings{Varnosafaderani_Chukova_Arnold_APARM:2014,
+    author = {S. Varnosafaderani and S. Chukova and R. Arnold},
+    title  ="{Modelling General Repairs of a System with a Bathtub-Shaped
+              Failure Rate Function}",
+    booktitle = "{Advanced Reliability Modeling VI, 
+                  Proceedings of the 6th Asia-Pacific
+                  Symposium on Advanced Reliability and Maintenance Modelling 
+                  (APARM 2014), 
+                  Sapporo, Japan, August 21-23, 2014}",
+    address = {Taiwan},
+    publisher = {McGraw-Hill},
+    pages = {474-481},
+    year = 2014,
+}
+
+@inproceedings{Arnold_Chukova_Hayakawa_APARM:2012,
+    author = {R. Arnold and S. Chukova and Y. Hayakawa},
+    title  ="{Inference for multicomponent systems with dependent failures}",
+    booktitle = "{Advanced Reliability Modeling V, 
+                  Proceedings of the 5th Asia-Pacific
+                  Symposium on Advanced Reliability and Maintenance Modelling 
+                  (APARM 2012), 
+                  Nanjing, China, November 1-3, 2012}",
+    address = {Taiwan},
+    publisher = {McGraw-Hill},
+    pages = {9-16},
+    year = 2012,
+}
+
+@inproceedings{Anastasiadis_Arnold_Chukova_Hayakawa_APARM:2010,
+    author = {S. Anastasiadis and R. Arnold and S. Chukova and Y. Hayakawa},
+    title  ="{Failures in Multicomponent Systems}",
+    booktitle = "{Advanced Reliability Modeling IV, 
+                  Proceedings of the 4th Asia-Pacific
+                  Symposium on Advanced Reliability and Maintenance Modelling 
+                  (APARM 2010), 
+                  Wellington, New Zealand, December 2-4, 2010}",
+    address = {Taiwan},
+    publisher = {McGraw-Hill},
+    pages = {9-16},
+    year = {2010},
+}
+
+@article{Anastasiadis_Arnold_Chukova_Hayakawa:2013,
+    author = {S. Anastasiadis and R. Arnold and S. Chukova and Y. Hayakawa},
+    title = "{Multicomponent System with Multiplicative Ageing and
+              Dependent Failures}",
+    journal = {IEEE Transactions on Reliability},
+    year = {2013},
+    volume = {62},
+    pages = {286-295},
+    doi = {10.1109/TR.2013.2241152},
+}
+
+@article{Pena_Gupta:1990,
+    author = {{Pe\~{n}a}, E. A. and Gupta, A. K.},
+    title = "{Bayes Estimation for the Marshall-Olkin Exponential Distribution}",
+    journal = {Journal of the Royal Statistical Society. Series B},
+    volume = 52, 
+    pages = {379--389},
+    year = 1990,
+}
+
+@article{Proschan_Sullo:1976,
+    author = {Proschan, F. and Sullo, P.},
+    title = "{Estimating the Parameters of a Multivariate Exponential 
+              Distribution}",
+    journal = {Journal of American Statistical Association},
+    volume = 71, 
+    pages = {465--472},
+    year = 1976,
+}
+
+
+@book{Ross:2000,
+  author = {S. M. Ross},
+  title  ="{Introduction to Probability Models}",
+  year   = 2000,
+  edition = {7th ed.},
+  publisher = {Academic Press},
+  address = {San Diego, CA},
+}
+
+@book{Ross:1996,
+  author = {Sheldon M. Ross},
+  title  ="{Stochastic Processes}",
+  year   = 1996,
+  publisher = {Wiley},
+  address = {Hoboken, NJ},
+}
+
+@inproceedings{Anastasiadis_Arnold_Chukova_Hayakawa_APARM2010, 
+ author = {Anastasiadis, S. and Arnold, R. and Chukova, S. and Hayakawa, Y.},
+ title  ="{Failure model for multicomponent systems with damage accumulation}", 
+ booktitle = "{Advanced Reliability Modelling IV: Beyond the Traditional Reliability and Maintainability Approaches}",
+ editors = {Chukova, S. and Haywood, J. and Dohi, T.}, 
+ publisher = {McGraw-Hill},
+ address = {Taipei},
+ year = 2010, 
+ pages = {9-16}
+}
+
+@inproceedings{Arnold_Chukova_Hayakawa_APARM2008, 
+ author = {Arnold, R. and Chukova, S. and Hayakawa, Y.},
+ title  ="{Schur-concavity, aging and a new model for damage accumulation in multi-component systems}", 
+ booktitle = "{Advanced Reliability Modeling III: Global Aspect of Reliability and Maintainability}",
+ editors = {Sheu, S.-H. and Dohi, T.}, 
+ publisher = {McGraw-Hill},
+ address = {Taipei},
+ year = 2008, 
+ pages = {627-634}
+}
+
+@inproceedings{Trivedi:1997, 
+  author = {Fricks, R. M. and  Trivedi, K. S.},
+  title = "{Modeling failure dependencies in reliability
+           analysis using stochastic petri nets}",
+  booktitle = {Proceedings of European Simulation Multiconference,    
+               Istanbul, Turkey},
+  year = 1997,
+}
+
+@book{Barlow.Proschan:1981, 
+  author = {Barlow, R. E. and Proschan, F.},
+  title = "{Statistical Theory of Reliability and Life Testing: 
+            Probability Models}",
+  publisher = {TO BEGIN WITH},
+  address = {Silver Spring, MD, USA},
+  year = 1981,
+}
+
+@article{Barros:2006, 
+  author = {A. Barros and C. Berenguer and A. Grall},
+  title = "{A maintenance policy for a two-unit parallel systems 
+            based on imperfect monitoring information}", 
+  journal = {Reliability Engineering and System Safety},
+  volume = 91, 
+  pages = {131-136},
+  year = 2006,
+}
+
+@article{Cha:2009, 
+  author = {J. Cha and M. Finkelstein},
+  title = "{On a terminating shock process with independent wear increments}", 
+  journal = {Journal of Applied Probability},
+  volume = 46, 
+  pages = {353-362},
+  year = 2009, 
+}
+
+@article{Cha_Mi:2011,
+author={Cha,J. H. and Mi,J.},
+year={2011},
+title={On a Stochastic Survival Model for a System Under Randomly Variable Environment},
+journal={Methodology and Computing in Applied Probability},
+volume={13},
+number={3},
+pages={549-561},
+}
+
+
+@article{Cha_Mi:2007,
+author={Cha,J. H. and Mi,J.},
+year={2007},
+title={Study of a stochastic failure model in a random environment},
+journal={Journal of Applied Probability},
+volume={44},
+number={1},
+pages={151-163},
+}
+
+
+@article{Chen:2008, 
+  author = {J. Chen and Z. Li},
+  title = "{An extended extreme maintenance shock model for a 
+            deteriorating system}",
+  journal = {Reliability Engineering and System Safety},
+  volume = 93,
+  pages = {1123-1129},
+  year = 2008,
+}
+
+@article{Chukova_Arnold_Wang:2004, 
+  author = {S. Chukova and R. Arnold and D. Wang},
+  title = "{Warranty analysis: an approach to modelling imperfect repairs}",
+  journal = {International Journal of Production Economics},
+  volume = 89, 
+  pages = {57-68},
+  year = 2004,
+}
+
+
+@article{Gut:1999, 
+  author = {A. Gut},
+  title = "{Cumulated shock models}",
+  journal = {Advances in Applied Probability},
+  volume = 22, 
+  pages = {504-507},
+  year = 1990,
+}
+
+@article{Gut:2005, 
+  author = {A. Gut and J. Husler},
+  title = "{Realistic variation of shock models}",
+  journal = {Statistics and Probability Letters},
+  volume = 74, 
+  pages = {187-204},
+  year = 2005,
+}
+
+@article{MF:1996, 
+  author = {M. Finkelstein},
+  title = "{Succession{-}dependent shock models}",
+  journal = {Microelectronic Reliability},
+  volume = 36,
+  pages = {195-197},
+  year = 1996,
+}
+
+@article{MF:2001, 
+  author = {Finkelstein, M. and Zarudnij, V. I.},
+  title = "{A shock process with a non-cumulative damage}",
+  journal = {Reliability Engineering and System Safety},
+  volume = 71, 
+  pages = {103-107},
+  year = 2001,
+}
+
+@article{MF:2010, 
+  author = {M. Finkelstein and F. Marais},
+  title = "{On terminating Poisson Processes in some shock models}", 
+  journal = {Reliability Engineering and System Safety},
+  volume = 95,
+  pages = {874-879}, 
+  year = 2010,
+}
+
+@article{Jhang:2000, 
+  author = {J. Jhang and S. Sheu},
+  title = "{Optimal age and block replacement policies for a 
+            multi-component system with failure interaction}",
+  journal = {International Journal of Systems Science},
+  volume = 31, 
+  pages = {593-603},
+  year = 2000,
+}
+
+@article{Kahle:2004, 
+  author = {M. Kahle and H. Wendt},
+  title = "{On a cumulative damage process and resulting passage times}", 
+  journal = {Applied Stochastic Models in Business and Industry},
+  volume = 20, 
+  pages  ={17-26},
+  year = 2004,
+}
+
+@book{Kobbacy:2008, 
+  author = {Kobbacy, K. A. H. and Murthy, D. N. P.},
+  title = "{Complex System Maintenance Handbook}", 
+  publisher = {Springer},
+  year = 2008,
+  doi = {10.1007/978-1-84800-011-7},
+}
+
+@article{Kvam:2002, 
+  author = {Kvam, P. H. and Miller, J. G.},
+  title = "{Common cause failure prediction using data mapping}",
+  journal = {Reliability Engineering and System Safety},
+  volume = 76,   
+  pages = {273-278},
+  year = 2002,
+}
+
+@article{Lai_Chen:2006, 
+  author = {M. Lai and Y. Chen},
+  title = "{Optimal periodic replacement
+            policy for a two-unit system with a failure rate interaction}",
+  journal = {The International Journal of Advanced Manufacturing 
+             and Technology},
+  volume = 29, 
+  pages = {367-371},
+  year = 2006,
+}
+
+@article{Lai_Chen:2008, 
+  author = {M. Lai and Y. Chen},
+  title = "{Optimal periodic replacement
+            period for a two-unit system with failure rate interaction
+            and external shocks}",
+  journal = {The International Journal of Systems Science},
+  volume = 39, 
+  pages = {71-79},
+  year = 2008,
+  doi = {10.1080/00207720701669479},
+}
+
+@article{Lawless:1995,
+   author = {Lawless, J. F.},
+   year = 1995,
+   title = "{The analysis of recurrent events for multiple subjects}",
+   journal = {Applied Statistics},
+   volume = 44, 
+   pages = {487-498},
+}
+
+@book{Lawless:2003,
+  author = {Lawless, J.F.},
+  year = 2003,
+  title = "{Statistical Models and Methods for Lifetime Data}", 
+  edition = {2nd},
+  publisher = {Wiley}, 
+  address = {Hoboken, NJ},
+}
+
+@article{Levitin:2001, 
+  author = {G. Levitin},
+  title = "{Incorporating common-cause failures into nonrepairable 
+            multistate series-parallel system analysis}", 
+  journal = {IEEE Transactions on Reliability},
+  volume = 50, 
+  pages = {380-388}, 
+  year = 2001,
+}
+
+@article{Li:2001, 
+  author = {H. Li and S. Xu},
+  title = "{Stochastic bound and dependence properties of survival times 
+            in a multicomponent shock model}",  
+  journal = {Journal of Multivariate Analysis},
+  volume = 76, 
+  pages = {63–89},
+  year = 2001,
+}
+
+@article{Montoro:2009, 
+  author = {Montoro-Cazorla, D. and Perz-Ocon, R. and del Carmen Segovia, M.},
+  title = "{Replacement policy in a system under shocks following a Markovian 
+            arrival process}",
+  journal = {Reliability Engineering and System Safety},
+  volume = 94, 
+  pages = {497-450},
+  year = 2009,
+}
+
+@article{Murthy_Nguyen:1985a, 
+  author = {Murthy, D. N. P. and Nguyen, D. G.},
+  title = "{Study of a multi-component system with failure interaction}", 
+  journal = {European Journal of Operations Research},
+  volume = 21, 
+  pages = {330-338},
+  year = 1985,
+}
+
+@article{Murthy_Nguyen:1985b,
+  author = {Murthy, D. N. P. and Nguyen, D. G.},
+  title = "{Study of two-component system with failure interaction}", 
+  journal = {Naval Research Logistics Quarterly},
+  volume = 32, 
+  pages = {239-247},
+  year = 1985,
+}
+
+@book{Nakagawa:2006, 
+  author = {T. Nakagawa},
+  title = "{Shocks and Damage Models in Reliability Theory}", 
+  publisher = {Springer},
+  year = 2006,
+}
+
+@incollection{Nicolai:2008, 
+  author = {Nicolai, R. P. and Dekker, R.},
+  title = "{Optimal maintenance of multi-component sytems: a review}", 
+  booktitle = {Complex System Maintenance Handbook}, 
+  editors = {Kobbacy, A. H. and Murthy, D. N. P.}, 
+  publisher = {Springer}, 
+  pages = {263-286},
+  year = 2008,
+}
+
+@article{Pellerey:1999, 
+  author = {F. Pellerey},
+  title = "{Stochastic comparisons for multivariate shock models}", 
+  journal = {Journal of Multivariate Analysis},
+  volume = 71, 
+  pages = {42-55},
+  year = 1999,
+}
+
+@article{Prentice:1978,
+  author = {R. L. Prentice and J. D. Kalbfleisch and A. V. Peterson, Jr. 
+            and N. Flournoy and V. T. Farewell and N. E. Breslow},
+  title = "{The Analysis of Failure Times in the Presence of Competing Risks}",
+  journal = {Biometrics}, 
+  volume = 34, 
+  year = 1978, 
+  pages = {541-554},
+}
+
+@article{Rasmuson:2008, 
+  author = {Rasmuson, D. M. and Kelly, D. L.},
+  title = "{Common-cause failure analysis in event assessment}",  
+  journal = {Journal of Risk and Reliability},
+  volume = 222, 
+  pages = {521-532},
+  year = 2008,
+}
+
+@article{Satow:2003, 
+  author = {T. Satow and S. Osaki},
+  title = "{Optimal replacement policies for a two unit system with 
+            shock damage interaction}", 
+  journal = {Computers and Mathematics with Applications},
+  volume = 46, 
+  pages = {1129-1138}, 
+  year = 2003,
+}
+
+@article{Scarf:2003, 
+  author = {Scarf, P. A. and Deara, M.},
+  title = "{Block replacement policies for a two-component 
+            system with failure dependence}",
+  journal = {Naval Research Logistics Quarterly},
+  volume = 50,  
+  pages = {70-87},
+  year = 2003,
+}
+
+@article{Todinov:2004, 
+  author = {M. Todinov},
+  title = "{A new reliability measure based on 
+    specified minimum distances before the locations of random variables 
+    in a finite interval}", 
+  journal = {Reliability Engineering and System Safety},
+  volume = 86, 
+  pages = {95-103},
+  year = 2004,
+}
+
+@article{Valdez:1989, 
+  author = {Valdez-Flores, C. and Feldman, R. M.},
+  title = "{A survey of preventive
+    maintenance models for stochastically deteriorating single-unit systems}",
+  journal = {Naval Research Logistics},
+  volume = 36, 
+  pages = {419-446},
+  year = 1989,
+}
+
+@article{Van_der_Weide:2010, 
+  author = {van der Weide, J. A. M. and Pandey, M. D. and van Noortwijk, J. M.},
+  title = "{Discounted cost model for condition-based maintenance 
+            optimization}", 
+  journal = {Reliability Engineering and System Safety},
+  volume = 95, 
+  pages = {236-246},
+  year = 2010,
+}
+
+@article{Yu:2007, 
+  author = {H. Yu and C. Chu and E. Ch\^atelet and F. Yalaoui},
+  title = "{Reliability
+     optimization of a redundant system with failure dependencies}",
+  journal = {Reliability Engineering and System Safety},
+  volume = 92, 
+  pages = {1627-1634},
+  year = 2007,
+}
+
+
+@article{Bordes_Mercier:2013,
+   title = "{Extended Geometric Processes: Semiparametric Estimation and Application to ReliabilityImperfect repair, Markov renewal equation, replacement policy}",
+   pages = {1-34},
+   author = {Laurent Bordes and Sophie Mercier},
+   journal = {Journal of the Iranian Statistical Society},
+   year = 2013,
+   volume = 12,
+}
+
+@article{Cook_Lawless:2013,
+   title = "{Concepts and Tests for Trend in Recurrent Event Processes}",
+   pages = {35-69},
+   author = {R. J. Cook and J. F. Lawless},
+   journal = {Journal of the Iranian Statistical Society},
+   year = 2013,
+   volume = 12,
+}
+
+@article{Geffray:2013,
+   title = "{Modeling and Inferential Thoughts for Consecutive Gap Times Observed with Death and Censoring}",
+   pages = {71-112},
+   author = {S\'egolen Geffray},
+   journal = {Journal of the Iranian Statistical Society},
+   year = 2013,
+   volume = 12,
+}
+
+@article{Lindqvist_Taraldsen:2013,
+   title = "{Exact Statistical Inference for Some Parametric Nonhomogeneous Poisson Processes}",
+   pages = {113-126},
+   author = {Bo Henry Lindqvist and Gunnar Taraldsen},
+   journal = {Journal of the Iranian Statistical Society},
+   year = 2013,
+   volume = 12,
+}
+
+@article{Song_Kuo:2013,
+   title = "{Dynamic Frailty and Change Point Models for Recurrent Events Data}",
+   pages = {127-151},
+   author = {Changhong Song and Lynn Kuo},
+   journal = {Journal of the Iranian Statistical Society},
+   year = 2013,
+   volume = 12,
+}
+
+@article{Taylor_Pena:2013,
+   title = "{Parametric Estimation in a Recurrent Competing Risks Model}",
+   pages = {153-181},
+   author = {Laura L. Taylor and Edsel A. {Pe\~{n}a}},
+   journal = {Journal of the Iranian Statistical Society},
+   year = 2013,
+   volume = 12,
+}
+
+@article{Cook_Lawless:2002,
+  doi = {10.1191/0962280202sm278ra},
+  journal = {Statistical Methods in Medical Research},
+  year = 2002,
+  volume = 11,
+  pages = {141-166},
+  author = {R. J. Cook and J. F. Lawless},
+  title = "{Analysis of repeated events}",
+}
+
+@book{Cook_Lawless:2007,
+  author = {Cook, R. J. and Lawless, J. F.},
+  year = 2007,
+  title = "{The Statistical Analysis of Recurrent Events}",
+  publisher = {Springer},
+  address = {New York},
+}
+
+
+
+
+
+@book{Ross_1996,
+  address = {New York},
+  edition = {2nd Revised Edition},
+  title = {Stochastic Processes},
+  publisher = {{John Wiley and Sons Ltd}},
+  author = {Ross, Sheldon M.},
+  year = {1996}
+}
+
+@book{Rudin,
+  address = {New York},
+  edition = {3rd},
+  title = {Principles of {{Mathematical Analysis}}},
+  publisher = {{McGraw-Hill, Inc.}},
+  author = {Rudin, W},
+  year = {1976}
+}
+
+@article{Vahdani2013,
+  title = {Warranty Servicing for Discretely Degrading Items with Non-Zero Repair Time under Renewing Warranty},
+  volume = {65},
+  issn = {0360-8352},
+  doi = {10.1016/j.cie.2011.08.012},
+  abstract = {This paper considers a repair-replacement strategy for a special class of discretely degrading and repairable products under renewing free replacement warranty. Each product may experience N different working states with different exponential hazard functions, before the warranty contract expires. Once the item enters working state i (i=1,2,\ldots,N), it can either fail or move to any of the subsequent working states with different probabilities, given that a transition has been made. In the former case, the best rectification action, replacement or minimal repair, regarding the failure status, i.e., the product degradation level at the failure time and the remaining warranty time, should be conducted to put the item into operation. It is assumed that replacement of the faulty item occurs instantly and the product warranty is renewed, but non-zero repair time has been included in the model. We derive the optimal replacement-repair policy to minimize the manufacturer's expected warranty servicing cost per item sold. The Adomian decomposition method is used to find an analytic approximate solution for a special case with two working states. For N$>$2, a simulation based optimization method has been developed to analyze the expected warranty cost. Some numerical examples in each section are given to clearly demonstrate the application of this model.},
+  number = {1},
+  journal = {Intelligent Manufacturing Systems},
+  author = {Vahdani, Hashem and Mahlooji, Hashem and Eshraghnia Jahromi, Abdolhamid},
+  month = may,
+  year = {2013},
+  keywords = {maintenance,Adomian decomposition,Multi-state system,Renewing free-replacement warranty,simulation},
+  pages = {176-185},
+  annote = {Accession Number: S0360835211002415; Author: Vahdani, Hashem (⁎); Author: Mahlooji, Hashem (1); Author: Eshraghnia Jahromi, Abdolhamid (2); Affiliation: Department of Industrial Engineering, Azadi Ave., Sharif University of Technology, Tehran, Iran; Number of Pages: 10; Language: English;}
+}
+
+@inproceedings{Pong2006,
+  title = {Optimal {{Sequential PM Policy}} for {{Leased Equipment}}: {{Negligible}} and {{Non}}-{{Negligible Repair Time}}.},
+  booktitle = {Lecture {{Notes}} in {{Engineering}} and {{Computer Science}}},
+  author = {Sungkharit, W and Pongpech, J},
+  year = {2006},
+  pages = {636-639}
+}
+
+@book{Lam_2007,
+  address = {Hackensack, NJ},
+  title = {The Geometric Process and Its Applications.},
+  isbn = {981-270-003-X},
+  abstract = {Review: "A geometric process is a simple monotone process that was first introduced by the author in 1988. It is a generalization of renewal process. This book captures the extensive research work on geometric processes that has been done since then in both probability and statistics theory and various applications. Some results are published for the first time." "A reference book for researchers and a handbook for practioners, it is also a useful textbook for postgraduate or senior undergraduate students."--Jacket.},
+  publisher = {{World Scientific}},
+  author = {Lam, Yeh},
+  year = {2007},
+  keywords = {Renewal theory,stochastic processes},
+  annote = {Accession Number: aut.b14162921; Other Notes: Includes bibliographical references and index.; Machine converted from AACR2 source record.; Publication Type: Book; Physical Description: xiii, 299 pages : illustrations ; 24 cm; Language: English; LCCN: 2007300174; OCLC: 150382343}
+}
+
+@article{Pintelon,
+  title = {An Age-Based Replacement Policy with Non-Zero Repair Times for a Continuous Production Process},
+  volume = {33},
+  issn = {0020-7543},
+  doi = {10.1080/00207549508904805},
+  abstract = {In this paper a case study for maintenance optimization is presented. The theoretical features of the model, an age-based replacement model taking into account non-zero repair times, are briefly discussed. The main part of the paper focuses on the application aspects of such problems like data gathering and finding the appropriate solution method. An extensive discussion of the results concludes the paper.},
+  number = {8},
+  journal = {International Journal of Production Research},
+  author = {Pintelon, L. M. A. and van Puyvelde, F. L. B. and Gelders, L. F.},
+  month = aug,
+  year = {1995},
+  pages = {2111-2123},
+  annote = {doi: 10.1080/00207549508904805}
+}
+
+@article{Yao2005,
+  title = {Optimal Joint Preventive Maintenance and Production Policies},
+  volume = {52},
+  issn = {1520-6750},
+  doi = {10.1002/nav.20107},
+  abstract = {We study joint preventive maintenance (PM) and production policies for an unreliable production-inventory system in which maintenance/repair times are non-negligible and stochastic. A joint policy decides (a) whether or not to perform PM and (b) if PM is not performed, then how much to produce. We consider a discrete-time system, formulating the problem as a Markov decision process (MDP) model. The focus of the work is on the structural properties of optimal joint policies, given the system state comprised of the system's age and the inventory level. Although our analysis indicates that the structure of optimal joint policies is very complex in general, we are able to characterize several properties regarding PM and production, including optimal production/maintenance actions under backlogging and high inventory levels, and conditions under which the PM portion of the joint policy has a control-limit structure. In further special cases, such as when PM set-up costs are negligible compared to PM times, we are able to establish some additional structural properties. \textcopyright{} 2005 Wiley Periodicals, Inc. Naval Research Logistics, 2005.},
+  number = {7},
+  journal = {Naval Research Logistics (NRL)},
+  author = {Yao, Xiaodong and Xie, Xiaolan and Fu, Michael C. and Marcus, Steven I.},
+  month = oct,
+  year = {2005},
+  keywords = {Markov decision processes,control-limit structure,joint maintenance and production policies,unreliable production systems,optimal preventive maintenance},
+  pages = {668-681}
+}
+
+@article{Wang_Zhang,
+  title = {Optimal Periodic Preventive Repair and Replacement Policy Assuming Geometric Process Repair},
+  volume = {55},
+  issn = {0018-9529},
+  doi = {10.1109/TR.2005.863808},
+  abstract = {In this paper, a simple deteriorating system with repair is studied. When failure occurs, the system is replaced at high cost. To extend the operating life, the system can be repaired preventively. However, preventive repair does not return the system to a "good as new" condition. Rather, the successive operating times of the system after preventive repair form a stochastically decreasing geometric process, while the consecutive preventive repair times of the system form a stochastically increasing geometric process. We consider a bivariate preventive repair policy to solve the efficiency for a deteriorating \& valuable system. Thus, the objective of this paper is to determine an optimal bivariate replacement policy such that the average cost rate (i.e., the long-run average cost per unit time) is minimized. The explicit expression of the average cost rate is derived, and the corresponding optimal replacement policy can be determined numerically. An example is given where the operating time of the system is given by a Weibull distribution.},
+  number = {1},
+  journal = {IEEE Transactions on Reliability},
+  author = {Wang, G. J. and Zhang, Y. L.},
+  month = mar,
+  year = {2006},
+  keywords = {MATHEMATICS,Stochastic process,random variables,Solid modeling,preventive repair,bivariate policy,long-run average cost,explicit expression,failure analysis,Aging,replacement policy,consecutive preventive repair,geometric process repair,geometric process,renewal process,costing,Cost function,Weibull distribution,optimal periodic preventive repair,Distribution functions,Average cost rate,Preventive maintenance,stochastic processes},
+  pages = {118-122}
+}
+
+@article{luo_value-at-risk_2018,
+  title = {A Value-at-Risk Approach to Optimisation of Warranty Policy},
+  volume = {267},
+  issn = {0377-2217},
+  doi = {10.1016/j.ejor.2017.11.062},
+  abstract = {In the real world, a manufacturer may produce many products, which may have common components installed. Consequently, the frequencies of the warranty claims of those products are statistically dependent. Warranty policy optimisation in the existing research, however, has not considered such statistical dependence, which may increase bias in decision making. This paper is the first attempt to collectively optimises warranty policy for a set of different products, produced by one manufacturer, whose failures are statistically dependent, using tools borrowed from financial mathematics (i.e., value-at-risk theory and copula). We prove the existence of the optimal solutions for different scenarios. Numerical examples are used to validate the applicability of the proposed methods.},
+  number = {2},
+  journal = {European Journal of Operational Research},
+  author = {Luo, Ming and Wu, Shaomin},
+  month = jun,
+  year = {2018},
+  keywords = {(T),Value-at-risk,Warranty policy optimisation,Mean-risk,Copulas},
+  pages = {513-522},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\3JETKH5N\\S0377221717310731.html}
+}
+
+@article{wu_semi-geometric_2018,
+  title = {The Semi-Geometric Process and Some Properties},
+  volume = {29},
+  issn = {1471-678X},
+  doi = {10.1093/imaman/dpx002},
+  abstract = {Abstract.  The geometric process has been widely applied in reliability engineering and other areas since its introduction. One of its assumptions is that the t},
+  language = {en},
+  number = {2},
+  journal = {IMA Journal of Management Mathematics},
+  author = {Wu, Shaomin and Wang, Guanjun},
+  month = mar,
+  year = {2018},
+  pages = {229-245},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\7YDRPUQD\\Wu and Wang - 2018 - The semi-geometric process and some properties.pdf;C:\\Users\\samarsha\\Zotero\\storage\\PMLU8RWS\\Wu and Wang - 2018 - The semi-geometric process and some properties.pdf;C:\\Users\\samarsha\\Zotero\\storage\\NYRXAGL7\\3829520.html;C:\\Users\\samarsha\\Zotero\\storage\\THAR68YD\\3829520.html}
+}
+
+@article{braun_properties_2005,
+  title = {Properties of the Geometric and Related Processes},
+  volume = {52},
+  copyright = {Copyright \textcopyright{} 2005 Wiley Periodicals, Inc.},
+  issn = {1520-6750},
+  doi = {10.1002/nav.20099},
+  abstract = {Some properties of the geometric process are studied along with those of a related process which we propose to call the $\alpha$-series process. It is shown that the expected number of counts at an arbitrary time does not exist for the decreasing geometric process. The decreasing version of the $\alpha$-series process does have a finite expected number of counts, under certain conditions. This process also has the same advantages of tractability as the geometric process; it exhibits some properties which may make it a useful complement to the increasing geometric process. In addition, it may be fit to observed data as easily as the geometric process. Applications in reliability and stochastic scheduling are considered in order to demonstrate the versatility of the alternative model. \textcopyright{} 2005 Wiley Periodicals, Inc. Naval Research Logistics, 2005},
+  language = {en},
+  number = {7},
+  journal = {Naval Research Logistics (NRL)},
+  author = {Braun, W. John and Li, Wei and Zhao, Yiqiang Q.},
+  year = {2005},
+  keywords = {reliability,geometric process,birth processes,stochastic scheduling,renewal theory},
+  pages = {607-616},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\RPH83TTT\\Braun et al. - Properties of the geometric and related processes.pdf;C:\\Users\\samarsha\\Zotero\\storage\\EZ8STL95\\nav.html}
+}
+
+@article{nadarajah_truncated_2009,
+  title = {Some {{Truncated Distributions}}},
+  volume = {106},
+  issn = {0167-8019, 1572-9036},
+  doi = {10.1007/s10440-008-9285-4},
+  abstract = {Long-tailed distributions arise in many areas of the sciences. These distributions, however, suffer from the weakness of not having finite moments of all orders and this weakness has restricted their use. In this note, we introduce truncated versions of five of the most commonly known long-tailed distributions\textemdash{}which possess finite moments of all orders and could therefore be better models. Explicit expressions for the moments are derived for each of the truncated distributions. Several applications are illustrated using real data.},
+  language = {en},
+  number = {1},
+  journal = {Acta Applicandae Mathematicae},
+  author = {Nadarajah, Saralees},
+  month = apr,
+  year = {2009},
+  pages = {105},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\LTJHTV4D\\Nadarajah - 2009 - Some Truncated Distributions.pdf;C:\\Users\\samarsha\\Zotero\\storage\\9WVESBDR\\s10440-008-9285-4.html}
+}
+
+@article{zhang_extended_2018,
+  title = {An Extended Geometric Process Repair Model with Imperfect Delayed Repair under Different Objective Functions},
+  volume = {47},
+  issn = {0361-0926},
+  doi = {10.1080/03610926.2017.1353620},
+  abstract = {This article studies an extended geometric process repair model for a simple repairable system with imperfect delayed repair. Assume that the system after repair is not always successively degenerative, and the repair is not also always delayed. Under these assumptions, based on the failure number N of the system, an optimal replacement policy N* is determined respectively by minimizing the average cost rate (ACR), maximizing the average availability rate (AAR), and optimizing the trade-off model of the ACR and the AAR. Finally, a numerical example is given to illustrate some theoretical results and the model applicability.},
+  number = {13},
+  journal = {Communications in Statistics - Theory and Methods},
+  author = {Zhang, Y. L. and Wang, G. J.},
+  month = jul,
+  year = {2018},
+  keywords = {replacement policy,average cost rate,62N05,imperfect delayed repair,trade-off model,Primary: 60K05,Secondary: 90B25,Average availability rate,Extended geometric process,Replacement policy,extended geometric process},
+  pages = {3204-3219},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\JRKW22B3\\Zhang and Wang - 2018 - An extended geometric process repair model with im.pdf;C:\\Users\\samarsha\\Zotero\\storage\\TKDZVBUX\\03610926.2017.html}
+}
+
+@article{gerhardt_transforming_2009,
+  title = {Transforming {{Renewal Processes}} for {{Simulation}} of {{Nonstationary Arrival Processes}}},
+  volume = {21},
+  issn = {1091-9856},
+  doi = {10.1287/ijoc.1080.0316},
+  abstract = {Simulation models of real-life systems often assume stationary (homogeneous) Poisson arrivals. Therefore, when nonstationary arrival processes are required, it is natural to assume Poisson arrivals with a time-varying arrival rate. For many systems, however, this provides an inaccurate representation of the arrival process that is either more or less variable than Poisson. In this paper we extend techniques that transform a stationary Poisson arrival process into a nonstationary Poisson arrival process (NSPP) by transforming a stationary renewal process into a nonstationary, non-Poisson (NSNP) arrival process. We show that the desired arrival rate is achieved and that when the renewal base process is either more or less variable than Poisson, then the NSNP process is also more or less variable, respectively, than an NSPP. We also propose techniques for specifying the renewal base process when presented properties of, or data from, an arrival process and illustrate them by modeling real arrival data.},
+  number = {4},
+  journal = {INFORMS Journal on Computing},
+  author = {Gerhardt, Ira and Nelson, Barry L.},
+  year = {2009},
+  pages = {630-640},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\UHTTYT78\\Gerhardt and Nelson - 2009 - Transforming Renewal Processes for Simulation of N.pdf;C:\\Users\\samarsha\\Zotero\\storage\\FTC2Y2S8\\ijoc.1080.html}
+}
+
+@article{chan_modeling_2014,
+  title = {Modeling {{Electricity Price Using A Threshold Conditional Autoregressive Geometric Process Jump Model}}},
+  volume = {43},
+  issn = {0361-0926},
+  doi = {10.1080/03610926.2013.788714},
+  abstract = {Electricity market prices are highly volatile and often have high spikes. Both government authorities and market participants require sophisticated models and techniques for forecasting future prices and managing relevant financial risks in such a volatile market. This article extends the conditional autoregressive geometric process (CARGP) model (Chan et al., 2012) to the CARGP model with thresholds and jumps, which is abbreviated as CARGP-TJ model in this article. We will demonstrate that the proposed CARGP-TJ model not only captures the unique features of the electricity price but also performs better than other existing models. For robustness consideration, a heavy-tailed error distribution is adopted. Model implementation relies on the powerful Bayesian Markov chain Monte Carlo simulation techniques via WinBUGS software. The analysis of the daily maximum electricity prices of the New South Wales, Australia reveals that the proposed CARGP-TJ model captures the price spikes well for both in-sample estimation and out-of-sample forecast.},
+  number = {10-12},
+  journal = {Communications in Statistics - Theory and Methods},
+  author = {Chan, Jennifer S. K. and Choy, S. T. Boris and Lam, Connie P. Y.},
+  year = {2014},
+  keywords = {Forecasting,Mean reversion,Heteroskedasticity,62M20,60G35,93E11,62F15,93E10,91Bxx,Seasonality,Long memory,60G25,Price spike,62P20,62M10},
+  pages = {2505-2515},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\PCT89NPC\\Chan et al. - 2014 - Modeling Electricity Price Using A Threshold Condi.pdf;C:\\Users\\samarsha\\Zotero\\storage\\DZQTQ7AS\\03610926.2013.html}
+}
+
+@article{wang_generalized_2017,
+  title = {Generalized Geometric Process and Its Application in Maintenance Problems},
+  volume = {49},
+  issn = {0307-904X},
+  doi = {10.1016/j.apm.2017.05.024},
+  abstract = {Since the repair effect may be varying with the number of repairs, we propose a generalized geometric process (GGP) to model the deteriorating process of repairable systems. For a GGP, the geometric ratio changes with the number of repairs rather than being a constant. Based on the GGP, two repair-replacement models are studied. Existing preventive maintenance (PM) models based on geometric process (GP) commonly assume that the PM is `as good as new' in each working circle, which is not realistic in many situations. In this study, that the system is assumed to be geometrically deteriorating after PM or corrective maintenance (CM). Firstly, an age-dependent PM model is considered, in which the optimal policies N* and T* are obtained theoretically, and the optimal bivariate policy (N*, T*) which minimizes the average cost rate (ACR) can be determined by a searching algorithm. Next, because of the fact that the system deteriorates after maintenance, the schedule time to PM should decrease with the maintenance number increasing. Therefore, a sequential PM policy is investigated, and the optimal policy N* and the optimal schedule times T1*,T2*,\ldots,TN** are computed. Finally, numerical examples are provided to illustrate the proposed models.},
+  journal = {Applied Mathematical Modelling},
+  author = {Wang, Guan Jun and Yam, Richard C. M.},
+  month = sep,
+  year = {2017},
+  keywords = {Average cost rate,Generalized geometric process,Optimal policy,Preventive maintenance,Replacement},
+  pages = {554-567},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\RQZI4CY5\\Wang and Yam - 2017 - Generalized geometric process and its application .pdf;C:\\Users\\samarsha\\Zotero\\storage\\4PFLMK76\\S0307904X17303414.html;C:\\Users\\samarsha\\Zotero\\storage\\FKM3GL7H\\S0307904X17303414.html}
+}
+
+@article{lam_analysis_2004,
+  title = {Analysis of {{Data}} from a {{Series}} of {{Events}} by a {{Geometric Process Model}}},
+  volume = {20},
+  issn = {0168-9673, 1618-3932},
+  doi = {10.1007/s10255-004-0167-x},
+  abstract = {Geometric process was first introduced by Lam[10,11]. A stochastic process \{X i , i = 1, 2, $\cdot$ $\cdot$ $\cdot$\} is called a geometric process (GP) if, for some a $>$ 0, \{a i -1X i , i = 1, 2, $\cdot$ $\cdot$ $\cdot$\} forms a renewal process. In this paper, the GP is used to analyze the data from a series of events. A nonparametric method is introduced for the estimation of the three parameters in the GP. The limiting distributions of the three estimators are studied. Through the analysis of some real data sets, the GP model is compared with other three homogeneous and nonhomogeneous Poisson models. It seems that on average the GP model is the best model among these four models in analyzing the data from a series of events.},
+  language = {en},
+  number = {2},
+  journal = {Acta Mathematicae Applicatae Sinica, English Series},
+  author = {Lam, Yeh and Zhu, Li-xing and Chan, Jennifer S. K. and Liu, Qun},
+  month = jun,
+  year = {2004},
+  pages = {263-282},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\G8YVR877\\Lam et al. - 2004 - Analysis of Data from a Series of Events by a Geom.pdf;C:\\Users\\samarsha\\Zotero\\storage\\WXIAYI5Z\\Lam et al. - 2004 - Analysis of Data from a Series of Events by a Geom.pdf;C:\\Users\\samarsha\\Zotero\\storage\\34S9RAVD\\s10255-004-0167-x.html;C:\\Users\\samarsha\\Zotero\\storage\\6CTLV4YR\\s10255-004-0167-x.html}
+}
+
+@article{chan_statistical_2004,
+  title = {Statistical Inference for Geometric Processes with Gamma Distributions},
+  volume = {47},
+  issn = {0167-9473},
+  doi = {10.1016/j.csda.2003.12.004},
+  abstract = {A stochastic process \{Xi\} is a geometric process if there exists a positive real number a such that \{ai-1Xi\} generates a renewal process. Under the assumption that X1 follows a Gamma distribution, the statistical inference problem for the geometric process is studied. The parameters a,$\mu$ and $\sigma$2, where $\mu$ and $\sigma$2, are respectively, the mean and variance of X1, are estimated by parametric methods including maximum likelihood method along with some nonparametric methods previously proposed by Y. Lam such as the modified moment method. Limiting distributions for the maximum likelihood estimators are derived and this enables us to construct confidence intervals and perform hypothesis testing on parameters. Then some suggestions on the choice of methods are made based on simulation experiments and real data analysis.},
+  number = {3},
+  journal = {Computational Statistics \& Data Analysis},
+  author = {Chan, Jennifer S. K. and Lam, Yeh and Leung, Doris Y. P.},
+  year = {2004},
+  keywords = {Moment estimate,Maximum likelihood estimate,Geometric process,Renewal process},
+  pages = {565-581},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\W6DNB6YS\\Chan et al. - 2004 - Statistical inference for geometric processes with.pdf;C:\\Users\\samarsha\\Zotero\\storage\\ZJLX2ZLD\\S0167947303003037.html}
+}
+
+@article{davies_nonparametric_2012,
+  title = {Nonparametric Estimation for a Two-Dimensional Renewal Process},
+  volume = {6},
+  issn = {1935-7524},
+  doi = {10.1214/12-EJS718},
+  abstract = {This paper introduces nonparametric estimation methods for spatial point processes satisfying a particular renewal property. Martingale methods yield a unified approach for renewal processes in both one and two dimensions, and can be used for both synchronous and asynchronous data. In each case, we obtain martingale estimators of the avoidance probabilities that characterize the renewal process. Asymptotic properties of the estimators are studied analytically and empirically.},
+  language = {EN},
+  journal = {Electronic Journal of Statistics},
+  author = {Davies, Katherine F. and Ivanoff, B. Gail},
+  year = {2012},
+  keywords = {renewal process,product limit estimator,avoidance probability,Point process,Multiparameter martingale},
+  pages = {1449-1476},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\VZDT2VHC\\Davies and Ivanoff - 2012 - Nonparametric estimation for a two-dimensional ren.pdf;C:\\Users\\samarsha\\Zotero\\storage\\KF33IAKE\\1346421600.html}
+}
+
+@article{lam_statistical_1998,
+  title = {Statistical Inference for Geometric Processes with Lognormal Distribution},
+  volume = {27},
+  issn = {0167-9473},
+  doi = {10.1016/S0167-9473(97)00046-7},
+  abstract = {A stochastic process \{Xi, i = 1, 2,\ldots\} is a geometric process if there exists a $>$ 0 such that \{ai-1Xi, i = 1, 2,\ldots\} generates a renewal process. In this paper, under the assumption that X1 follows a lognormal distribution, we study the statistical inference problem for the geometric process. The parameters a $\lambda$ and $\sigma$2, where $\lambda$ and $\sigma$2 are, respectively, the mean and variance of X1, are estimated by the maximum likelihood method and a modified moment method. Then some suggestions are made based on the theoretical results, the simulation experiments, and the real data analysis.},
+  number = {1},
+  journal = {Computational Statistics \& Data Analysis},
+  author = {Lam, Yeh and Chan, So Kuen},
+  month = mar,
+  year = {1998},
+  keywords = {Moment estimate,Maximum likelihood estimate,Asymptotic relative efficiency,Geometric process},
+  pages = {99-112},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\MLXKHESB\\Lam Yeh and So Kuen Chan - 1998 - Statistical inference for geometric processes with.pdf;C:\\Users\\samarsha\\Zotero\\storage\\P3V4EG3H\\S0167947397000467.html}
+}
+
+@article{davies_twodimensional_2011,
+  title = {A Two-Dimensional {{Markov}} Renewal Process},
+  volume = {22},
+  copyright = {Copyright \textcopyright{} 2010 John Wiley \& Sons, Ltd.},
+  issn = {1099-095X},
+  doi = {10.1002/env.1049},
+  abstract = {This paper presents an extension to the the Ivanoff\textendash{}Merzbach renewal process. The Ivanoff\textendash{}Merzbach process is a natural analogue to the one-dimensional renewal process. Restricting our attention to two dimensions, the focus of the current paper will be formation of this extension, which we will refer to as a Markov renewal process, as well as simulation, estimation and applications to data sets in ecology and forestry. Copyright \textcopyright{} 2010 John Wiley \& Sons, Ltd.},
+  language = {en},
+  number = {1},
+  journal = {Environmetrics},
+  author = {Davies, Katherine F. and Braun, W. John},
+  year = {2011},
+  keywords = {Markov,applications,renewal,maximum likelihood estimation,spatial},
+  pages = {98-108},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\RBNXIRLB\\Davies and Braun - A two-dimensional Markov renewal process.pdf;C:\\Users\\samarsha\\Zotero\\storage\\7KJVJC3W\\env.html}
+}
+
+@article{wu_novel_2006,
+  title = {A Novel Repair Model for Imperfect Maintenance},
+  volume = {17},
+  doi = {doi:10.1093/imaman/dpi036},
+  journal = {IMA Journal of Management Mathematics},
+  author = {Wu, Shaomin and {Clements-Croome}, Derek},
+  year = {2006},
+  pages = {235-243},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\W6EH74X5\\8132517.html}
+}
+
+@article{bordes_extended_2013,
+  title = {Extended Geometric Processes: {{Semiparametric}} Estimation and Application to Reliability},
+  volume = {12},
+  shorttitle = {Extended Geometric Processes},
+  abstract = {Lam (2007) introduces a generalization of renewal processes named Geometric processes, where inter-arrival times are independent and identically distributed up to a multiplicative scale parameter, in a geometric fashion. We here envision a more general scaling, not necessarily geometric. The corresponding counting process is named Extended Geometric Process (EGP). Semiparametric estimates are provided and studied for an EGP, which includes consistency results and convergence rates. In a reliability context, arrivals of an EGP may stand for successive failure times of a system submitted to imperfect repairs. In this context, we study: 1) the mean number of failures on some finite horizon time; 2) a replacement policy assessed through a cost function on an infinite horizon time.},
+  number = {1},
+  journal = {Journal of The Iranian Statistical Society},
+  author = {Bordes, L. and Mercier, Sophie},
+  year = {2013},
+  keywords = {Poisson process,replacement policy,reliability theory,residual life,competing risks,Gamma process,composite likelihood,Markov renewal equation,Replacement policy,imperfect repair},
+  pages = {1-34},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\45KYASGE\\Bordes and Mercier - 2013 - Extended geometric processes Semiparametric estim.pdf}
+}
+
+@article{chan_multivariate_2014,
+  title = {Multivariate Generalized {{Poisson}} Geometric Process Model with Scale Mixtures of Normal Distributions},
+  volume = {127},
+  issn = {0047-259X},
+  doi = {10.1016/j.jmva.2014.02.002},
+  abstract = {This paper proposes a new model named as the multivariate generalized Poisson log-t geometric process (MGPLTGP) model to study multivariate time-series of counts with overdispersion or underdispersion, non-monotone trends within each time-series and positive or negative correlation between pairs of time-series. This model assumes that the multivariate counts follow independent generalized Poisson distributions with an additional parameter to adjust for different degrees of dispersion including overdispersion and underdispersion. Their means after discounting the trend effect geometrically by ratio functions form latent stochastic processes and follow a multivariate log-t distribution with a flexible correlation structure to capture both positive correlation and negative correlation. By expressing the multivariate Student's t-distribution in scale mixtures of normals, the model can be implemented through Markov chain Monte Carlo algorithms via the user-friendly WinBUGS software. The applicability of the MGPLTGP model is illustrated through an analysis of the possession and/or use of two illicit drugs, amphetamines and narcotics in New South Wales, Australia.},
+  journal = {Journal of Multivariate Analysis},
+  author = {Chan, Jennifer So Kuen and Wan, Wai Yin},
+  year = {2014},
+  keywords = {Multivariate log- distribution,Scale mixtures of normals,Generalized Poisson distribution,Geometric process,Markov chain Monte Carlo algorithm},
+  pages = {72-87},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\K8Y8IF48\\Chan and Wan - 2014 - Multivariate generalized Poisson geometric process.pdf;C:\\Users\\samarsha\\Zotero\\storage\\VGTDH8P3\\S0047259X14000256.html}
+}
+
+@article{chan_modelling_2006,
+  title = {Modelling {{SARS}} Data Using Threshold Geometric Process},
+  volume = {25},
+  copyright = {Copyright \textcopyright{} 2005 John Wiley \& Sons, Ltd.},
+  issn = {1097-0258},
+  doi = {10.1002/sim.2376},
+  abstract = {During the outbreak of an epidemic disease, for example, the severe acute respiratory syndrome (SARS), the number of daily infected cases often exhibit multiple trends: monotone increasing during the growing stage, stationary during the stabilized stage and then decreasing during the declining stage. Lam first proposed modelling a monotone trend by a geometric process (GP) Xi, i=1,2,\ldots{} directly such that ai-1Xi, i=1,2,\ldots{} forms a renewal process for some ratio a$>$0 which measures the direction and strength of the trend. Parameters can be conveniently estimated using the LSE methods. Previous GP models limit to data with only a single trend. For data with multiple trends, we propose a moving window technique to locate the turning point(s). The threshold GP model is fitted to the SARS data from four regions in 2003. Copyright \textcopyright{} 2005 John Wiley \& Sons, Ltd.},
+  language = {en},
+  number = {11},
+  journal = {Statistics in Medicine},
+  author = {Chan, Jennifer S. K. and Yu, Philip L. H. and Lam, Yeh and Ho, Alvin P. K.},
+  year = {2006},
+  keywords = {geometric process,threshold model,non-parametric method,moving window,monotone trend,turning points},
+  pages = {1826-1839},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\NUXCF98G\\Chan et al. - Modelling SARS data using threshold geometric proc.pdf;C:\\Users\\samarsha\\Zotero\\storage\\HVAR4F4Y\\sim.html}
+}
+
+@article{chen_bayesian_2010,
+  title = {Bayesian Computation for Geometric Process in Maintenance Problems},
+  volume = {81},
+  issn = {0378-4754},
+  doi = {10.1016/j.matcom.2010.06.004},
+  abstract = {Geometric process modeling is a useful tool to study repairable deteriorating systems in maintenance problems. This model has been used in a variety of situations such as the determination of the optimal replacement policy and the optimal inspection-repair-replacement policy for standby systems, and the analysis of data with trend. In this article, Bayesian inference for the geometric process with several popular life distributions, for instance, the exponential distribution and the lognormal distribution, are studied. The Gibbs sampler and the Metropolis algorithm are used to compute the Bayes estimators of the parameters in the geometric process. Simulation results are presented to illustrate the use of our procedures.},
+  number = {4},
+  journal = {Mathematics and Computers in Simulation},
+  author = {Chen, Jianwei and Li, Kim-Hung and Lam, Yeh},
+  year = {2010},
+  keywords = {Geometric process,Gibbs sampling,Maintenance problem,Metropolis algorithm,Repairable deteriorating systems},
+  pages = {771-781},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\DS55ZUZT\\Chen et al. - 2010 - Bayesian computation for geometric process in main.pdf;C:\\Users\\samarsha\\Zotero\\storage\\VNYD88XX\\S037847541000193X.html}
+}
+
+@article{ma_efficient_2016,
+  title = {Efficient Simulation of Non-{{Poisson}} Non-Stationary Point Processes to Study Queueing Approximations},
+  volume = {109},
+  issn = {0167-7152},
+  doi = {10.1016/j.spl.2015.11.018},
+  abstract = {A nonstationary point process can be efficiently simulated by exploiting a representation as the composition of a rate-one process and the cumulative arrival rate function, provided that an efficient algorithm is available for generating the rate-one process, as is the case for stationary renewal processes, Markov modulated Poisson processes and many other processes. Overall efficiency can be achieved by constructing a table of the inverse cumulative arrival rate function when it is not explicitly available.},
+  journal = {Statistics \& Probability Letters},
+  author = {Ma, Ni and Whitt, Ward},
+  month = feb,
+  year = {2016},
+  keywords = {Queues with time-varying arrival rates,Service system,Inverse function,Simulation,Time-varying arrival rate,Nonstationary point process},
+  pages = {202-207},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\LLT9GH4V\\Ma and Whitt - 2016 - Efficient simulation of non-Poisson non-stationary.pdf;C:\\Users\\samarsha\\Zotero\\storage\\WYT2VJHY\\S0167715215300079.html}
+}
+
+@article{kara_statistical_2017,
+  title = {Statistical Inference for $\alpha$-Series Process with the Inverse {{Gaussian}} Distribution},
+  volume = {46},
+  issn = {0361-0918},
+  doi = {10.1080/03610918.2016.1139127},
+  abstract = {Statistical inferences for the geometric process (GP) are derived when the distribution of the first occurrence time is assumed to be inverse Gaussian (IG). An $\alpha$-series process, as a possible alternative to the GP, is introduced since the GP is sometimes inappropriate to apply some reliability and scheduling problems. In this study, statistical inference problem for the $\alpha$-series process is considered where the distribution of first occurrence time is IG. The estimators of the parameters $\alpha$, $\mu$, and $\sigma$2 are obtained by using the maximum likelihood (ML) method. Asymptotic distributions and consistency properties of the ML estimators are derived. In order to compare the efficiencies of the ML estimators with the widely used nonparametric modified moment (MM) estimators, Monte Carlo simulations are performed. The results showed that the ML estimators are more efficient than the MM estimators. Moreover, two real life datasets are given for application purposes.},
+  number = {6},
+  journal = {Communications in Statistics - Simulation and Computation},
+  author = {Kara, Mahmut and T\"urk{\c s}en, \"Ozlem and Aydo{\u g}du, Halil},
+  month = jul,
+  year = {2017},
+  keywords = {60K05,α-Series process,60G55,Modified moment estimate,Inverse Gaussian distribution,Maximum likelihood estimate,Asymptotic normality,62F12},
+  pages = {4938-4950},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\T67STV37\\Kara et al. - 2017 - Statistical inference for α-series process with th.pdf;C:\\Users\\samarsha\\Zotero\\storage\\BP377K98\\03610918.2016.html}
+}
+
+@article{proschan_theoretical_1963,
+  title = {Theoretical {{Explanation}} of {{Observed Decreasing Failure Rate}}},
+  volume = {5},
+  issn = {0040-1706},
+  doi = {10.2307/1266340},
+  abstract = {Pooled data on the times of successive failures of the air conditioning system of a fleet of jet airplanes seemed to indicate that the life distribution had a decreasing failure rate. More refined analysis showed that the failure distribution for each airplane separately was exponential, but with a different failure rate. Using the theorem that a mixture of distributions each having a non-increasing failure rate (e. g., a mixture of exponential distributions) itself has a non-increasing failure rate, the apparent decreasing failure rate of the pooled air-conditioning life distribution was satisfactorily explained. The present study has implications in other areas where an observed decreasing failure rate may well be the result of mixing exponential distributions having different parameters.},
+  number = {3},
+  journal = {Technometrics},
+  author = {Proschan, Frank},
+  year = {1963},
+  pages = {375-383}
+}
+
+@article{wang_geometric_2014,
+  title = {Geometric Process Model for a System with Inspections and Preventive Repair},
+  volume = {75},
+  issn = {0360-8352},
+  doi = {10.1016/j.cie.2014.06.007},
+  abstract = {In this paper, the optimal repair\textendash{}replacement problem is studied for a simple repairable system whose failures are detected only by periodic inspections. When a failure of the system is detected, it will be repaired by a repairman, and the lifetimes of the system after repair are geometrically decreasing. If the system is detected to be in working state, it will be preventively repaired, and the preventive repair brings the system to the state just as that of the beginning of the working cycle. A bivariate policy (T,N) is considered, where T is the time interval between inspections while N is the number of failures at which the system is replaced. The objective is to determine the optimal bivariate policy (T${_\ast}$,N${_\ast}$) such that the long-run average cost rate C(T,N) is minimized. Sufficient conditions for the existence and uniqueness of the optimal policies N${_\ast}$ and T${_\ast}$ are derived theoretically. An algorithm is also presented to find the optimal policy (T${_\ast}$,N${_\ast}$). Finally, a numerical example is given to validate the developed theoretical model. Some sensitivity analysis are provided to show the influence of the varying of some parameters on the optimal policy (T${_\ast}$,N${_\ast}$).},
+  journal = {Computers \& Industrial Engineering},
+  author = {Wang, Guan Jun and Zhang, Yuan Lin},
+  month = sep,
+  year = {2014},
+  keywords = {Inspection,Geometric process,Average cost rate,Preventive repair,Replacement},
+  pages = {13-19},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\5X3BHQTV\\S0360835214001879.html}
+}
+
+@article{liang_optimal_2011,
+  title = {Optimal Replacement Policy for a General Geometric Process Model with $\delta$-Shock},
+  volume = {42},
+  issn = {0020-7721},
+  doi = {10.1080/00207721003706860},
+  abstract = {In this article, a general geometric process model with $\delta$-shock for a deteriorating system and an improving system is studied. A system will fail as soon as a shock arrives with interarrival time being inside a real set. Assume that a replacement policy N is adopted by which the system will be replaced by a new, identical one at the time following the N-th failure. Then the optimal replacement policy N* for minimising the long-run average cost per unit time is determined analytically. Finally, the sensitivity analysis is studied.},
+  number = {12},
+  journal = {International Journal of Systems Science},
+  author = {Liang, Xiaolin and Lam, Yeh and Li, Zehui},
+  month = dec,
+  year = {2011},
+  keywords = {maintenance,geometric process,renewal process,optimal policy,δ-shock},
+  pages = {2021-2034},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\97I3BGYR\\00207721003706860.html}
+}
+
+@article{finkelstein_scale_1993,
+  title = {A Scale Model of General Repair},
+  volume = {33},
+  issn = {0026-2714},
+  doi = {10.1016/0026-2714(93)90042-W},
+  abstract = {A general repair model based on a concept of scale transformation is investigated. It us supposed that if the failuretime distribution function of a repairable unit on the cycle before the repair was F(x), then after the repair it would be F(ax), where a $>$ 1 is a scale parameter. The corresponding renewal equations are represented. A simple cost analyses model for stationary case is treated.},
+  number = {1},
+  journal = {Microelectronics Reliability},
+  author = {Finkelstein, M. S.},
+  year = {1993},
+  pages = {41-44},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\B9SUIR7V\\002627149390042W.html}
+}
+
+@article{leung_optimal_2001,
+  title = {Optimal {{Replacement Policies Determined Using Arithmetico}}-{{Geometric Processes}}},
+  volume = {33},
+  issn = {0305-215X},
+  doi = {10.1080/03052150108940929},
+  abstract = {In this paper, the author proposes new repair-replacement models for a deteriorating system, in which the successive operating times of the system form an arithmetico-geometric process and are stochastically non-increasing, while the successive repair times after failure also constitute an arithmetico-geometric process but are stochastically non-decreasing. Two kinds of replacement policy are considered, one based on the working age (a continuous decision variable) of the system and the other determined by the number of failures (a discrete decision variable) of the system. These policies are considered together with the performance measures, namely loss (or its complement profit), cost, and downtime (or its complement availability) respectively. Applying the well-known results of renewal reward processes, the author derives expressions for the long-run expected performance measure per unit time, and for the long-run expected performance measure per unit time of good operating condition, under the two kinds of policy proposed.},
+  number = {4},
+  journal = {Engineering Optimization},
+  author = {Leung, Francis Kit-Nam},
+  year = {2001},
+  keywords = {Renewal processes,Arithmetico-geometric processes,Loss,Repair,Replacement},
+  pages = {473-484},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\8QMTT2SM\\03052150108940929.html}
+}
+
+@article{zhang_geometrical_2008,
+  title = {A Geometrical Process Repair Model for a Repairable System with Delayed Repair},
+  volume = {55},
+  issn = {0898-1221},
+  doi = {10.1016/j.camwa.2007.06.020},
+  abstract = {In this paper, a repairable system consisting of one component and a single repairman (i.e.~a simple repairable system) with delayed repair is studied. Assume that the working time distribution, the repair time distribution and the delayed repair time distribution of the system are all exponential. After repair, the system is not ``as good as new''. Under these assumptions, by using the geometrical process and the supplementary variable technique, we derive some important reliability indices such as the system availability, rate of occurrence of failures (ROCOF), reliability and mean time to first failure (MTTFF). A repair replacement policy N under which the system is replaced when the number of failures of the system reaches N is also studied. The explicit expression for the average cost rate (i.e.~the long-run average cost per unit time) of the system is derived, and the corresponding optimal replacement policy N${_\ast}$ can be found analytically or numerically. Finally, a numerical example for policy N is given.},
+  number = {8},
+  journal = {Computers \& Mathematics with Applications},
+  author = {Zhang, Yuan Lin},
+  month = apr,
+  year = {2008},
+  keywords = {Renewal process,Delayed repair,Geometrical process,Renewal reward theorem,Supplementary variable,Two-dimensional Markov process},
+  pages = {1629-1643},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\WKPM3AIW\\Zhang - 2008 - A geometrical process repair model for a repairabl.pdf;C:\\Users\\samarsha\\Zotero\\storage\\U2BMXFCF\\S0898122107005974.html}
+}
+
+@article{aydogdu_nonparametric_2012,
+  title = {Nonparametric {{Estimation}} in \$$\backslash$alpha\$-Series {{Processes}}},
+  volume = {56},
+  issn = {0167-9473},
+  doi = {10.1016/j.csda.2011.06.037},
+  abstract = {A counting process \{N(t),t$>$=0\} with the interoccurrence times X"1,X"2,... is an @a-series process if there exists a real number @a such that (k\^@aX"k)"k"="1","2","... forms a renewal process. The nonparametric inference problem in an @a-series process is taken into consideration. The Mann test is applied for trend analysis and a graphical technique is presented in order to test whether the data come from an @a-series process. Some nonparametric estimators for three important parameters of the @a-series process are obtained by using a linear regression method. The consistency and asymptotic normality properties are investigated. The performances of the estimators are evaluated by a simulation study. Some suggestions on the choice of the estimators are made based on the theoretical and simulation results. Further, the method is illustrated through a real-life example.},
+  number = {1},
+  journal = {Comput. Stat. Data Anal.},
+  author = {Aydo{\u g}du, Halil and Kara, Mahmut},
+  year = {2012},
+  keywords = {$\\alpha$-series process,$\\α$-series process,Linear regression,Trend},
+  pages = {190--201}
+}
+
+@article{zhang_geometric_2007,
+  title = {A Geometric Process Repair Model for a Series Repairable System with k Dissimilar Components},
+  volume = {31},
+  issn = {0307-904X},
+  doi = {10.1016/j.apm.2006.08.021},
+  abstract = {In this paper, a geometric process repair model for a k-dissimilar-component series repairable system with one repairman is proposed. For each component, the successive operating times form a decreasing geometric process whereas the consecutive repair times constitute an increasing geometric process. Under this assumption, we consider a replacement policy M=(N1,N2,\ldots,Nk) based respectively on the number of failures of component 1, component 2, \ldots, and component k. Our problem is to determine an optimal replacement policy M${_\ast}$=(N1${_\ast}$,N2${_\ast}$,\ldots,Nk${_\ast}$) such that the average cost rate (i.e. the long-run average cost per unit time) is minimized. The explicit expression of the average cost rate is derived and the corresponding optimal replacement policy can be determined analytically or numerically. Finally, an appropriate numerical example is given to illustrate some issues included the sensitivity analysis and the uniqueness of the optimal replacement policy M${_\ast}$.},
+  number = {9},
+  journal = {Applied Mathematical Modelling},
+  author = {Zhang, Yuan Lin and Wang, Guan Jun},
+  month = sep,
+  year = {2007},
+  keywords = {Geometric process,Renewal process,Average cost rate,Replacement policy,Series system},
+  pages = {1997-2007},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\2FHZ9HQ7\\Zhang and Wang - 2007 - A geometric process repair model for a series repa.pdf;C:\\Users\\samarsha\\Zotero\\storage\\IBQ9K427\\S0307904X06001934.html}
+}
+
+@article{bai_repair-limit_2005,
+  title = {Repair-Limit Risk-Free Warranty Policies with Imperfect Repair},
+  volume = {35},
+  issn = {1083-4427},
+  doi = {10.1109/TSMCA.2005.851343},
+  abstract = {The current competitive market environment requires manufacturers to continuously provide better service and support. As a result, warranty considerations emerge as a significant instrument for increasing product marketability. In this paper, we propose a new warranty policy, the repair-limit risk-free warranty with a threshold point on the number of repairs, where replacement is deemed to be more cost effective thereafter. Consumers are better off with this than with a traditional free-repair policy since they could be compensated with a new product in case of premature failures. As for the manufacturers, it not only offers extra marketing incentives, but also reduces the possibility of high-cost lawsuits due to the products with "proven" bad quality. Some useful results of the warranty cost of imperfectly repaired products are derived through a censored quasi-renewal process.},
+  number = {6},
+  journal = {IEEE Transactions on Systems, Man, and Cybernetics - Part A: Systems and Humans},
+  author = {Bai, Jun and Pham, Hoang},
+  year = {2005},
+  keywords = {competitive market environment,Costs,Delay,Distribution functions,Humans,imperfect repair,Instruments,Manufacturing,marketing,Probability density function,product marketability,production management,quasi-renewal processes,quasirenewal process,Random variables,renewal process,renewal processes,repair limit,repair-limit risk-free warranty policies,Warranties,warranty consideration,warranty cost},
+  pages = {765-772},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\TAZ48K6J\\1519022.html}
+}
+
+@article{ivanoff_what_2006,
+  title = {What Is a Multi-Parameter Renewal Process?},
+  volume = {78},
+  issn = {1744-2508},
+  doi = {10.1080/17442500600965239},
+  abstract = {The concept of the renewal property is extended to processes indexed by a multidimensional time parameter. The definition given includes not only partial sum processes, but also Poisson processes and many other point processes whose jump points are not totally ordered. A new version of the waiting time paradox is proven for multidimensional Poisson processes, and is shown to imply the renewal property. Finally, martingale properties of renewal processes are studied.},
+  number = {6},
+  journal = {Stochastics},
+  author = {Ivanoff, B. Gail and Merzbach, Ely},
+  month = dec,
+  year = {2006},
+  keywords = {Poisson process,60K05,60G55,Point process,Renewal process,60G48,Multiparameter martingale,Partial sum process,Stopping set},
+  pages = {411-441},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\TXG42VUF\\17442500600965239.html}
+}
+
+@article{zhang_extended_2016,
+  title = {An Extended Geometric Process Repair Model for a Cold Standby Repairable System with Imperfect Delayed Repair},
+  volume = {3},
+  issn = {2330-2674},
+  doi = {10.1080/23302674.2015.1074759},
+  abstract = {This paper proposes an extended geometric process repair model (EGPRM) to generalise the geometric process repair model (GPRM), and studies a repair\textendash{}replacement problem for a cold standby repairable system consisting of two dissimilar components and one repairman. Assume that each component after repair in the system is not always successive degenerative, and the failure component in the system is not always immediately repaired. Under these assumptions, using the extended geometric process, we consider a replacement policy N based on the failure number of Component 2 under which the system is replaced when the failure number of Component 2 reaches N. Our problem is to choose an optimal replacement policy N* such that the average cost rate (i.e. the long-run average cost per unit time) of the system is minimised. The explicit expression of the average cost rate of the system is derived, and the corresponding optimal replacement policy N* can be determined by minimising the average cost rate of the system. Finally, a numerical example is given to illustrate some theoretical results and the model applicability.},
+  number = {3},
+  journal = {International Journal of Systems Science: Operations \& Logistics},
+  author = {Zhang, Yuan Lin and Wang, Guan Jun},
+  month = jul,
+  year = {2016},
+  keywords = {replacement policy,average cost rate,Geometric process,extended geometric process,renewal reward theorem},
+  pages = {163-175},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\WRGX8QSM\\23302674.2015.html}
+}
+
+@article{zhang_extended_2017,
+  title = {An Extended Geometric Process Repair Model with Delayed Repair and Slight Failure Type},
+  volume = {46},
+  issn = {0361-0926},
+  doi = {10.1080/03610926.2014.995824},
+  abstract = {This article proposes an extended geometric process repair model to generalize the geometric process repair model and studies a repair-replacement problem for a simple repairable system with delayed repair, based on the failure number N of the system under the new model. An optimal replacement policy N* is determined by maximizing the average reward rate of the system. The explicit expression of the average reward rate is derived, and the uniqueness of the optimal replacement policy N* is also proved. Finally, a numerical example is given to illustrate some theoretical results and the model applicability.},
+  number = {1},
+  journal = {Communications in Statistics - Theory and Methods},
+  author = {Zhang, Yuan-Lin and Wang, Guan-Jun},
+  month = jan,
+  year = {2017},
+  keywords = {Average reward rate,Delayed repair,Extended geometric process,Primary 60K05; Secondary 90B25; 62N05,Renewal reward theorem,Replacement policy.},
+  pages = {427-437},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\6MVQPN8P\\03610926.2014.html}
+}
+
+@article{Marshall_etal_GAR_2018,
+  title = {Warranty Cost Analysis: {{Increasing}} Warranty Repair Times},
+  volume = {34},
+  issn = {1526-4025},
+  shorttitle = {Warranty Cost Analysis},
+  doi = {10.1002/asmb.2323},
+  abstract = {In this study, we model the warranty servicing costs under nonrenewing and renewing free repair warranties. We assume nonzero increasing repair times with the warranty cost depending on the length of the repair time. An increasing geometric process is used to model the consecutive repair times. We introduce the generalised alternating renewal process, which is an alternating process with cycles consisting of an item's operational time followed by the corresponding repair time. We derive analytical results for a generalised alternating renewal process with a finite time horizon and use them to evaluate the warranty costs over the warranty period and over the life cycle of the product under the nonrenewing free repair warranty and renewing free repair warranty. Properties of the model are demonstrated through a simulation study and through the application to warranty claims data from an automotive manufacturer.},
+  language = {en},
+  number = {4},
+  journal = {Applied Stochastic Models in Business and Industry},
+  author = {Marshall, Sarah and Arnold, Richard and Chukova, Stefanka and Hayakawa, Yu},
+  month = jul,
+  year = {2018},
+  keywords = {geometric process,warranty,generalised alternating renewal process},
+  pages = {544-561},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\HXJK93IE\\Marshall et al. - 2018 - Warranty cost analysis Increasing warranty repair.pdf;C:\\Users\\samarsha\\Zotero\\storage\\N5DC4KTR\\asmb.html}
+}
+
+@article{lam_geometric_1988,
+  title = {Geometric Processes and Replacement Problem},
+  volume = {4},
+  issn = {0168-9673, 1618-3932},
+  doi = {10.1007/BF02007241},
+  abstract = {In this paper, we introduce and study the geometric process which is a sequence of independent non-negative random variablesX 1,X 2,... such that the distribution function ofX n isF (a n-1 x), wherea is a positive constant. Ifa$>$1, then it is a decreasing geometric process, ifa$<$1, it is an increasing geometric process. Then, we consider a replacement model as follows: the successive survival times of the system after repair form a decreasing geometric process or a renewal process while the consecutive repair times of the system constitute an increasing geometric process or a renewal process. Besides the replacement policy based on the working age of the system, a new kind of replacement policy which is determined by the number of failures is considered. The explicit expressions of the long-run average costs per unit time under each replacement policy are then calculated, and therefore the corresponding optimal replacement policies can be found analytically or numerically.},
+  language = {en},
+  number = {4},
+  journal = {Acta Mathematicae Applicatae Sinica},
+  author = {Lam, Yeh (Ye Lin)},
+  month = nov,
+  year = {1988},
+  pages = {366-377},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\WCRVNIWH\\BF02007241.html}
+}
+
+@article{wang_quasi_1996,
+  title = {A Quasi Renewal Process and Its Applications in Imperfect Maintenance},
+  volume = {27},
+  issn = {0020-7721},
+  doi = {10.1080/00207729608929311},
+  abstract = {This paper proposes a quasi renewal process, and its application in maintenance theory is discussed. The properties of this quasi renewal process are studied and its renewal function is derived. Three imperfect maintenance models are proposed and they model imperfect maintenance in a way that, after maintenance, the lifetime of a unit will decrease to a fraction of its immediate previous one. According to the theory of the quasi-renewal process developed in this paper, the expected maintenance cost rate and availability are obtained and optimum maintenance policies are discussed for these three models. Finally, a class of related optimization problems is discussed and a numerical example is presented},
+  number = {10},
+  journal = {International Journal of Systems Science},
+  author = {Wang, Hongzhou and Pham, Hoang},
+  month = oct,
+  year = {1996},
+  pages = {1055-1062},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\EU2VY72U\\WANG and PHAM - 1996 - A quasi renewal process and its applications in im.pdf;C:\\Users\\samarsha\\Zotero\\storage\\8M8SVU27\\00207729608929311.html}
+}
+
+@article{wang_optimalmaintenance_1996,
+  title = {Optimal Maintenance Policies for Several Imperfect Repair Models},
+  volume = {27},
+  issn = {0020-7721},
+  doi = {10.1080/00207729608929248},
+  abstract = {Three new maintenance models, two imperfect preventive maintenance models and a cost limit (imperfect) repair model are proposed. In these models the imperfect maintenance is treated in such a way that after maintenance the lifetime of a unit will be decreased to a fraction of the one immediately preceding it, and the imperfect repair time as well as cost increases as the number of imperfect repairs increases. The long-run expected maintenance cost rates and corresponding asymptotic average availabilities for these three models are derived. The optimum maintenance policies subject to maintenance time are discussed. Some constraint optimization problems related to maintenance cost rate and availability are presented. Finally, numerical examples are given.},
+  number = {6},
+  journal = {International Journal of Systems Science},
+  author = {Wang, Hongzhou and Pham, Hoang},
+  month = jun,
+  year = {1996},
+  pages = {543-549},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\42EVYIYH\\WANG and PHAM - 1996 - Optimal maintenance policies for several imperfect.pdf;C:\\Users\\samarsha\\Zotero\\storage\\Y2N5AYGN\\00207729608929248.html}
+}
+
+@article{zhao_optimal_2012,
+  title = {Optimal Imperfect Preventive Maintenance Policies for a Used System},
+  volume = {43},
+  issn = {0020-7721},
+  doi = {10.1080/00207721.2010.549583},
+  abstract = {In some practical situations, it may be more economical to work a used system than do a new one. From this viewpoint, this article considers three basic preventive maintenance (PM) policies for a used system: the system with initial variable damage Y 0 begins to operate at time 0, and suffers damage due to shocks. It fails when the total damage exceeds a failure level K and corrective maintenance is made immediately. To prevent such failure, it undergoes PM at a planned time T, a shock number N and a damage level k, but maintenances are imperfect. However, failure rate of a used system maybe higher than that of a new one, so some maintenance is applied to the policies at each shock in the extended models. Using the theory of cumulative processes, expected cost rate models are obtained, optimal policies which minimise them are derived analytically and discussed numerically.},
+  number = {9},
+  journal = {International Journal of Systems Science},
+  author = {Zhao, Xufeng and Nakagawa, Toshio and Qian, Cunhua},
+  month = sep,
+  year = {2012},
+  keywords = {reliability,cumulative processes,imperfect preventive maintenance,maintenance cost,used system},
+  pages = {1632-1641},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\WGZYMZDG\\Zhao et al. - 2012 - Optimal imperfect preventive maintenance policies .pdf;C:\\Users\\samarsha\\Zotero\\storage\\IDJEBKBV\\00207721.2010.html}
+}
+
+@article{wang_optimalage_1996,
+  title = {Optimal Age-Dependent Preventive Maintenance Policies with Imperfect Maintenance},
+  volume = {03},
+  issn = {0218-5393},
+  doi = {10.1142/S0218539396000090},
+  abstract = {This paper proposes three age-dependent preventive maintenance models with imperfect repair and/or imperfect preventive maintenance (pm). In these models imperfect repair is treated in a way that after repair the lifetime of a unit will decrease to a fraction of its immediately previous one and its repair time will increase to a multiple of immediately previous one. In this paper, the expected maintenance cost rate and asymptotic average availability are derived with a consideration that the maintenance and repair times are not negligible. The optimum maintenance policies are then determined for the three imperfect maintenance models respectively. A class of related optimization problems is also discussed. Finally, a numerical example is presented to illustrate the results.},
+  number = {02},
+  journal = {International Journal of Reliability, Quality and Safety Engineering},
+  author = {Wang, Hongzhou and Pham, Hoang},
+  month = jun,
+  year = {1996},
+  pages = {119-135},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\SZV5NVJV\\S0218539396000090.html}
+}
+
+@book{Ross_2008,
+  title = {Stochastic {{Processes}}},
+  publisher = {{Wiley India Pvt. Limited}},
+  author = {Ross, Sheldon},
+  year = {2008}
+}
+
+@article{lam_nonparametric_1992,
+  title = {Nonparametric Inference for Geometric Processes},
+  volume = {21},
+  issn = {0361-0926},
+  doi = {10.1080/03610929208830899},
+  abstract = {A stochastic process \{Xn,n = 1,2,...\} is a geometric n process if there exists a $>$ 0 so that is a n renewal process. This is a stochastically monotone process, and can be used for modelling a point process with trend. In this paper, we study the statistical inference for geometric processes by nonparametric methods. Two statistics and a graphical technique are suggested for testing whether a process is a geometric process. Further, we can estimate the parameters a, ? and $\sigma$2 of the geometric process by using linear regression 2 method, where ? and $\sigma$2 are the mean and variance of X1 respectively.},
+  number = {7},
+  journal = {Communications in Statistics - Theory and Methods},
+  author = {Lam, Yeh},
+  month = jan,
+  year = {1992},
+  pages = {2083-2105},
+  annote = {doi: 10.1080/03610929208830899}
+}
+
+@article{wu_doubly_2018,
+  title = {Doubly Geometric Processes and Applications},
+  volume = {69},
+  issn = {0160-5682},
+  doi = {10.1057/s41274-017-0217-4},
+  abstract = {AbstractThe geometric process has attracted extensive research attention from authors in reliability mathematics since its introduction. However, it possesses some limitations, which include that: (1) it can merely model stochastically increasing or decreasing inter-arrival times of recurrent event processes and (2) it cannot model recurrent event processes where the inter-arrival time distributions have varying shape parameters. Those limitations may prevent it from a wider application in the real world. In this paper, we extend the geometric process to a new process, the doubly geometric process, which overcomes the above two limitations. Probability properties are derived, and two methods of parameter estimation are given. Application of the proposed model is presented: one is on fitting warranty claim data, and the other is to compare the performance of the doubly geometric process with the performance of other widely used models in fitting real-world datasets, based on the corrected Akaike information criterion.},
+  number = {1},
+  journal = {Journal of the Operational Research Society},
+  author = {Wu, Shaomin},
+  month = jan,
+  year = {2018},
+  pages = {66-77},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\SEXKC3J6\\Wu - 2017 - Doubly geometric processes and applications.pdf;C:\\Users\\samarsha\\Zotero\\storage\\LHVAJ4Z9\\s41274-017-0217-4.html},
+  annote = {doi: 10.1057/s41274-017-0217-4
+
+doi: 10.1057/s41274-017-0217-4}
+}
+
+@incollection{Blischke_1996,
+  address = {New York},
+  title = {The Basic Free-Replacement Warranty and Related Rebate Warranties},
+  abstract = {Covering product warranties, this work offers comprehensive examinations of fundamental concepts and furnishes detailed, immediately applicable results. It sets out to bridge the gap between theory and practice, and integrates the research of various disciplines that study warranty, illustrating all},
+  language = {en},
+  booktitle = {Product {{Warranty Handbook}}},
+  publisher = {{Dekker}},
+  author = {Blischke, W. R.},
+  editor = {Blischke, W. R. and Murthy, D. N. Prabhakar},
+  year = {1996},
+  pages = {265-291},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\AR8PWRMZ\\9780824789558.html}
+}
+
+@article{finkelstein_note_2010,
+  title = {A Note on Converging Geometric-Type Processes},
+  volume = {47},
+  issn = {0021-9002},
+  abstract = {The process of deterioration of repairable systems with each repair is modeled using converging geometric-type processes. It is proved that the expectation of the number of repairs in each interval of time is infinite. A new regularization procedure is suggested and the corresponding optimization problem is discussed.},
+  number = {2},
+  journal = {Journal of Applied Probability},
+  author = {Finkelstein, Maxim},
+  year = {2010},
+  pages = {601-607}
+}
+
+@article{leung_statistically_2005,
+  title = {Statistically Inferential Analogies between Arithmetic and Geometric Processes},
+  volume = {12},
+  issn = {0218-5393},
+  doi = {10.1142/S0218539305001859},
+  language = {English},
+  number = {4},
+  journal = {International Journal of Reliability, Quality and Safety Engineering},
+  author = {Leung, Francis Kit-Nam},
+  month = aug,
+  year = {2005},
+  pages = {323-335},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\YMN76LZE\\publication(a5339c75-80ee-41d1-ad98-2114c5db86ed).html}
+}
+
+@article{stadje_optimal_1990,
+  title = {Optimal Strategies for Some Repair Replacement Models},
+  volume = {22},
+  issn = {0001-8678, 1475-6064},
+  doi = {10.2307/1427462},
+  abstract = {The problem of finding optimal replacement strategies for certain classes of failure systems is considered. These systems can be repaired upon failure, but are stochastically deteriorating, i.e., the lengths of the operating intervals decrease in some sense, whereas the durations of the repairs increase. For several models of this type optimal replacement strategies are derived under natural assumptions on the reward and the cost structure.},
+  language = {en},
+  number = {3},
+  journal = {Advances in Applied Probability},
+  author = {Stadje, Wolfgang and Zuckerman, Dror},
+  year = {1990},
+  keywords = {FAILURE SYSTEMS,OPTIMAL REPLACEMENT STRATEGIES,STOCHASTIC DETERIORATION,STOPPING TIMES},
+  pages = {641-656},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\8K4P6HLB\\Stadje and Zuckerman - 1990 - Optimal Strategies for Some Repair Replacement Mod.pdf;C:\\Users\\samarsha\\Zotero\\storage\\83WXH392\\B5A6B1F551C5345C17C647E0D34296D1.html}
+}
+
+@article{doyen_classes_2004-1,
+  series = {Selected papers from ESREL 2002},
+  title = {Classes of Imperfect Repair Models Based on Reduction of Failure Intensity or Virtual Age},
+  volume = {84},
+  issn = {0951-8320},
+  doi = {10.1016/S0951-8320(03)00173-X},
+  abstract = {This article proposes two new classes of imperfect repair models. The (conditional) failure intensity before the first repair is a continuous function of time. The repair effect is characterized by the change induced on the failure intensity before and after failure. In the first class of models, repair effect is expressed by a reduction of failure intensity. In the second class, repair effect is expressed by a reduction of the system virtual age. In each case, several particular cases are studied, which take into account the possibility of a markovian memory property. For almost every model studied, there exists a minimal wear intensity, i.e. a maximal lower bound for failure intensity. The classification presented here involves existing models and allows the proposition of new ones. The models are compared in terms of wear-out speed. Finally, a numerical statistical study on the quality of the model parameters estimators is presented.},
+  number = {1},
+  journal = {Reliability Engineering \& System Safety},
+  author = {Doyen, Laurent and Gaudoin, Olivier},
+  year = {2004},
+  keywords = {Imperfect repair,Failure intensity,Maintenance,Non-homogeneous poisson process ageing,Repairable systems reliability},
+  pages = {45-56},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\C468EF5A\\Doyen and Gaudoin - 2004 - Classes of imperfect repair models based on reduct.pdf;C:\\Users\\samarsha\\Zotero\\storage\\RPCAUP36\\S095183200300173X.html}
+}
+
+@article{zhang_bivariate_2013,
+  title = {A {{Bivariate Maintenance Policy}} for {{Multi}}-{{State Repairable Systems With Monotone Process}}},
+  volume = {62},
+  issn = {0018-9529},
+  doi = {10.1109/TR.2013.2285042},
+  abstract = {This paper proposes a sequential failure limit maintenance policy for a repairable system. The objective system is assumed to have k+1 states, including one working state and k failure states, and the multiple failure states are classified potentially by features such as failure severity or failure cause. The system deteriorates over time and will be replaced upon the Nth failure. Corrective maintenance is performed immediately upon each of the first (N-1) failures. To avoid the costly failure, preventive maintenance actions will be performed as soon as the system's reliability drops to a critical threshold R. Both preventive maintenance and corrective maintenance are assumed to be imperfect. Increasing and decreasing geometric processes are introduced to characterize the efficiency of preventive maintenance and corrective maintenance. The objective is to derive an optimal maintenance policy (R*,N*) such that the long-run expected cost per unit time is minimized. The analytical expression of the cost rate function is derived, and the corresponding optimal maintenance policy can be determined numerically. A numerical example is given to illustrate the theoretical results and the maintaining procedure. The decision model shows its adaptability to different possible characteristics of the maintained system.},
+  number = {4},
+  journal = {IEEE Transactions on Reliability},
+  author = {Zhang, M. and Xie, M. and Gaudoin, O.},
+  month = dec,
+  year = {2013},
+  keywords = {decision model,failure analysis,Distribution functions,reliability theory,Geometric process,Preventive maintenance,Reliability,analytical expression,Bibliometrics,bivariate maintenance policy,corrective maintenance,cost rate function,critical threshold,decreasing geometric process,failure cause,failure severity,failure states,geometry,increasing geometric process,monotone process,multiple failure states,multistate repairable systems,numerical analysis,Numerical models,objective system,optimal maintenance policy,Optimization,preventive maintenance,preventive maintenance actions,quasi-renewal process,sequential failure limit maintenance policy,sequential failure limit policy,system reliability,working state},
+  pages = {876-886},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\MBD7ZGGM\\Zhang et al. - 2013 - A Bivariate Maintenance Policy for Multi-State Rep.pdf;C:\\Users\\samarsha\\Zotero\\storage\\DQ88JTGM\\6634272.html}
+}
+
+@article{smith_renewal_1963,
+  title = {On the {{Renewal Function}} for the {{Weibull Distribution}}},
+  volume = {5},
+  issn = {0040-1706},
+  doi = {10.1080/00401706.1963.10490107},
+  abstract = {A series expansion is developed for the renewal function associated with the Weibull distribution. The expansion is valid for all values of the time t, and the coefficients of the powers of t are easily calculated numerically by a recursive procedure.},
+  number = {3},
+  journal = {Technometrics},
+  author = {Smith, W. L. and Leadbetter, M. R.},
+  month = aug,
+  year = {1963},
+  pages = {393-396},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\22EGC8YL\\00401706.1963.html}
+}
+
+@article{davis_analysis_1952,
+  title = {An {{Analysis}} of {{Some Failure Data}}},
+  volume = {47},
+  issn = {0162-1459},
+  doi = {10.2307/2280740},
+  abstract = {This paper summarizes the rationale and statistical techniques employed in the analysis of some failure data obtained from operations performed by machines and people. These data are compared to frequency distributions arising from either an exponential or a normal theory of failure. The agreement between theory and data is evaluated.},
+  number = {258},
+  journal = {Journal of the American Statistical Association},
+  author = {Davis, D. J.},
+  year = {1952},
+  pages = {113-150},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\H5H4ZK8I\\Davis - 1952 - An Analysis of Some Failure Data.pdf}
+}
+
+@article{leung_statistical_2000,
+  title = {Statistical {{Inference}} for {{K Independent}}, {{Homogeneous Arithmetic Processes}}},
+  volume = {7},
+  issn = {02185393},
+  abstract = {For k = 1, \ldots, K, a stochastic process \{A[sub n,k], n = 1, 2, \ldots\} is an arithmetic process (AP) if there exists some real number, d, so that \{A[sub n,k] + (n - 1)d, n = 1, 2, \ldots\} is a renewa1 process (RP). AP is a stochastically monotonic process and can be used to model a point process, i.e., point events occurring in a haphazard way in time (or space), especially with a trend. For example, the events may be failures arising from a deteriorating machine; and such a series of failures is distributed haphazardly along a time continuum. In this paper, we discuss estimation procedures for K independent, homogeneous APs. Two statistics are suggested for testing whether K given processes come from a common AP. If this is so, we can estimate the parameters d, $\mu$[sub \=A[sub 1]] and $\sigma{}^2$[sub \=A[sub 1] of the AP based on the techniques of simple linear regression, where $\mu$[sub \=A[sub 1]] and $\sigma{}^2$[sub \=A[sub 1]] are the mean and variance of the first average random variable \=A[sub 1], respectively. In this paper, the procedures are, for the most part, discussed in reliability terminology. Of course, the methods are valid in any area of application, in which case they should be interpreted accordingly.},
+  number = {3},
+  journal = {International Journal of Reliability, Quality \& Safety Engineering},
+  author = {Leung, Francis Kit-Nam},
+  month = sep,
+  year = {2000},
+  keywords = {Reliability (Engineering),Renewal theory,Regression analysis},
+  pages = {223}
+}
+
+@article{castro_power_2004,
+  title = {Power {{Processes}} and {{Their Application}} to {{Reliability}}},
+  volume = {32},
+  issn = {0167-6377},
+  doi = {10.1016/j.orl.2003.11.009},
+  abstract = {We introduce the stochastic process we call a power process and show that under certain conditions it is stochastically monotone. We use it to model a deteriorative system where operating times and repair times are general discrete random variables, and illustrate our results with numerical examples.},
+  number = {5},
+  journal = {Oper. Res. Lett.},
+  author = {Castro, I. T. and Sanju\'an, E. L.},
+  year = {2004},
+  keywords = {Geometric process,Power process,Repairable systems},
+  pages = {415--421}
+}
+
+@article{zhang_geometric-process_2002,
+  title = {A Geometric-Process Repair-Model with Good-as-New Preventive Repair},
+  volume = {51},
+  issn = {0018-9529},
+  doi = {10.1109/TR.2002.1011529},
+  abstract = {This paper studies a deteriorating simple repairable system. In order to improve the availability or economize the operating costs of the system, the preventive repair is adopted before the system fails. Assume that the preventive repair of the system is as good as new, while the failure repair of the system is not, so that the successive working times form a stochastic decreasing geometric process while the consecutive failure repair times form a stochastic increasing geometric process. Under this assumption and others, by using geometric process we consider a replacement policy N based on the failure number of the system. Our problem is to determine an optimal replacement policy N such that the average cost rate (i.e., the long-run average cost per unit time) is minimized. The explicit expression of the average cost rate is derived, and the corresponding optimal replacement policy can be determined analytically or numerically. And the fixed-length interval time of the preventive repair in the system is also discussed. Finally, an appropriate numerical example is given. It is seen from that both the optimal policies N** and N* are unique. However, the optimal policy N** with preventive repair is better than the optimal policy N* without preventive repair.},
+  number = {2},
+  journal = {IEEE Transactions on Reliability},
+  author = {Zhang, Yuan Lin},
+  month = jun,
+  year = {2002},
+  keywords = {availability,Solid modeling,replacement policy,renewal process,Cost function,average cost rate,Random variables,stochastic processes,failure number,failure repair,fixed-length interval time,geometric-process repair-model,good-as-new preventive repair,long-run average cost per unit time,maintenance engineering,Mathematics,operating costs,optimal replacement policy,renewal cycle,repairable system,stochastic decreasing geometric process,Stochastic systems,successive working times},
+  pages = {223-228}
+}
+
+@article{cheng_geometric_2012,
+  title = {A Geometric Process Repair Model with Inspections and Its Optimisation},
+  volume = {43},
+  issn = {0020-7721},
+  doi = {10.1080/00207721.2010.549586},
+  abstract = {In this article, a deteriorating simple repairable system with inspections, is studied. We assume that the system failure can only be detected by inspections and the repair of the system is not as good as new. Further assume that the successive working times of the system form a decreasing geometric process whereas the consecutive repair times form an increasing geometric process. Under these assumptions, we present a bivariate mixed policy (T, N), respectively, based on the time interval between two successive inspections and the failure-number of the system. Our aim is to determine an optimal mixed policy (T, N)* such that the long-run average cost per unit time (i.e. the average cost rate) is minimised. The explicit expression of the average cost rate is derived, and the corresponding optimal mixed policy can be determined numerically. Finally, we provide a numerical example to illustrate our model, and carry through some discussions and sensitivity analysis.},
+  number = {9},
+  journal = {International Journal of Systems Science},
+  author = {Cheng, G. Q. and Li, L.},
+  year = {2012},
+  keywords = {average cost rate,bivariate mixed policy (T,bivariate mixed policy (T; N),geometric process,inspection,N)},
+  pages = {1650-1655}
+}
+
+@article{lam_geometric_2007,
+  title = {A Geometric Process Maintenance Model with Preventive Repair},
+  volume = {182},
+  issn = {0377-2217},
+  doi = {10.1016/j.ejor.2006.08.054},
+  abstract = {In this paper, a geometric process maintenance model with preventive repair is studied. A maintenance policy (T,N) is applied by which the system will be repaired whenever it fails or its operating time reaches T whichever occurs first, and the system will be replaced by a new and identical one following the Nth failure. The long-run average cost per unit time is determined. An optimal policy (T${_\ast}$,N${_\ast}$) could be determined numerically or analytically for minimizing the average cost. A new class of lifetime distribution which takes into account the effect of preventive repair is studied that is applied to determine the optimal policy (T${_\ast}$,N${_\ast}$).},
+  number = {2},
+  journal = {European Journal of Operational Research},
+  author = {Lam, Yeh},
+  month = oct,
+  year = {2007},
+  keywords = {Maintenance problem,Geometric process,Preventive repair,Failure repair,Renewal reward process},
+  pages = {806-819},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\N283A3RE\\Lam - 2007 - A geometric process maintenance model with prevent.pdf;C:\\Users\\samarsha\\Zotero\\storage\\GEHFNCHL\\S037722170600899X.html}
+}
+
+@article{zhang_bivariate_1994,
+  title = {A Bivariate Optimal Replacement Policy for a Repairable System},
+  volume = {31},
+  issn = {0021-9002, 1475-6072},
+  doi = {10.2307/3215336},
+  abstract = {In this paper, a repairable system consisting of one unit and a single repairman is studied. Assume that the system after repair is not as good as new. Under this assumption, a bivariate replacement policy (T, N), where T is the working age and N is the number of failures of the system is studied. The problem is to determine the optimal replacement policy (T, N)${_\ast}$such that the long-run average cost per unit time is minimized. The explicit expression of the long-run average cost per unit time is derived, and the corresponding optimal replacement policy can be determined analytically or numerically. Finally, under some conditions, we show that the policy (T, N)${_\ast}$ is better than policies N${_\ast}$ or T${_\ast}$.},
+  language = {en},
+  number = {4},
+  journal = {Journal of Applied Probability},
+  author = {Zhang, Yuan Lin},
+  month = dec,
+  year = {1994},
+  keywords = {60K10,CONVOLUTION,GEOMETRIC PROCESS,RENEWAL CYCLE,RENEWAL PROCESS,RENEWAL REWARD THEOREM},
+  pages = {1123-1127},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\AMZBVIEZ\\8AAD1A85E05A2FC1D4C908C153FF22F3.html}
+}
+
+@article{Fang,
+  title = {Preventive {{Repair Policy}} and {{Replacement Policy}} of {{Repairable System Taking Non}}-{{Zero Preventive Repair Time}}},
+  volume = {7},
+  issn = {1862-1775},
+  doi = {10.1631/jzus.2006.AS0207},
+  abstract = {The repairable system with preventive maintenance is one of the typical systems with wide useful applications in engineering. If the system can be made as good as new by preventive maintenance, both the life stochastic variable of different periods and fault correction time stochastic variable form monotonous stochastic process. Based on the above assumption and the available results, in this paper we discuss the maintenance and replacement policy of the repairable system with preventive maintenance. The intervals of preventive maintenance, T, and the times of system failure, N, are introduced and the vector Markov process method is used. The formulation of steady state average profit rate can be deduced to solve the optimization problem of the maintenance and replacement policy.},
+  number = {2},
+  journal = {Journal of Zhejiang University-SCIENCE A},
+  author = {Fang, You-Tong and Liu, Bao-You},
+  year = {2006},
+  pages = {207-212}
+}
+
+@inproceedings{Gokhale2004,
+  title = {Software {{Failure Rate}} and {{Reliability Incorporating Repair Policies}}},
+  isbn = {1530-1435},
+  doi = {10.1109/METRIC.2004.1357924},
+  abstract = {Reliability of a software application, its failure rate and the residual number of faults in an application are the three most important metrics that provide a quantitative assessment of the failure characteristics of an application. Typically, one of many stochastic models known as software reliability growth models (SRGMs) is used to describe the failure behavior of an application in its testing phase, and obtain an estimate of the above metrics. In order to ensure analytical tractability, SRGMs are based on an assumption of instantaneous repair and thus the estimates of the metrics obtained using SRGMs tend to be optimistic. In practice, fault repair activity consumes a nonnegligible amount of time and resources. Also, repair may be conducted according to many policies which are reflective of the schedule and budget constraints of a project. A few research efforts that have sought to incorporate repair into SRGMs are restrictive, since they consider only one of the several SRGMs, model the repair process using a constant rate, and provide an estimate of only the residual number of faults. These techniques do not address the issue of estimating application failure rate and reliability in the presence of repair. In this paper we present a generic framework which relies on the rate-based simulation technique in order to provide the capability to incorporate various repair policies into the finite failure nonhomogeneous Poisson process (NHPP) class of software reliability growth models. We also present a technique to compute the failure rate and the reliability of an application in the presence of repair. The potential of the framework to obtain quantitative estimates of the above three metrics taking into consideration different repair policies is illustrated using several scenarios.},
+  booktitle = {10th {{International Symposium}} on {{Software Metrics}}, 2004. {{Proceedings}}.},
+  author = {Gokhale, S. S.},
+  year = {2004},
+  keywords = {Computer Science,Probability,Reliability engineering,Phase estimation,program testing,rate-based simulation,software metrics,Software testing,software maintenance,software failure rate,finite failure nonhomogeneous Poisson process,Computational modeling,repair policies,Information technology,software fault tolerance,Software reliability,Application software,Environmental economics,software reliability growth models,stochastic processes},
+  pages = {394-404},
+  note = {14-16 Sept. 2004}
+}
+
+@article{CHrenew_2004,
+  title = {Warranty {{Cost Analysis}}: {{Renewing Warranty}} with {{Non}}-{{Zero Repair Time}}},
+  volume = {11},
+  issn = {0218-5393},
+  doi = {10.1142/S0218539304001385},
+  number = {02},
+  journal = {International Journal of Reliability, Quality and Safety Engineering},
+  author = {Chukova, Stefanka and Hayakawa, Yu},
+  month = jun,
+  year = {2004},
+  pages = {93-112},
+  annote = {doi: 10.1142/S0218539304001385
+
+doi: 10.1142/S0218539304001385}
+}
+
+@article{Thang2001,
+  title = {Optimal {{Replacement Policies}} in {{Burn}}-in {{Process}} for an {{Alternative Repair Model}}},
+  volume = {12},
+  issn = {1017-1819},
+  number = {3},
+  journal = {International journal of information and management sciences},
+  author = {Thangaraj, V and Rizwam, U},
+  year = {2001},
+  pages = {43-56}
+}
+
+@article{Kao_1996,
+  title = {Computational {{Approximations}} of {{Renewal Process Relating}} to a {{Warranty Problem}}: {{The Case}} of {{Phase}}-{{Type Lifetimes}}},
+  volume = {90},
+  issn = {0377-2217},
+  doi = {10.1016/0377-2217(94)00331-9},
+  abstract = {This paper considers two product warranty policies proposed originally by Nguyen and Murthy in 1984. With the exception of exponential lifetimes, computing expected costs under the two policies is in general complicated. In 1988, Frees and Nam proposed an approach based on a straight line approximation of the related renewal function and showed that their approach yielded satisfactory results. In this paper we study the case in which the lifetime distribution is of phase type. We obtain simplifications by exploiting various properties of phase-type distributions. For lifetime distribution of moderate variability, our empirical observations support those of Frees and Nam. By examining the behavior of the renewal function, we offer an explanation as to why their approach works. However, when the variability of product lifetime is large and the life cycle is small, we demonstrate that the results obtained from straight line approximation is inaccurate and one of the two more accurate approaches should be used instead.},
+  number = {1},
+  journal = {European Journal of Operational Research},
+  author = {Kao, Edward P.C. and Smith, Marion Spokony},
+  month = apr,
+  year = {1996},
+  keywords = {Phase-type distributions,Renewal processes,Warranty policies},
+  pages = {156-170}
+}
+
+@article{CHnonrenew_2004,
+  title = {Warranty {{Cost Analysis}}: {{Non}}-{{Zero Repair Time}}},
+  volume = {20},
+  issn = {1526-4025},
+  doi = {10.1002/asmb.515},
+  abstract = {The main focus of this study is on the modelling of the warranty claims and evaluating the warranty expenses. The cost of each warranty claim depends on the non-zero length of the repair time. Alternating renewal process is employed to model the operating and repair times. New results for alternating renewal process in finite horizon are derived. They are used to evaluate the warranty costs over the warranty period under non-renewing free replacement policy and over the life cycle of the product. Examples are provided to illustrate the ideas. Copyright \textcopyright{} 2004 John Wiley \& Sons, Ltd.},
+  number = {1},
+  journal = {Applied Stochastic Models in Business and Industry},
+  author = {Chukova, Stefanka and Hayakawa, Yu},
+  year = {2004},
+  keywords = {alternating renewal process,life cycle,non-renewing free replacement warranty,renewal function},
+  pages = {59-71}
+}
+
+@article{pham_imperfect_1996,
+  title = {Imperfect {{Maintenance}}},
+  volume = {94},
+  issn = {0377-2217},
+  doi = {10.1016/S0377-2217(96)00099-9},
+  abstract = {The maintenance of a deteriorating system is often imperfect: the system after maintenance will not as good as new, but younger. Imperfect maintenance study indicates a significant breakthrough in reliability and maintenance theory. Research activities in maintenance engineering have been conducted over the past 30 years and more than 40 mathematical imperfect maintenance models have been proposed for estimating the reliability measures and determining the optimum maintenance policies. Various treatment methods and optimal policies on the imperfect maintenance are discussed and summarized in this paper. Several important results for imperfect maintenance are also presented.},
+  number = {3},
+  journal = {European Journal of Operational Research},
+  author = {Pham, Hoang and Wang, Hongzhou},
+  month = nov,
+  year = {1996},
+  keywords = {reliability,Renewal theory,Minimal repair,Imperfect maintenance,Optimal maintenance policy,Preventive maintenance,Reliability},
+  pages = {425-438},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\CBYE89MZ\\Pham and Wang - 1996 - Imperfect maintenance.pdf;C:\\Users\\samarsha\\Zotero\\storage\\C9Q5ED3N\\S0377221796000999.html}
+}
+
+@article{chukova_warranty_2005,
+  title = {Warranty {{Cost Analysis}}: {{Quasi}}-Renewal {{Inter}}-Repair {{Times}}},
+  volume = {22},
+  issn = {0265-671X},
+  shorttitle = {Warranty {{Cost Analysis}}},
+  doi = {10.1108/02656710510610839},
+  number = {7},
+  journal = {International Journal of Quality \& Reliability Management},
+  author = {Chukova, Stefanka and Hayakawa, Yu},
+  month = sep,
+  year = {2005},
+  pages = {687-698},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\C7F78GBA\\Hayakawa and Chukova - 2005 - Warranty cost analysis quasi‐renewal inter‐repair.pdf;C:\\Users\\samarsha\\Zotero\\storage\\Q97RBVVR\\02656710510610839.html}
+}
+
+@unpublished{ACHM_GPreview_2019,
+  title = {Geometric-{{Like Processes}}: {{An Overview}} and {{Applications}}},
+  author = {Arnold, Richard and Chukova, Stefanka and Hayakawa, Yu and Marshall, Sarah},
+  note = {working paper}
+}
+
+@book{blischke93,
+  title = {Warranty {{Cost Analysis}}},
+  publisher = {{Marcel Dekker}},
+  author = {Blischke, W.R. and Murthy, D.N.P.},
+  year = {1993}
+}
+
+@book{blischke96,
+  title = {Product {{Warranty Handbook}}},
+  publisher = {{Marcel Dekker}},
+  author = {Blischke, W.R. and Murthy, D.N.P.},
+  year = {1996}
+}
+
+@article{brown,
+  title = {Imperfect Repair},
+  volume = {20},
+  journal = {Journal of Applied Probability},
+  author = {Brown, M. and Proschan, F.},
+  year = {1983},
+  pages = {851-859}
+}
+
+@article{aydogdu_parameter_2010,
+  title = {Parameter Estimation in Geometric Process with {{Weibull}} Distribution},
+  volume = {217},
+  issn = {0096-3003},
+  doi = {10.1016/j.amc.2010.08.003},
+  abstract = {We consider geometric process (GP) when the distribution of the first occurrence time of an event is assumed to be Weibull. Explicit estimators of the parameters in GP are derived by using the method of modified maximum likelihood (MML) proposed by Tiku [24]. Asymptotic distributions and consistency properties of these estimators are obtained. We show that our estimators are more efficient than the widely used modified moment (MM) estimators via Monte Carlo simulation study. Further, two real life examples are given at the end of the paper.},
+  number = {6},
+  journal = {Applied Mathematics and Computation},
+  author = {Aydo{\u g}du, Halil and {\c S}eno{\u g}lu, Birdal and Kara, Mahmut},
+  month = nov,
+  year = {2010},
+  keywords = {Asymptotic normality,Consistency,Efficiency,geometric process,Geometric process,Modified likelihood,Monte Carlo simulation,Taylor series},
+  pages = {2657-2665},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\3UZUPG6P\\Aydoğdu et al. - 2010 - Parameter estimation in geometric process with Wei.pdf;C:\\Users\\samarsha\\Zotero\\storage\\5YZPLMY2\\Aydoğdu et al. - 2010 - Parameter estimation in geometric process with Wei.pdf;C:\\Users\\samarsha\\Zotero\\storage\\EU7Q7VCM\\Aydoğdu et al. - 2010 - Parameter estimation in geometric process with Wei.pdf;C:\\Users\\samarsha\\Zotero\\storage\\7QAMJIT3\\S0096300310008532.html;C:\\Users\\samarsha\\Zotero\\storage\\A6QRPQBX\\S0096300310008532.html;C:\\Users\\samarsha\\Zotero\\storage\\CM9XIRQI\\S0096300310008532.html}
+}
+
+@article{aydogdu_exact_2013,
+  title = {On the Exact Distribution and Mean Value Function of a Geometric Process with Exponential Interarrival Times},
+  volume = {83},
+  issn = {0167-7152},
+  doi = {10.1016/j.spl.2013.08.003},
+  abstract = {The geometric process is considered when the distribution of the first interarrival time is assumed to be exponential. An analytical expression for the one dimensional probability distribution of this process is obtained as a solution to a system of recursive differential equations. A power series expansion is derived for the geometric renewal function by using an integral equation and evaluated in a computational perspective. Further, an extension is provided for the power series expansion of the geometric renewal function in the case of the Weibull distribution.},
+  number = {11},
+  journal = {Statistics \& Probability Letters},
+  author = {Aydo{\u g}du, Halil and Karabulut, \.{I}hsan and {\c S}en, Elif},
+  month = nov,
+  year = {2013},
+  keywords = {Weibull distribution,Geometric renewal function,Exponential distribution,Power series},
+  pages = {2577-2582},
+  file = {C:\\Users\\samarsha\\Zotero\\storage\\4EAAKU3M\\Aydoğdu et al. - 2013 - On the exact distribution and mean value function .pdf;C:\\Users\\samarsha\\Zotero\\storage\\6RZKWB3U\\Aydoğdu et al. - 2013 - On the exact distribution and mean value function .pdf;C:\\Users\\samarsha\\Zotero\\storage\\WTVCPU7L\\Aydoğdu et al. - 2013 - On the exact distribution and mean value function .pdf;C:\\Users\\samarsha\\Zotero\\storage\\2C9WJQJC\\S0167715213002691.html;C:\\Users\\samarsha\\Zotero\\storage\\G225G7A5\\S0167715213002691.html;C:\\Users\\samarsha\\Zotero\\storage\\J8NL3EFH\\S0167715213002691.html}
+}
+
+@article{ACHM_AGP_JRR_2019,
+  title = {Warranty Cost Analysis with an Alternating Geometric Process},
+  issn = {1748-006X},
+  doi = {10.1177/1748006X18820379},
+  abstract = {In this study, we model the warranty claims process and evaluate the warranty servicing costs under non-renewing, renewing and restricted renewing free repair warranties. We assume that the repair time for rectifying the claims is non-zero and the repair cost is a function of the length of the repair time. To accommodate the ageing of the product and repair equipment, we use a decreasing geometric process to model the consecutive operational times and an increasing geometric process to model the consecutive repair times. We identify and study the alternating geometric process, which is an alternating process with cycles consisting of the item?s operational time followed by the corresponding repair time. We derive new results for the alternating geometric process in a finite horizon and use them to evaluate the warranty costs over the warranty period and over the life cycle of the product under a non-renewing free repair warranty, a renewing free repair warranty and a restricted renewing free repair warranty. Properties of the model are demonstrated using a simulation study and by fitting the models to real data from an automotive manufacturer.},
+  journal = {Proceedings of the Institution of Mechanical Engineers, Part O: Journal of Risk and Reliability},
+  author = {Arnold, Richard and Chukova, Stefanka and Hayakawa, Yu and Marshall, Sarah},
+  month = jan,
+  year = {2019},
+  pages = {(in press)},
+  annote = {doi: 10.1177/1748006X18820379}
+}
+
+@article{lam_shock_2004,
+  title = {A {{Shock Model}} for the {{Maintenance Problem}} of a {{Repairable System}}},
+  volume = {31},
+  issn = {0305-0548},
+  doi = {10.1016/S0305-0548(03)00121-7},
+  number = {11},
+  journal = {Comput. Oper. Res.},
+  author = {Lam, Yeh and Zhang, Yuan Lin},
+  month = oct,
+  year = {2004},
+  keywords = {geometric process,Poisson process,shock},
+  pages = {1807-1820}
+}
+
+@article{tang_delta-shock_2006,
+  title = {A $\delta$-Shock Maintenance Model for a Deteriorating System},
+  volume = {168},
+  issn = {0377-2217},
+  doi = {10.1016/j.ejor.2004.05.006},
+  abstract = {In this paper, a $\delta$-shock maintenance model for a deteriorating system is studied. Assume that shocks arrive according to a renewal process, the interarrival time of shocks has a Weibull distribution or gamma distribution. Whenever an interarrival time of shocks is less than a threshold, the system fails. Assume further the system is deteriorating so that the successive threshold values are geometrically nondecreasing, and the consecutive repair times after failure form an increasing geometric process. A replacement policy N is adopted by which the system will be replaced by an identical new one at the time following the Nth failure. Then the long-run average cost per unit time is evaluated. Afterwards, an optimal policy N* for minimizing the long-run average cost per unit time could be determined numerically.},
+  number = {2},
+  journal = {Feature Cluster on Mathematical Finance and Risk Management},
+  author = {Tang, Ya-yong and Lam, Yeh},
+  month = jan,
+  year = {2006},
+  keywords = {-Shock,Geometric process,Renewal process,Replacement policy},
+  pages = {541-556}
+}
+
+

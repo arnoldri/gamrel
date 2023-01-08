@@ -1,0 +1,438 @@
+---
+title: "Non-parametric GaPP"
+output: bookdown::html_document2
+link-citations: yes
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{gamrel-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: nonparametric-bib.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(gamrel)
+```
+
+A first attempt was written up in @Arnold_Chukova_Hayakawa_APARM:2020.
+
+Errata: 
+
+  * In eq. (17) $\alpha_1$ should be $\alpha$ [R code was correct]
+  * In eq. (19) the exponent $a_1+K$ should be $a_1+K-1$ [R code was incorrect, but this effectively changed the value of $a_1$ in the hyperprior specification]
+  * In eq. (19) the expression $\log w_K$ should be $\log \tilde{w}_K$ [R code was correct]
+  * In the description of the simulation process in \Sec IV the locations (and their associated weigts) need to be sorted so that the locations $\theta_k$ are in ascending order [R code was correct]
+
+# Model
+
+## Basic Model Specification
+
+Times to failure are drawn from an inhomogenous hazard rate function $\lambda(t)$.  Failures are iid, with density $f(t|\lambda)$ and survival function $\bar{F}(t|\lambda)$
+\begin{eqnarray}
+   f(t | \lambda) &=& \lambda(t) e^{-\Lambda(t)}    
+   (\#eq:density)\\
+   \bar{F}(t | \lambda) &=& e^{-\Lambda(t)}
+   (\#eq:survival-function)
+\end{eqnarray}
+where
+\begin{equation}
+   \Lambda(t) = \int_0^t \lambda(u)\,{\rm d}u  
+   (\#eq:cumulative-hazard)
+\end{equation}
+is (non-decreasing) the cumulative hazard function.
+
+If observations are censored at time $\tau$, then the likelihood of $n$ observations, $n_0$ observed and $n-n_0$ censored, is
+\begin{equation}
+   f(\{t_i\}_{i=1}^n | \lambda) = \left[\prod_{i=1}^{n_0} \lambda(t_i) \right]
+                                  e^{-\sum_{i=1}^{n_0} \Lambda(t_i) - (n-n_0)\Lambda(\tau)}
+   (\#eq:model-likef)
+\end{equation}
+
+## Simulation
+
+To Draw $n$ observations from the model according to \@ref(eq:model-likef): 
+
+  * Draw $n$ iid values $\{u_i\}_{i=1}^n$ from $\text{Uniform}(0,1)$
+  * For each $i=1,\ldots,n$ solve
+    \[
+        \Lambda(t^\ast_i) = -\log u_i
+    \]
+  * Set $t_i = \text{min}(t^\ast_i,\tau)$
+
+## Priors on the hazard rate function
+
+Let $G(\cdot)$, $G_1(\cdot)$ and $G_2(\cdot)$ be non-normalised measures with support on the positive real line.  Then consider four cases:
+
+  1. Increasing Failure Rate (IFR) (After @LoWeng:1989)
+    \begin{equation}
+       \lambda(t|G) = \int_0^t G({\rm d}u)
+       (\#eq:ifr)
+    \end{equation}
+  1. Decreasing Failure Rate (DFR) (After @LoWeng:1989)
+    \begin{equation}
+       \lambda(t|G) = \int_t^\infty G({\rm d}u)
+       (\#eq:dfr)
+    \end{equation}
+  1. Lo-Weng Bathtub (LWB) (After @LoWeng:1989)
+    \begin{equation}
+       \lambda(t|G) = \int_0^{|t-a|} G({\rm d}u)
+       (\#eq:low-weng-bathtub)
+    \end{equation}
+    for constant $a>0$.
+  1. Superposition Bathtub (SBT) (After @Arnold_Chukova_Hayakawa_APARM:2020)
+    \begin{equation}
+       \lambda(t|\lambda_0, G_1, G_2) = \lambda_0 + \int_t^\infty G_1({\rm d}u) + \int_0^t G_2({\rm d}u)
+       (\#eq:superposition-bathtub)
+    \end{equation}
+    Here $G_1$ is DFR (determines the early behaviour) and $G_2$ is IFR (determines the late behaviour).
+  1. Mixture Bathtub (MBT): Specify through the survival function
+    \begin{equation}
+       \bar{F}(t|\lambda(\cdot|\pi, G_1, G_2)) = \pi \bar{F}_{\rm DFR}(t|G_1) + (1-\pi) \bar{F}_{\rm IFR}(t|G_2)
+       (\#eq:mixture-bathtub)
+    \end{equation}
+    Where $0<\pi<1$ and $\bar{F}_{\rm DFR}(t|G)$ and $\bar{F}_{\rm IFR}(t|G)$ are the respective survival functions 
+    from the IFR and DFR cases defined above. 
+  1. Log-convex (LCV)
+    \begin{equation}
+       \frac{d\log\lambda(t|G)}{dt} = w_0 + \int_0^t G({\rm d}u)
+       (\#eq:lcfr)
+    \end{equation}
+    Here the constant $w_0\geq 0$ gives an IFR distribution, but $w_0<0$ gives a bathtub.
+
+Gamma Process Priors can be placed on the mixing measures $G$, $G_1$ and $G_2$ and implemented under the stick-breaking convention.   Specifically if $G|\alpha H_0,\beta \sim \text{GaPP}(\alpha H_0,\beta)$ for probability measure $H_0$ (with support on the positive real line) and postive constants $\alpha$, $\beta$, then a draw from the prior can be written
+\begin{eqnarray}
+   \theta_k | H_0 &\overset{\rm iid}{\sim}& H_0 \qquad \text{for $k=1,2,\ldots$}\\
+   v_k | \alpha &\overset{\rm iid}{\sim}& \text{Be}(1,\alpha)\\
+   \tilde{w}_k &=& v_k \prod_{\ell<k} (1-v_\ell)\\
+   \gamma &\sim& \text{Ga}(\alpha,\beta)\\
+   G({\rm d}u) &=& \gamma\sum_{k=1}^\infty \tilde{w}_k \delta_{\theta_k}({\rm d}u)
+   (\#eq:gsum-inf)
+\end{eqnarray}
+so that
+\begin{eqnarray}
+  \int_0^t G({\rm d}u) &=& \gamma \sum_{k=1}^\infty \tilde{w}_k I(\theta_k<t)\\
+  \int_t^\infty G({\rm d}u) &=& \gamma \sum_{k=1}^\infty \tilde{w}_k I(\theta_k>t)
+\end{eqnarray}
+and
+\begin{eqnarray}
+  \int_0^t \int_0^u G({\rm d}v) &=& \gamma \sum_{k=1}^\infty \tilde{w}_k \text{max}(t-\theta_k,0)\\
+  \int_0^t \int_u^\infty G({\rm d}v) &=& \gamma \sum_{k=1}^\infty \tilde{w}_k \text{min}(t,\theta_k)
+\end{eqnarray}
+
+The weights $\tilde{w}_k$ are stochastically decreasing in $k$, which means that it is possible to truncate the sum in 
+eq. \@ref(eq:gsum-inf) after $K$ terms.  In that case we have
+\begin{eqnarray}
+   \theta_k | H_0 &\overset{\rm iid}{\sim}& H_0 \qquad \text{for $k=1,2,\ldots,K$}\\
+   v_k | \alpha &\overset{\rm iid}{\sim}& \text{Be}(1,\alpha) \qquad \text{for $k=1,2,\ldots,K-1$}\\
+   \tilde{w}_k &=& v_k \prod_{\ell<k} (1-v_\ell)  \qquad \text{for $k=1,2,\ldots,K-1$}\\
+   \tilde{w}_K &=& 1-\sum_{k=1}^{K-1} \tilde{w}_k = \prod_{\ell=1}^{K-1} (1-v_\ell)\\
+   \gamma &\sim& \text{Ga}(\alpha,\beta)\\
+   G({\rm d}u) &=& \gamma\sum_{k=1}^K \tilde{w}_k \delta_{\theta_k}({\rm d}u)
+   (\#eq:gsum-inf)
+\end{eqnarray}
+A fully hierarchical Bayesian model for $G$ can be completed by choosing a form for $H_0$, with parameters $\phi$, and specifying suitable priors for $\alpha$, $\beta$, $\gamma$ and $\phi$.  For example if $H_0=\text{Exp}(\phi)$ then
+\begin{eqnarray}
+   \alpha &\sim& \text{Ga}(a_1,a_2)\\
+   \beta  &\sim& \text{Ga}(b_1,b_2)\\
+   \phi   &\sim& \text{Ga}(f_1,f_2)
+\end{eqnarray}
+
+## Specific hazard rate functions
+
+In what follows we write Write $w_k = \gamma\tilde{w}_k$, and also 
+define $k^\ast(t) = \text{max}\{k\in (1,\ldots,K)\,:\,\theta^\ast_k\leq t\}$ which implies that
+\begin{equation}
+    \theta^\ast_{k^\ast(t)} \leq t < \theta^\ast_{k^\ast(t)+1}
+\end{equation}
+And we may need to re-index $\{(w_k,\theta_k)\}_{k=1}^K$ as $\{(w^\ast_k,\theta_k^\ast)\}_{k=1}^K$ such that
+\[
+    \theta^\ast_0 \equiv 0 < \theta^\ast_1 < \theta^\ast_2 < \ldots < \theta^\ast_K
+\]
+(Note that the $\theta_k$ values are almost surely distinct.)  
+
+We also define the following partial sums of the ordered weights and locations:
+\begin{eqnarray}
+   C^\ast_\ell &=& \sum_{k=1}^\ell w^\ast_k = \gamma - \sum_{k=\ell+1}^K w_k^\ast\\
+   D^\ast_\ell &=& \sum_{k=1}^\ell w^\ast_k \theta^\ast_k
+\end{eqnarray}
+
+### IFR case
+
+\begin{eqnarray}
+   \lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \gamma \sum_{k=1}^K \tilde{w}_k I(\theta_k<t)\\
+      &=& \gamma \tilde{\lambda}(t|\mathbf{\theta},\mathbf{v})\\
+   \Lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \gamma \sum_{k=1}^K \tilde{w}_k \text{max}(0,t-\theta_k)\\
+      &=& \gamma \tilde{\Lambda}(t|\mathbf{\theta},\mathbf{v})
+\end{eqnarray}
+If we define $\Lambda^\ast_k=\Lambda(\theta^\ast_k)$ with $\theta^\ast_0=0$ and $\Lambda^\ast_0=0$, then $\Lambda$ is piecewise linear between the points $\{(\theta^\ast_k,\Lambda^\ast_k)\}_{k=0}^K$.   If $U\sim\text{Uniform}(0,1)$ then $T$ is a draw from this distribution if
+\begin{eqnarray}
+   T = \frac{-\log U + D^\ast_{k^\ast}}{C^\ast_{k^\ast}}
+\end{eqnarray}
+where $k^\ast = \text{max}\{k\in\{1,\ldots,K\}\,:\,\Lambda^\ast_{k}\leq -\log U\}$
+
+### DFR case
+
+\begin{eqnarray}
+   \lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \gamma \sum_{k=1}^K \tilde{w}_k I(\theta_k>t)\\
+      &=& \gamma \tilde{\lambda}(t|\mathbf{\theta},\mathbf{v})\\
+   \Lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \gamma \sum_{k=1}^K \tilde{w}_k \text{min}(t,\theta_k)\\
+      &=& \gamma \tilde{\Lambda}(t|\mathbf{\theta},\mathbf{v})
+\end{eqnarray}
+Following the same protocol as in the IFR case: 
+if we define $\Lambda^\ast_k=\Lambda(\theta^\ast_k)$ with $\theta^\ast_0=0$ and $\Lambda^\ast_0=0$, then $\Lambda$ is piecewise linear between the points $\{(\theta^\ast_k,\Lambda^\ast_k)\}_{k=0}^K$.   If $U\sim\text{Uniform}(0,1)$ then $T$ is a draw from this distribution if
+\begin{eqnarray}
+   T = \frac{-\log U - D^\ast_{k^\ast}}{\gamma - C^\ast_{k^\ast}}
+\end{eqnarray}
+where $k^\ast = \text{max}\{k\in\{1,\ldots,K\}\,:\,\Lambda^\ast_{k}\leq -\log U\}$
+
+### LWB case
+
+\begin{eqnarray}
+   \lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \gamma \sum_{k=1}^K \tilde{w}_k I(0<\theta_k<|t-a|)\\
+      &=& \begin{cases}
+          \gamma\sum_{k=1}^K \tilde{w}_k I(t<a-\theta_k)\;\; & \text{if $t\leq a$}\\
+          \gamma\sum_{k=1}^K \tilde{w}_k I(t>a+\theta_k)\;\; & \text{if $t> a$}
+          \end{cases}\\
+      &=& \gamma \tilde{\lambda}(t|\mathbf{\theta},\mathbf{v})\\
+   \Lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \begin{cases}
+          \gamma\sum_{k=1}^K \tilde{w}_k I(\theta_k<a)\text{min}(t,a-\theta_k)\;\; & \text{if $t\leq a$}\\
+          \gamma\sum_{k=1}^K \tilde{w}_k 
+          \left[\text{max}(0,a-\theta_k)+\text{max}(t-a-\theta_k,0)\right]\;\; & \text{if $t> a$}
+          \end{cases}\\
+      &=& \gamma \tilde{\Lambda}(t|\mathbf{\theta},\mathbf{v})
+\end{eqnarray}
+Combine the $\{(\theta_{k},w_k)\}_{k=1}^K$ values with one further location, weight pair: $(a,0)$.  Order the locations, and their associated weights, forming the set $\{(w^{\ast\ast}_k,\theta^{\ast\ast}_k)\}_{k=1}^{K+1}$.  Compute the cumulative hazard function values $\Lambda^{\ast\ast}_k=\Lambda(\theta^{\ast\ast}_k)$.  Then if $U\sim\text{Uniform}(0,1)$ then $T$ is a draw from this distribution if
+\begin{eqnarray}
+   T = \theta^{\ast\ast}_k + \frac{\theta^{\ast\ast}_{k^\ast+1}-\theta^{\ast\ast}_{k^\ast}}{
+                                   \Lambda^{\ast\ast}_{k^\ast+1}-\Lambda^{\ast\ast}_{k^\ast}}
+                                   \left(-\log U-\Lambda^{\ast\ast}_{k^\ast}\right)
+\end{eqnarray}
+where $k^\ast = \text{max}\{k\in\{1,\ldots,K_1+K_2\}\,:\,\Lambda^{\ast\ast}_{k}\leq -\log U\}$
+
+### SBT case
+
+Replicate the prior structure for $G$ for each of $G_1$ and $G_2$, 
+indexing the parameters for each component with the label $c=1,2$, 
+and add a prior for $\lambda_0$:
+\begin{equation}
+    \lambda_0 \sim \text{Exp}(\nu)
+\end{equation}
+
+\begin{eqnarray}
+   \lambda(t|\lambda_0,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
+      &=& \lambda_0 + \gamma_1 \sum_{k=1}^{K_1} \tilde{w}_{1k} I(\theta_{1k}>t)
+                    + \gamma_2 \sum_{k=1}^{K_2} \tilde{w}_{2k} I(\theta_{2k}<t)\\
+   \Lambda(t|\lambda_0,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
+      &=& \lambda_0 t + \gamma_1 \sum_{k=1}^{K_1} \tilde{w}_{1k} \text{min}(t,\theta_{1k})
+                      + \gamma_2 \sum_{k=1}^{K_2} \tilde{w}_{2k} \text{max}(0,t-\theta_{2k})
+\end{eqnarray}
+Extend the IFR/DFR approach: pool the $\theta_{1k}$ and $\theta_{2k}$ locations and order them, and their associated weights, forming the set $\{(w^{\ast\ast}_k,\theta^{\ast\ast}_k)\}_{k=1}^{K_1+K_2}$.  Compute the cumulative hazard function values $\Lambda^{\ast\ast}_k=\Lambda(\theta^{\ast\ast}_k)$.  Then if $U\sim\text{Uniform}(0,1)$ then $T$ is a draw from this distribution if
+\begin{eqnarray}
+   T = \theta^{\ast\ast}_k + \frac{\theta^{\ast\ast}_{k^\ast+1}-\theta^{\ast\ast}_{k^\ast}}{
+                                   \Lambda^{\ast\ast}_{k^\ast+1}-\Lambda^{\ast\ast}_{k^\ast}}
+                                   \left(-\log U-\Lambda^{\ast\ast}_{k^\ast}\right)
+\end{eqnarray}
+where $k^\ast = \text{max}\{k\in\{1,\ldots,K_1+K_2\}\,:\,\Lambda^{\ast\ast}_{k}\leq -\log U\}$
+
+### MBT case
+
+\begin{eqnarray}
+   \lambda(t|\pi,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
+   &=& \frac{f(t|\pi,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}{
+             \bar{F}(t|\pi,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}\\
+   &=& \frac{\pi \lambda_{\rm DFR}(t| \gamma_1,\mathbf{\theta}_1,\mathbf{v}_1) 
+             \bar{F}_{\rm DFR}(t|\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)
+             +(1-\pi) \lambda_{\rm IFR}(t| \gamma_2,\mathbf{\theta}_2,\mathbf{v}_2) 
+             \bar{F}_{\rm IFR}(t|\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
+   }{\pi \bar{F}_{\rm DFR}(t|\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)
+             +(1-\pi) \bar{F}_{\rm IFR}(t|\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}\\
+   \Lambda(t|\pi,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
+   &=& -\log(\bar{F}(t|\pi,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2))\\
+   &=& -\log\left(\pi \bar{F}_{\rm DFR}(t|\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)
+             +(1-\pi) \bar{F}_{\rm IFR}(t|\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)\right)\\
+   &=& -\log\left(\pi e^{-\Lambda_{\rm DFR}(t|\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)}
+             +(1-\pi) e^{-\Lambda_{\rm IFR}(t|\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}\right)
+\end{eqnarray}
+Simulate as a mixture: draw $c\sim\text{Cat}(\{1,2\};(\pi,1-\pi))$ then if $c=1$ draw from the DFR component (parameters $\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)$), and if $c=2$ draw from the IFR component (parameters $\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)$).
+
+### Log convex case
+
+\begin{eqnarray}
+   \frac{d\log\lambda(t|\gamma,\mathbf{\theta},\mathbf{v})}{dt} 
+   &=& w_0 + \sum_{k=1}^K w_k I(0<\theta_k<t)\\
+   \log\lambda(t|\gamma,\mathbf{\theta},\mathbf{v}) &=& \log\lambda_0 + w_0 t 
+                                           + \sum_{k=1}^K w_k \text{max}(0,t-\theta_k)\\
+   \lambda(t|\gamma,\mathbf{\theta},\mathbf{v}) &=& \lambda_0 \exp\left(w_0 t + \sum_{k=1}^K w_k \text{max}(0,t-\theta_k)\right)\\
+\end{eqnarray}
+Then, switching to the re-indexed set $\{(w^\ast_k,\theta^\ast_k)\}_{k=1}^K$
+\begin{eqnarray}
+   \Lambda(t|\gamma,\mathbf{\theta},\mathbf{v}) &=& \sum_{\ell=0}^{k^\ast(t)-1} 
+                      \int_{\theta^\ast_\ell}^{\theta^\ast_{\ell+1}} 
+                            \lambda(u|\gamma,\mathbf{\theta},\mathbf{v})\,{\rm d}u\\
+                  & & + \int_{\theta^\ast_{k^\ast(t)}}^{t} \lambda(u|\gamma,\mathbf{\theta},\mathbf{v})\,{\rm d}u\\
+                  &=& \sum_{\ell=0}^{k^\ast(t)-1} 
+                      \int_{\theta^\ast_\ell}^{\theta^\ast_{\ell+1}} 
+                            \lambda_0\exp\left(w_0 u + \sum_{k=1}^K w^\ast_k \text{max}(0,u-\theta^\ast_k)\right)
+                            \,{\rm d}u\\
+                  & & + \int_{\theta^\ast_{k^\ast(t)}}^{t} 
+                            \lambda_0\exp\left(w_0 u + \sum_{k=1}^K w^\ast_k \text{max}(0,u-\theta^\ast_k)\right)
+                            \,{\rm d}u\\
+                  &=& \sum_{\ell=0}^{k^\ast(t)-1} 
+                      \int_{\theta^\ast_\ell}^{\theta^\ast_{\ell+1}} 
+                            \lambda_0\exp\left(w_0 u + \sum_{k=1}^\ell w^\ast_k (u-\theta^\ast_k)\right)
+                            \,{\rm d}u\\
+                  & & + \int_{\theta^\ast_{k^\ast(t)}}^{t} 
+                            \lambda_0\exp\left(w_0 u + \sum_{k=1}^{k^\ast(t)} w^\ast_k (u-\theta^\ast_k)\right)
+                            \,{\rm d}u\\
+                  &=& \sum_{\ell=0}^{k^\ast(t)-1} \lambda_0 e^{-\sum_{k=1}^\ell w^\ast_k\theta^\ast_k}
+                      \frac{e^{(w_0+\sum_{k=1}^\ell w^\ast_k)\theta^\ast_{\ell+1}}
+                           -e^{(w_0+\sum_{k=1}^\ell w^\ast_k)\theta^\ast_{\ell}}}{
+                           w_0 + \sum_{k=1}^\ell w^\ast_k}\\
+                  & & + \lambda_0 e^{- \sum_{k=1}^{k^\ast(t)} w^\ast_k\theta^\ast_k}
+                      \frac{e^{(w_0+\sum_{k=1}^{k^\ast(t)} w^\ast_k)t}
+                           -e^{(w_0+\sum_{k=1}^{k^\ast(t)} w^\ast_k)\theta^\ast_{k^\ast(t)}}}{
+                           w_0 + \sum_{k=1}^{k^\ast(t)} w^\ast_k}\\
+                  &=& \sum_{\ell=0}^{k^\ast(t)-1} \frac{\lambda_0 e^{- D^\ast_\ell}}{C^\ast_{0\ell}}
+                      \left\{e^{C^\ast_{0\ell}\theta^\ast_{\ell+1}}
+                            -e^{C^\ast_{0\ell}\theta^\ast_{\ell}}\right\}\\
+                  & & + \frac{\lambda_0 e^{- D^\ast_{k^\ast(t)}}}{C^\ast_{0k^\ast(t)}}
+                      \left\{e^{C^\ast_{0k^\ast(t)}t}
+                            -e^{C^\ast_{0k^\ast(t)}\theta^\ast_{k^\ast(t)}}\right\}
+\end{eqnarray}
+where
+\begin{eqnarray}
+   C^\ast_{0\ell} = w_0 + C^\ast_\ell = \sum_{k=0}^\ell w^\ast_k
+\end{eqnarray}
+Again following the same protocol as in the IFR case
+we define $\Lambda^\ast_k=\Lambda(\theta^\ast_k)$ with $\theta^\ast_0=0$ and $\Lambda^\ast_0=0$.  Then in the interval
+$\theta^\ast_{k^\ast(t)}\leq t < \theta^\ast_{k^\ast(t)}$ the function $\Lambda$ has the exponential form
+\begin{eqnarray}
+   \Lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
+   &=&
+   \Lambda^\ast_{k^\ast(t)} + \frac{\lambda_0 e^{- D^\ast_{k^\ast(t)}}}{C^\ast_{0l^\ast}}
+                      \left\{e^{C^\ast_{0k^\ast(t)}t}
+                           -e^{C^\ast_{0k^\ast(t)}\theta^\ast_{k^\ast(t)}}\right\}
+\end{eqnarray}
+It follows that 
+If $U\sim\text{Uniform}(0,1)$ then $T$ is a draw from this distribution if
+\begin{eqnarray}
+   T = \frac{1}{C^\ast_{0k^\ast}}\log\left[
+         e^{C^\ast_{0k^\ast}\theta^\ast_{k^\ast}}
+       + C^\ast_{0k^\ast}\frac{-\log U - \Lambda^\ast_{k^\ast}}{\lambda_0 e^{-D^\ast_{k^\ast}}}
+       \right]
+\end{eqnarray}
+where $k^\ast = \text{max}\{k\in\{1,\ldots,K\}\,:\,\Lambda^\ast_{k}\leq -\log U\}$
+
+## Samplers
+
+### IFR case
+
+  * $\theta_k$
+  
+  Full conditional:
+  \begin{eqnarray}
+  f(\theta_k | - ) &\propto& 
+            \left[\prod_{i=1}^{n_0} \lambda(t_i | \mathbf{\theta}, \mathbf{v})\right]
+            \exp\left[-\sum_{i=1}^n\Lambda(t_i | \mathbf{\theta}, \mathbf{v})\right]\\
+            &&\times \exp(-\phi\theta_k)
+  \end{eqnarray}
+  Proposal: Select $k\sim\text{Cat}(\tilde{\mathbf{w}}(\mathbf{v}))$ and then propose 
+  $\theta^\ast_k$ by a log Normal random walk Metropolis step: 
+  $\log\theta_k^\ast | \log\theta_k, \sigma_\theta^2 \sim N(\log\theta_k, \sigma_\theta^2)$
+  \begin{eqnarray}
+  q(k, \theta^\ast_k | \theta_k, \mathbf{v}) 
+                    &\propto& \frac{\tilde{w}_k}{\theta^\ast_k} 
+                    e^{-(\log\theta^\ast_k-\log\theta_k)^2/(2\sigma_\theta^2)}
+  \end{eqnarray}
+  Proposal ratio:
+  \begin{eqnarray}
+  r &=& \frac{f(\theta^\ast_k|-)}{f(\theta_k|-)} 
+        \frac{q(k, \theta_k | \theta^\ast_k, \mathbf{v})}{q(k, \theta^\ast_k | \theta_k, \mathbf{v})}\\
+    &=& \left[\prod_{i=1}^{n_0} \frac{\lambda(t_i | \mathbf{\theta}^\ast, \mathbf{v})}{
+                                      \lambda(t_i | \mathbf{\theta}, \mathbf{v})}\right]\\
+    &&\times \exp\left[-\sum_{i=1}^n\left\{
+                        \Lambda(t_i | \mathbf{\theta}^\ast, \mathbf{v})
+                       -\Lambda(t_i | \mathbf{\theta}, \mathbf{v})
+                        \right\}\right]\\
+    &&\times \exp(-\phi(\theta^\ast_k-\theta_k))\\
+    &&\times \frac{\theta^\ast_k}{\theta_k}\\
+  \log r &=& \left[\sum_{i=1}^{n_0} \{\log\lambda(t_i | \mathbf{\theta}^\ast, \mathbf{v})
+                                     -\log\lambda(t_i | \mathbf{\theta}, \mathbf{v})\}\right]\\
+    && -\sum_{i=1}^n\left\{
+                        \Lambda(t_i | \mathbf{\theta}^\ast, \mathbf{v})
+                       -\Lambda(t_i | \mathbf{\theta}, \mathbf{v})
+                        \right\}\\
+    && -\phi(\theta^\ast_k-\theta_k) + \log\theta^\ast_k-\log\theta_k
+  \end{eqnarray}
+  
+  * $v_k$
+  
+  Full conditional:
+  \begin{eqnarray}
+  f(v_k | - ) &\propto& 
+            \left[\prod_{i=1}^{n_0} \lambda(t_i | \mathbf{\theta}, \mathbf{v})\right]
+            \exp\left[-\sum_{i=1}^n\Lambda(t_i | \mathbf{\theta}, \mathbf{v})\right]\\
+            &&\times (1-v_k)^{\alpha-1}
+  \end{eqnarray}
+  Proposal: Select $k\sim\text{Cat}(\tilde{\mathbf{w}}(\mathbf{v}))$ and then propose 
+  $v^\ast_k$ by a logistic Normal random walk Metropolis step: 
+  $\text{logit}v_k^\ast | \text{logit}\,v_k, \sigma_v^2 \sim N(\text{logit}\,v_k, \sigma_v^2)$
+  \begin{eqnarray}
+  q(k, v^\ast_k | v_k, \mathbf{v}_{-k}) 
+                    &\propto& \frac{\tilde{w}_k(\mathbf{v})}{v^\ast_k(1-v^\ast_k)} 
+                    e^{-(\text{logit}\,v^\ast_k-\text{logit}\,v_k)^2/(2\sigma_v^2)}\\
+                    &\propto& \frac{v_k}{v^\ast_k(1-v^\ast_k)} 
+                    e^{-(\text{logit}\,v^\ast_k-\text{logit}\,v_k)^2/(2\sigma_v^2)}\\
+  \end{eqnarray}
+  Proposal ratio:
+  \begin{eqnarray}
+  r &=& \frac{f(v^\ast_k|-)}{f(v_k|-)} 
+        \frac{q(k, v_k | v^\ast_k, \mathbf{v}_{-k})}{q(k, v^\ast_k | v_k, \mathbf{v}_{-k})}\\
+    &=& \left[\prod_{i=1}^{n_0} \frac{\lambda(t_i | \mathbf{\theta}, \mathbf{v}^\ast)}{
+                                      \lambda(t_i | \mathbf{\theta}, \mathbf{v})}\right]\\
+    &&\times \exp\left[-\sum_{i=1}^n\left\{
+                        \Lambda(t_i | \mathbf{\theta}, \mathbf{v}^\ast)
+                       -\Lambda(t_i | \mathbf{\theta}, \mathbf{v})
+                        \right\}\right]\\
+    &&\times \left(\frac{v_k^\ast}{v_k}\right)^2\left(\frac{1-v_k^\ast}{1-v_k}\right)^{\alpha}\\
+  \log r &=& \left[\sum_{i=1}^{n_0} \{\log\lambda(t_i | \mathbf{\theta}^\ast, \mathbf{v})
+                                     -\log\lambda(t_i | \mathbf{\theta}, \mathbf{v})\}\right]\\
+    && -\sum_{i=1}^n\left\{
+                        \Lambda(t_i | \mathbf{\theta}^\ast, \mathbf{v})
+                       -\Lambda(t_i | \mathbf{\theta}, \mathbf{v})
+                        \right\}\\
+    && +\alpha\log\left(\frac{1-v_k^\ast}{1-v_k}\right)+2\log\left(\frac{v_k^\ast}{v_k}\right)
+  \end{eqnarray}
+  
+  * $\gamma$
+  
+  Full conditional:
+  \begin{eqnarray}
+  f(\gamma | - ) &\propto& 
+            \left[\prod_{i=1}^{n_0} \lambda(t_i | \mathbf{\theta}, \mathbf{v})\right]
+            \exp\left[-\sum_{i=1}^n\Lambda(t_i | \mathbf{\theta}, \mathbf{v})\right]\\
+            &&\times ...
+  \end{eqnarray}
+  
+  * $\alpha$
+  * $\beta$
+  * $\phi$
+
+\begin{equation}
+\end{equation}
+
+# Bibliography
