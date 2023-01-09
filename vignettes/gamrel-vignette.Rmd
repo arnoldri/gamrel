@@ -22,9 +22,11 @@ knitr::opts_chunk$set(
 library(gamrel)
 ```
 
+# Background
+
 A first attempt was written up in @Arnold_Chukova_Hayakawa_APARM:2020.
 
-Errata: 
+## Errata: 
 
   * In eq. (17) $\alpha_1$ should be $\alpha$ [R code was correct]
   * In eq. (19) the exponent $a_1+K$ should be $a_1+K-1$ [R code was incorrect, but this effectively changed the value of $a_1$ in the hyperprior specification]
@@ -73,17 +75,17 @@ Let $G(\cdot)$, $G_1(\cdot)$ and $G_2(\cdot)$ be non-normalised measures with su
 
   1. Increasing Failure Rate (IFR) (After @LoWeng:1989)
     \begin{equation}
-       \lambda(t|G) = \int_0^t G({\rm d}u)
+       \lambda(t|G) = \lambda_0 + \int_0^t G({\rm d}u)
        (\#eq:ifr)
     \end{equation}
   1. Decreasing Failure Rate (DFR) (After @LoWeng:1989)
     \begin{equation}
-       \lambda(t|G) = \int_t^\infty G({\rm d}u)
+       \lambda(t|G) = \lambda_0 + \int_t^\infty G({\rm d}u)
        (\#eq:dfr)
     \end{equation}
   1. Lo-Weng Bathtub (LWB) (After @LoWeng:1989)
     \begin{equation}
-       \lambda(t|G) = \int_0^{|t-a|} G({\rm d}u)
+       \lambda(t|G) = \lambda_0 + \int_0^{|t-a|} G({\rm d}u)
        (\#eq:low-weng-bathtub)
     \end{equation}
     for constant $a>0$.
@@ -103,6 +105,10 @@ Let $G(\cdot)$, $G_1(\cdot)$ and $G_2(\cdot)$ be non-normalised measures with su
   1. Log-convex (LCV)
     \begin{equation}
        \frac{d\log\lambda(t|G)}{dt} = w_0 + \int_0^t G({\rm d}u)
+    \end{equation}
+    which implies that
+    \begin{equation}
+       \lambda(t|G) = \lambda_0 e^{w_0t + \int_0^t (t-u) G({\rm d}u)}
        (\#eq:lcfr)
     \end{equation}
     Here the constant $w_0\geq 0$ gives an IFR distribution, but $w_0<0$ gives a bathtub.
@@ -167,53 +173,62 @@ We also define the following partial sums of the ordered weights and locations:
 ### IFR case
 
 \begin{eqnarray}
-   \lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
-      &=& \gamma \sum_{k=1}^K \tilde{w}_k I(\theta_k<t)\\
-      &=& \gamma \tilde{\lambda}(t|\mathbf{\theta},\mathbf{v})\\
-   \Lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
-      &=& \gamma \sum_{k=1}^K \tilde{w}_k \text{max}(0,t-\theta_k)\\
-      &=& \gamma \tilde{\Lambda}(t|\mathbf{\theta},\mathbf{v})
+   \lambda(t|\lambda_0,\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \lambda_0 + \gamma \sum_{k=1}^K \tilde{w}_k I(\theta_k<t)\\
+   \Lambda(t|\lambda_0,\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \lambda_0 t + \gamma \sum_{k=1}^K \tilde{w}_k \text{max}(0,t-\theta_k)
 \end{eqnarray}
 If we define $\Lambda^\ast_k=\Lambda(\theta^\ast_k)$ with $\theta^\ast_0=0$ and $\Lambda^\ast_0=0$, then $\Lambda$ is piecewise linear between the points $\{(\theta^\ast_k,\Lambda^\ast_k)\}_{k=0}^K$.   If $U\sim\text{Uniform}(0,1)$ then $T$ is a draw from this distribution if
 \begin{eqnarray}
-   T = \frac{-\log U + D^\ast_{k^\ast}}{C^\ast_{k^\ast}}
+   T = \frac{-\log U + D^\ast_{k^\ast}}{\lambda_0 + C^\ast_{k^\ast}}
 \end{eqnarray}
-where $k^\ast = \text{max}\{k\in\{1,\ldots,K\}\,:\,\Lambda^\ast_{k}\leq -\log U\}$
+where $k^\ast = \text{max}\{k\in\{1,\ldots,K\}\,:\,\Lambda^\ast_{k}\leq -\log U\}$.
+
+The prior includes the prior for $G\sim\text{GaPP}(\alpha H_0,\beta)$ and a suitable prior for 
+$\lambda_0|G$:
+\[
+   \frac{\lambda_0}{\gamma} \sim \text{Exp}(\nu)
+\]
 
 ### DFR case
 
 \begin{eqnarray}
-   \lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
-      &=& \gamma \sum_{k=1}^K \tilde{w}_k I(\theta_k>t)\\
-      &=& \gamma \tilde{\lambda}(t|\mathbf{\theta},\mathbf{v})\\
-   \Lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
-      &=& \gamma \sum_{k=1}^K \tilde{w}_k \text{min}(t,\theta_k)\\
-      &=& \gamma \tilde{\Lambda}(t|\mathbf{\theta},\mathbf{v})
+   \lambda(t|\lambda_0,\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \lambda_0 + \gamma \sum_{k=1}^K \tilde{w}_k I(\theta_k>t)\\
+   \Lambda(t|\lambda_0,\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \lambda_0 t + \gamma \sum_{k=1}^K \tilde{w}_k \text{min}(t,\theta_k)
 \end{eqnarray}
 Following the same protocol as in the IFR case: 
 if we define $\Lambda^\ast_k=\Lambda(\theta^\ast_k)$ with $\theta^\ast_0=0$ and $\Lambda^\ast_0=0$, then $\Lambda$ is piecewise linear between the points $\{(\theta^\ast_k,\Lambda^\ast_k)\}_{k=0}^K$.   If $U\sim\text{Uniform}(0,1)$ then $T$ is a draw from this distribution if
 \begin{eqnarray}
-   T = \frac{-\log U - D^\ast_{k^\ast}}{\gamma - C^\ast_{k^\ast}}
+   T = \frac{-\log U - D^\ast_{k^\ast}}{\lambda_0 + \gamma - C^\ast_{k^\ast}}
 \end{eqnarray}
 where $k^\ast = \text{max}\{k\in\{1,\ldots,K\}\,:\,\Lambda^\ast_{k}\leq -\log U\}$
+
+As in the DFR case, the prior includes the prior for $G\sim\text{GaPP}(\alpha H_0,\beta)$ and a 
+suitable prior for $\lambda_0|G$:
+\[
+   \frac{\lambda_0}{\gamma} \sim \text{Exp}(\nu)
+\]
 
 ### LWB case
 
 \begin{eqnarray}
-   \lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
-      &=& \gamma \sum_{k=1}^K \tilde{w}_k I(0<\theta_k<|t-a|)\\
-      &=& \begin{cases}
+   \lambda(t|\lambda_0,a,\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \lambda_0 + \gamma \sum_{k=1}^K \tilde{w}_k I(0<\theta_k<|t-a|)\\
+      &=& \lambda_0 + 
+          \begin{cases}
           \gamma\sum_{k=1}^K \tilde{w}_k I(t<a-\theta_k)\;\; & \text{if $t\leq a$}\\
           \gamma\sum_{k=1}^K \tilde{w}_k I(t>a+\theta_k)\;\; & \text{if $t> a$}
           \end{cases}\\
-      &=& \gamma \tilde{\lambda}(t|\mathbf{\theta},\mathbf{v})\\
-   \Lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
-      &=& \begin{cases}
-          \gamma\sum_{k=1}^K \tilde{w}_k I(\theta_k<a)\text{min}(t,a-\theta_k)\;\; & \text{if $t\leq a$}\\
+   \Lambda(t|\lambda_0,a,\gamma,\mathbf{\theta},\mathbf{v})
+      &=& \lambda_0 t + 
+          \begin{cases}
+          \gamma\sum_{k=1}^K \tilde{w}_k I(\theta_k<a)\text{min}(t,a-\theta_k)\;\; 
+                          & \text{if $t\leq a$}\\
           \gamma\sum_{k=1}^K \tilde{w}_k 
           \left[\text{max}(0,a-\theta_k)+\text{max}(t-a-\theta_k,0)\right]\;\; & \text{if $t> a$}
-          \end{cases}\\
-      &=& \gamma \tilde{\Lambda}(t|\mathbf{\theta},\mathbf{v})
+          \end{cases}
 \end{eqnarray}
 Combine the $\{(\theta_{k},w_k)\}_{k=1}^K$ values with one further location, weight pair: $(a,0)$.  Order the locations, and their associated weights, forming the set $\{(w^{\ast\ast}_k,\theta^{\ast\ast}_k)\}_{k=1}^{K+1}$.  Compute the cumulative hazard function values $\Lambda^{\ast\ast}_k=\Lambda(\theta^{\ast\ast}_k)$.  Then if $U\sim\text{Uniform}(0,1)$ then $T$ is a draw from this distribution if
 \begin{eqnarray}
@@ -223,13 +238,19 @@ Combine the $\{(\theta_{k},w_k)\}_{k=1}^K$ values with one further location, wei
 \end{eqnarray}
 where $k^\ast = \text{max}\{k\in\{1,\ldots,K_1+K_2\}\,:\,\Lambda^{\ast\ast}_{k}\leq -\log U\}$
 
+Once again the prior includes the prior for $G\sim\text{GaPP}(\alpha H_0,\beta)$ and a suitable prior for $\lambda_0|G$:
+\[
+   \frac{\lambda_0}{\gamma} \sim \text{Exp}(\nu)
+\]
+
+
 ### SBT case
 
 Replicate the prior structure for $G$ for each of $G_1$ and $G_2$, 
 indexing the parameters for each component with the label $c=1,2$, 
-and add a prior for $\lambda_0$:
+and add a prior for $\lambda_0|G_2$:
 \begin{equation}
-    \lambda_0 \sim \text{Exp}(\nu)
+    \frac{\lambda_0}{\gamma_2} \sim \text{Exp}(\nu)
 \end{equation}
 
 \begin{eqnarray}
@@ -242,7 +263,8 @@ and add a prior for $\lambda_0$:
 \end{eqnarray}
 Extend the IFR/DFR approach: pool the $\theta_{1k}$ and $\theta_{2k}$ locations and order them, and their associated weights, forming the set $\{(w^{\ast\ast}_k,\theta^{\ast\ast}_k)\}_{k=1}^{K_1+K_2}$.  Compute the cumulative hazard function values $\Lambda^{\ast\ast}_k=\Lambda(\theta^{\ast\ast}_k)$.  Then if $U\sim\text{Uniform}(0,1)$ then $T$ is a draw from this distribution if
 \begin{eqnarray}
-   T = \theta^{\ast\ast}_k + \frac{\theta^{\ast\ast}_{k^\ast+1}-\theta^{\ast\ast}_{k^\ast}}{
+   T &=& \theta^{\ast\ast}_{k^\ast} 
+         + \frac{\theta^{\ast\ast}_{k^\ast+1}-\theta^{\ast\ast}_{k^\ast}}{
                                    \Lambda^{\ast\ast}_{k^\ast+1}-\Lambda^{\ast\ast}_{k^\ast}}
                                    \left(-\log U-\Lambda^{\ast\ast}_{k^\ast}\right)
 \end{eqnarray}
@@ -251,39 +273,58 @@ where $k^\ast = \text{max}\{k\in\{1,\ldots,K_1+K_2\}\,:\,\Lambda^{\ast\ast}_{k}\
 ### MBT case
 
 \begin{eqnarray}
-   \lambda(t|\pi,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
-   &=& \frac{f(t|\pi,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}{
-             \bar{F}(t|\pi,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}\\
-   &=& \frac{\pi \lambda_{\rm DFR}(t| \gamma_1,\mathbf{\theta}_1,\mathbf{v}_1) 
-             \bar{F}_{\rm DFR}(t|\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)
-             +(1-\pi) \lambda_{\rm IFR}(t| \gamma_2,\mathbf{\theta}_2,\mathbf{v}_2) 
-             \bar{F}_{\rm IFR}(t|\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
-   }{\pi \bar{F}_{\rm DFR}(t|\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)
-             +(1-\pi) \bar{F}_{\rm IFR}(t|\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}\\
-   \Lambda(t|\pi,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
-   &=& -\log(\bar{F}(t|\pi,\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2))\\
-   &=& -\log\left(\pi \bar{F}_{\rm DFR}(t|\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)
-             +(1-\pi) \bar{F}_{\rm IFR}(t|\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)\right)\\
-   &=& -\log\left(\pi e^{-\Lambda_{\rm DFR}(t|\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)}
-             +(1-\pi) e^{-\Lambda_{\rm IFR}(t|\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}\right)
+   \lambda(t|\pi,
+            \lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,
+            \lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
+   &=& \frac{f(t|\pi,
+                  \lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,
+                  \lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}{
+             \bar{F}(t|\pi,
+                  \lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,
+                  \lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}\\
+   &=& \frac{\pi \lambda_{\rm DFR}(t| \lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1) 
+             \bar{F}_{\rm DFR}(t| \lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)
+             +(1-\pi) \lambda_{\rm IFR}(t| \lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2) 
+             \bar{F}_{\rm IFR}(t|\lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
+   }{\pi \bar{F}_{\rm DFR}(t|\lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)
+             +(1-\pi) \bar{F}_{\rm IFR}(t|\lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}\\
+   \Lambda(t|\pi,\lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,
+                 \lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)
+   &=& -\log(\bar{F}(t|\pi,\lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1,
+                           \lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2))\\
+   &=& -\log\left(\pi \bar{F}_{\rm DFR}(t|\lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)
+            +(1-\pi) \bar{F}_{\rm IFR}(t|\lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)\right)\\
+   &=& -\log\left(\pi e^{-\Lambda_{\rm DFR}(t|\lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)}
+             +(1-\pi) 
+             e^{-\Lambda_{\rm IFR}(t|\lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)}\right)
 \end{eqnarray}
-Simulate as a mixture: draw $c\sim\text{Cat}(\{1,2\};(\pi,1-\pi))$ then if $c=1$ draw from the DFR component (parameters $\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)$), and if $c=2$ draw from the IFR component (parameters $\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)$).
+Simulate as a mixture: draw $c\sim\text{Cat}(\{1,2\};(\pi,1-\pi))$ then if $c=1$ draw from the DFR component (parameters $\lambda_{01},\gamma_1,\mathbf{\theta}_1,\mathbf{v}_1)$), and if $c=2$ draw from the IFR component (parameters $\lambda_{02},\gamma_2,\mathbf{\theta}_2,\mathbf{v}_2)$).
+
+The prior includes the priors for 
+$G_1\sim\text{GaPP}(\alpha_1 H_{10},\beta_1)$ 
+and $G_2\sim\text{GaPP}(\alpha_2 H_{20},\beta_2)$ 
+and suitable priors for $\lambda_{10}|G_1$ and $\lambda_{20}|G_2$ are:
+\begin{eqnarray}
+   \frac{\lambda_{10}}{\gamma_1} &\sim& \text{Exp}(\nu)\\
+   \frac{\lambda_{20}}{\gamma_2} &\sim& \text{Exp}(\nu)
+\end{eqnarray}
 
 ### Log convex case
 
 \begin{eqnarray}
-   \frac{d\log\lambda(t|\gamma,\mathbf{\theta},\mathbf{v})}{dt} 
+   \frac{d\log\lambda(t|\lambda_0,w_0,\gamma,\mathbf{\theta},\mathbf{v})}{dt} 
    &=& w_0 + \sum_{k=1}^K w_k I(0<\theta_k<t)\\
-   \log\lambda(t|\gamma,\mathbf{\theta},\mathbf{v}) &=& \log\lambda_0 + w_0 t 
+   \log\lambda(t|\lambda_0,w_0,\gamma,\mathbf{\theta},\mathbf{v}) &=& \log\lambda_0 + w_0 t 
                                            + \sum_{k=1}^K w_k \text{max}(0,t-\theta_k)\\
-   \lambda(t|\gamma,\mathbf{\theta},\mathbf{v}) &=& \lambda_0 \exp\left(w_0 t + \sum_{k=1}^K w_k \text{max}(0,t-\theta_k)\right)\\
+   \lambda(t|\lambda_0,w_0,\gamma,\mathbf{\theta},\mathbf{v}) &=& \lambda_0 \exp\left(w_0 t + \sum_{k=1}^K w_k \text{max}(0,t-\theta_k)\right)\\
 \end{eqnarray}
 Then, switching to the re-indexed set $\{(w^\ast_k,\theta^\ast_k)\}_{k=1}^K$
 \begin{eqnarray}
-   \Lambda(t|\gamma,\mathbf{\theta},\mathbf{v}) &=& \sum_{\ell=0}^{k^\ast(t)-1} 
+   \Lambda(t|\lambda_0,w_0,\gamma,\mathbf{\theta},\mathbf{v}) &=& \sum_{\ell=0}^{k^\ast(t)-1} 
                       \int_{\theta^\ast_\ell}^{\theta^\ast_{\ell+1}} 
-                            \lambda(u|\gamma,\mathbf{\theta},\mathbf{v})\,{\rm d}u\\
-                  & & + \int_{\theta^\ast_{k^\ast(t)}}^{t} \lambda(u|\gamma,\mathbf{\theta},\mathbf{v})\,{\rm d}u\\
+                            \lambda(u|\lambda_0,w_0,\gamma,\mathbf{\theta},\mathbf{v})\,{\rm d}u\\
+                  & & + \int_{\theta^\ast_{k^\ast(t)}}^{t} 
+                            \lambda(u|\lambda_0,w_0,\gamma,\mathbf{\theta},\mathbf{v})\,{\rm d}u\\
                   &=& \sum_{\ell=0}^{k^\ast(t)-1} 
                       \int_{\theta^\ast_\ell}^{\theta^\ast_{\ell+1}} 
                             \lambda_0\exp\left(w_0 u + \sum_{k=1}^K w^\ast_k \text{max}(0,u-\theta^\ast_k)\right)
@@ -321,7 +362,7 @@ Again following the same protocol as in the IFR case
 we define $\Lambda^\ast_k=\Lambda(\theta^\ast_k)$ with $\theta^\ast_0=0$ and $\Lambda^\ast_0=0$.  Then in the interval
 $\theta^\ast_{k^\ast(t)}\leq t < \theta^\ast_{k^\ast(t)}$ the function $\Lambda$ has the exponential form
 \begin{eqnarray}
-   \Lambda(t|\gamma,\mathbf{\theta},\mathbf{v})
+   \Lambda(t|\lambda_0,w_0,\gamma,\mathbf{\theta},\mathbf{v})
    &=&
    \Lambda^\ast_{k^\ast(t)} + \frac{\lambda_0 e^{- D^\ast_{k^\ast(t)}}}{C^\ast_{0l^\ast}}
                       \left\{e^{C^\ast_{0k^\ast(t)}t}
@@ -336,6 +377,12 @@ If $U\sim\text{Uniform}(0,1)$ then $T$ is a draw from this distribution if
        \right]
 \end{eqnarray}
 where $k^\ast = \text{max}\{k\in\{1,\ldots,K\}\,:\,\Lambda^\ast_{k}\leq -\log U\}$
+
+Priors are needed for $\lambda_0$ and $w_0$.  Suitable priors are
+\begin{eqnarray}
+   \frac{1}{\gamma}\log\lambda_0 &\sim& \text{Normal}(0,\nu^{-2})\\
+   \frac{w_0}{\gamma} &\sim& \text{Normal}(0,\nu^{-2}) 
+\end{eqnarray}
 
 ## Samplers
 
