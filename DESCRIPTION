@@ -9,7 +9,9 @@ Description: One paragraph description of what the package does as one or more f
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.2)
 LinkingTo: Rcpp
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
+Encoding: UTF-8
+LazyData: true
 Suggests: 
     knitr,
     rmarkdown

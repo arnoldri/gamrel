@@ -1,3 +1,31 @@
+#############################################################################
+#' Make the DPP Stick Breaking Weights
+#' 
+#' @param vvec Vector of draws from Beta(1,alpha)
+#' 
+#' @description Make the DPP stick breaking weights from a set of 
+#' draws from Beta(1,alpha)
+#' @export
+makew <- function(vvec) {
+  # make the weight vector
+  kmax <- length(vvec)
+  wvec <- c(vvec[-kmax],1)*c(1,cumprod(1-vvec[-kmax]))
+  return(wvec)
+}
+
+#' Make the DPP Beta draws
+#' 
+#' @param wvec Vector of DPP weights
+#' 
+#' @description Make the DPP Beta draws from a set of stick breaking weights
+#' 
+#' @export
+makev <- function(wvec) {
+  # make the v vector
+  kmax <- length(wvec)
+  vvec <- wvec/c(1, 1-cumsum(wvec[-kmax]))
+  return(vvec)
+}
 ################################################################################
 # Gaussian process
 
