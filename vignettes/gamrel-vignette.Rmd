@@ -458,7 +458,7 @@ becomes
 
 In particular note that in the stick breaking algorithm, terminated after $K-1$ breaks: 
 \begin{eqnarray}
-   w_k &=& \gamma v_k \prod{\ell < k} (1-v_\ell)\\
+   w_k &=& \gamma v_k \prod_{\ell < k} (1-v_\ell)\\
    w_K &=& \gamma-\sum_{\ell=1}^{K-1} w_\ell\\
        &=& \gamma\prod_{\ell=1}^{K-1} (1-v_\ell)\\
    \gamma &=& \sum_{k=1}^K w_k\\
@@ -557,7 +557,7 @@ Full conditional:
                -\sum_{i=1}^n\Lambda(t_i | \eta,\gamma,\mathbf{\theta}, \mathbf{v})\right]\\
             &&\times \gamma^{\alpha-1}e^{\beta\gamma}\\
             &\propto& \gamma^{n_0} e^{-\gamma\sum_{i=1}^n \tilde{\Lambda}(t_i|\Omega\backslash\gamma)}
-               \gamma^{\alpha-1}e^{\beta\gamma}
+               \gamma^{\alpha-1}e^{\beta\gamma}\\
             &\propto& \gamma^{\alpha+n_0-1} e^{-\gamma(\beta + \sum_{i=1}^n \tilde{\Lambda}(t_i|\Omega\backslash\gamma))}
 \end{eqnarray}
 Gibbs update:
@@ -578,19 +578,19 @@ Full conditional:
             &&\times \exp(-\phi\theta_k) 
   \end{eqnarray}
 Proposal: Select $k\sim\text{Cat}(\tilde{\mathbf{w}}(\mathbf{v}))$ and then propose 
-$\theta^\ast_k$ by a log Normal random walk Metropolis step: 
-$\log\theta_k^\ast | \log\theta_k, \sigma_\theta^2 \sim N(\log\theta_k, \sigma_\theta^2)$
+$\theta^+_k$ by a log Normal random walk Metropolis step: 
+$\log\theta_k^+ | \log\theta_k, \sigma_\theta^2 \sim N(\log\theta_k, \sigma_\theta^2)$
 \begin{eqnarray}
-  q(k, \theta^\ast_k | \theta_k, \mathbf{v}) 
-                    &\propto& \frac{\tilde{w}_k}{\theta^\ast_k} 
-                    e^{-(\log\theta^\ast_k-\log\theta_k)^2/(2\sigma_\theta^2)}
+  q(k, \theta^+_k | \theta_k, \mathbf{v}) 
+                    &\propto& \frac{\tilde{w}_k}{\theta^+_k} 
+                    e^{-(\log\theta^+_k-\log\theta_k)^2/(2\sigma_\theta^2)}
 \end{eqnarray}
 Proposal ratio:
 \begin{eqnarray}
-  r &=& \frac{f(\theta^\ast_k|-)}{f(\theta_k|-)} 
-        \frac{q(k, \theta_k | \theta^\ast_k, \mathbf{v})}{q(k, \theta^\ast_k | \theta_k, \mathbf{v})}\\
-    &=& LR(\Omega^+|\Omega) \times e^{-\phi(\theta^\ast_k-\theta_k)}\frac{\theta^\ast_k}{\theta_k}\\
-  \log r &=& \log LR(\Omega^+|\Omega) -\phi(\theta^\ast_k-\theta_k) + \log\theta^\ast_k-\log\theta_k
+  r &=& \frac{f(\theta^+_k|-)}{f(\theta_k|-)} 
+        \frac{q(k, \theta_k | \theta^+_k, \mathbf{v})}{q(k, \theta^+_k | \theta_k, \mathbf{v})}\\
+    &=& LR(\Omega^+|\Omega) \times e^{-\phi(\theta^+_k-\theta_k)}\frac{\theta^+_k}{\theta_k}\\
+  \log r &=& \log LR(\Omega^+|\Omega) -\phi(\theta^+_k-\theta_k) + \log\theta^+_k-\log\theta_k
 \end{eqnarray}
   
 #### $v_k$
@@ -602,25 +602,38 @@ Full conditional:
             \exp\left[-\sum_{i=1}^n\Lambda(t_i | \mathbf{\theta}, \mathbf{v})\right]\\
             &&\times (1-v_k)^{\alpha-1}
 \end{eqnarray}
-Proposal: Select $k\sim\text{Cat}(\tilde{\mathbf{w}}(\mathbf{v}))$ and then propose 
+Proposal: Select $k\sim\text{Cat}(\tilde{\mathbf{w}}(\mathbf{v})/(1-\tilde{w}_K))$ - only
+select $k$ in $\{1,\ldots,K-1\}$.  Then propose 
 $v^+_k$ by a logistic Normal random walk Metropolis step: 
 $\text{logit}v_k^+ | \text{logit}\,v_k, \sigma_v^2 \sim N(\text{logit}\,v_k, \sigma_v^2)$
 \begin{eqnarray}
   q(k, v^+_k | v_k, \mathbf{v}_{-k}) 
-                    &\propto& \frac{\tilde{w}_k(\mathbf{v})}{v^\ast_k(1-v^\ast_k)} 
-                    e^{-(\text{logit}\,v^\ast_k-\text{logit}\,v_k)^2/(2\sigma_v^2)}\\
-                    &\propto& \frac{v_k}{v^\ast_k(1-v^\ast_k)} 
-                    e^{-(\text{logit}\,v^\ast_k-\text{logit}\,v_k)^2/(2\sigma_v^2)}\\
+                    &\propto& 
+                    \frac{\tilde{w}_k(\mathbf{v})}{(1-\tilde{w}_K(\mathbf{v}))v^+_k(1-v^+_k)} 
+                    e^{-(\text{logit}\,v^+_k-\text{logit}\,v_k)^2/(2\sigma_v^2)}\\
+                    &\propto& \frac{v_k}{(1-\tilde{w}_K(\mathbf{v}))v^+_k(1-v^+_k)} 
+                    e^{-(\text{logit}\,v^+_k-\text{logit}\,v_k)^2/(2\sigma_v^2)}\\
 \end{eqnarray}
 Proposal ratio:
 \begin{eqnarray}
-  r &=& \frac{f(v^\ast_k|-)}{f(v_k|-)} 
-        \frac{q(k, v_k | v^\ast_k, \mathbf{v}_{-k})}{q(k, v^\ast_k | v_k, \mathbf{v}_{-k})}\\
+  r &=& \frac{f(v^+_k|-)}{f(v_k|-)} 
+        \frac{q(k, v_k | v^+_k, \mathbf{v}_{-k})}{q(k, v^+_k | v_k, \mathbf{v}_{-k})}\\
     &=& LR(\Omega^+|\Omega)      
-         \left(\frac{v_k^\ast}{v_k}\right)^2\left(\frac{1-v_k^\ast}{1-v_k}\right)^{\alpha}\\
+         \left(\frac{v_k^+}{v_k}\right)^2\left(\frac{1-v_k^+}{1-v_k}\right)^{\alpha}
+         \frac{1-\tilde{w}_K}{1-\tilde{w}^+_K}\\
   \log r &=& \log LR(\Omega^+|\Omega)\\        
-     &&+\alpha\log\left(\frac{1-v_k^\ast}{1-v_k}\right)+2\log\left(\frac{v_k^\ast}{v_k}\right)
+     &&+\alpha\log\left(\frac{1-v_k^+}{1-v_k}\right)+2\log\left(\frac{v_k^+}{v_k}\right)\\
+     &&+\log\left(\frac{1-\tilde{w}_K}{1-\tilde{w}^+_K}\right)
 \end{eqnarray}
+where $\tilde{w}_K({\bf v})=1-\sum_{k=1}^{K-1} \tilde{w}_\ell({\bf v})$.
+
+NB: if we update all components in sequence from $k=1,\ldots,K$ (without random selection), we 
+don't have the selection probabilties in the proposal ratio.  Therefore it becomes:
+\begin{eqnarray}
+  \log r &=& \log LR(\Omega^+|\Omega)\\        
+     &&+\alpha\log\left(\frac{1-v_k^+}{1-v_k}\right)+\log\left(\frac{v_k^+}{v_k}\right)
+\end{eqnarray}
+where the final term has a multiplier of 1 not 2.
   
 #### $\alpha$
 
@@ -690,7 +703,7 @@ As an alternative to the $\gamma$ and $v_k$ updates, we can update $w_k=\gamma v
 
 Proposal: Select $k\sim\text{Cat}(\tilde{\mathbf{w}}(\mathbf{v}))$ and then propose 
 $w^+_k$ by a log Normal random walk Metropolis step: 
-$\log w_k^\ast | \log w_k, \sigma_w^2 \sim N(\log w_k, \sigma_w^2)$
+$\log w_k^+ | \log w_k, \sigma_w^2 \sim N(\log w_k, \sigma_w^2)$
 \begin{eqnarray}
   q(k, w^+_k | w_k, \gamma) 
                     &\propto& \frac{\tilde{w}_k}{w^+_k} 
@@ -701,7 +714,9 @@ $\log w_k^\ast | \log w_k, \sigma_w^2 \sim N(\log w_k, \sigma_w^2)$
 Compute
 \begin{eqnarray}
   \gamma^+ &=& \sum_{\ell=1}^K w^+_\ell\\
-  v^+_\ell &=& \frac{w^+_\ell}{\sum_{j=\ell}^K w_j}
+  v^+_\ell &=& \frac{w^+_\ell}{\sum_{j=\ell}^K w_j}\\
+  \lambda_0^+ &=& \gamma^+\eta\\
+  \tilde{w}^+_\ell &=& \frac{w^+_\ell}{\gamma^+}
 \end{eqnarray}
 
 
@@ -730,5 +745,34 @@ Proposal ratio:
             \log\frac{v^+_\ell}{v_\ell} + (\alpha-1)\log\frac{1-v^+_\ell}{1-v_\ell}
             \right]
 \end{eqnarray}
+
+NB: if we update all components in sequence from $k=1,\ldots,K$ (without random selection), we 
+don't have the selection probabilties in the proposal ratio.  Therefore it becomes:
+\begin{eqnarray}
+\log r &=& \log LR(\Omega^+|\Omega)\\
+       && + (\alpha-1)\log\left(\frac{\gamma^+}{\gamma}\right)
+          - \log\left(\frac{w_k^+}{w_k}\right)\\
+       && - \beta(\gamma^+-\gamma)
+          + \sum_{\ell=1}^{K-1} \left[
+            \log\frac{v^+_\ell}{v_\ell} + (\alpha-1)\log\frac{1-v^+_\ell}{1-v_\ell}
+            \right]
+\end{eqnarray}
+
+# Computing WAIC
+
+Following @Watanabe:2010: Given a set of independent observations 
+$\{y_i\}_{i=1}^n$ that are conditionally independent 
+given the parameter $\theta$ - i.e. having probability distribution 
+$f(y_i|\theta)$ and given some prior $\pi(\theta)$, we can generate 
+a set of $T$ draws $\theta_t$ from the posterior distribution 
+$f(\theta|{\bf y})$.
+
+The WAIC can then be calculated:
+\begin{eqnarray}
+   \text{WAIC} 
+   &=& -2 \sum_{i=1}^n \log\left(\text{mean}\left[\{f(y_i|\theta_t)\}_{t=1}^T\right]\right)\\
+   &&+2 \sum_{i=1}^n \text{var}\left[\{\log(f(y_i|\theta_t))\}_{i=1}^n\right]
+\end{eqnarray}
+When comparing models we prefer the model with the lowest WAIC.
 
 # Bibliography
