@@ -69,3 +69,28 @@ vector.as.state <- function(statevec, datlist, fpar, ppar, model) {
   return(state)
 }
 
+#' Evaluate the WAIC value from a chain
+#' 
+#' @param smat Matrix output of an MCMC chain
+#' @param datlist Data object
+#' @param fpar Fixed parameters of the model
+#' @param ppar Parameters used in running the sampler
+#' @param model Model name
+#' 
+#' @export
+waicfunc <- function(smat, datlist, fpar, ppar, model) {
+  llmat <- t(sapply(1:nrow(smat), 
+                    function(j) {
+                      state <- vector.as.state(smat[j,], datlist, fpar, ppar, model)
+                      sapply(1:datlist$n, function(i) {
+                        subdatlist <- list(n=1, n0=as.numeric(datlist$obs[i]),
+                                           tvec=datlist$tvec[i], obs=datlist$obs[i])
+                        return(llikef(state, subdatlist, fpar, model))
+                      })
+                    }))
+  # Check
+  #range(apply(llmat,1,sum)-smat[,"llike"])
+  
+  waic <- -2*sum(log(apply(exp(llmat),2,mean))) +2*sum(apply(llmat,2,var))
+  return(waic)
+}
