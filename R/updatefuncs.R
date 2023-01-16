@@ -357,7 +357,11 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
     } else {
       # random support point update: only select from 1:(kmax-1)
       ksamplevec <- sample(fpar$kmax-1, ppar$ksim,
+<<<<<<< HEAD
                            prob=state$uvec[-fpar$kmax], replace=TRUE)
+=======
+                           prob=state$uvec, replace=TRUE)
+>>>>>>> d5f782c476a6d2c756eb1bd86116089f8fae4e76
     }
     naccepted <- 0
     for(k in ksamplevec) {
