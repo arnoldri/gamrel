@@ -529,7 +529,7 @@ Full conditional:
   f(\eta | - ) &\propto&
     f({\bf t}| - ) \times e^{-\nu\eta}
 \end{eqnarray}
-M-H update with a log Normal proposal $\text{logN(\cdot|\eta,\sigma_\eta^2)}$.
+M-H update with a log Normal proposal $\text{logN}(\cdot|\eta,\sigma_\eta^2)$.
 
 Proposal ratio:
 \begin{eqnarray}
@@ -714,9 +714,9 @@ $\log w_k^+ | \log w_k, \sigma_w^2 \sim N(\log w_k, \sigma_w^2)$
 Compute
 \begin{eqnarray}
   \gamma^+ &=& \sum_{\ell=1}^K w^+_\ell\\
-  v^+_\ell &=& \frac{w^+_\ell}{\sum_{j=\ell}^K w_j}\\
-  \lambda_0^+ &=& \gamma^+\eta\\
   \tilde{w}^+_\ell &=& \frac{w^+_\ell}{\gamma^+}
+  v^+_\ell &=& \frac{\tilde{w}^+_\ell}{\sum_{j=\ell}^K \tilde{w}_j}\\
+  \lambda_0^+ &=& \gamma^+\eta\\
 \end{eqnarray}
 
 
@@ -751,7 +751,6 @@ don't have the selection probabilties in the proposal ratio.  Therefore it becom
 \begin{eqnarray}
 \log r &=& \log LR(\Omega^+|\Omega)\\
        && + (\alpha-1)\log\left(\frac{\gamma^+}{\gamma}\right)
-          - \log\left(\frac{w_k^+}{w_k}\right)\\
        && - \beta(\gamma^+-\gamma)
           + \sum_{\ell=1}^{K-1} \left[
             \log\frac{v^+_\ell}{v_\ell} + (\alpha-1)\log\frac{1-v^+_\ell}{1-v_\ell}
