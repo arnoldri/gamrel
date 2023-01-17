@@ -153,8 +153,8 @@ rgammp_bridge <- function(tvec, y0=0, y1=NULL, alpha=1, beta=1) {
       yvec[i] <- ( yvec[ib]
                    +
                    (yvec[ia]-yvec[ib])*
-                     rbeta(1,gammp.alphafunc(tvec[ib],tvec[i],alpha),
-                             gammp.alphafunc(tvec[i],tvec[ia],alpha)) )
+                     rbeta.t(1,gammp.alphafunc(tvec[ib],tvec[i],alpha),
+                               gammp.alphafunc(tvec[i],tvec[ia],alpha)) )
       below[i] <- NA
       above[i] <- NA
       kdx <- (ivec<i) & !is.na(above) & (above>i)
@@ -217,7 +217,7 @@ rgammp_sbrk <- function(alpha=1, beta=1, gamma=1, g0=rexp, ..., kmax=100) {
 #' @export
 rgammp_sbdp <- function(alpha=1, beta=1, g0=rexp, ..., kmax=100) {
   gamma <- rgamma(1,alpha,beta)
-  vvec <- c(rbeta(kmax-1,1,alpha),1)
+  vvec <- c(rbeta.t(kmax-1,1,alpha),1)
   thetavec <- g0(kmax, ...)
   cvec <- cumprod(1-vvec)
   uvec <- vvec*c(1,cvec[-kmax])

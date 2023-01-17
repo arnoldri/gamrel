@@ -73,7 +73,7 @@ init.objects <- function(tvec, obs,
       epar$gamma <- rgamma(1,epar$alpha,epar$beta)
     }
     epar$thetavec <- rexp(kmax, epar$phi)
-    epar$vvec <- rbeta(kmax, 1, epar$alpha)
+    epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
   } else {
     stop("Specified model has not been implemented")
   }
@@ -108,6 +108,8 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     # was the last update accepted?
     state$accepted <- rep(0,length(ppar$update))
     names(state$accepted) <- names(ppar$update)
+    # counter
+    state$count <- 0
   } else {
     stop("Specified model has not been implemented")
   }
@@ -237,19 +239,49 @@ plot_state <- function(state, datlist, fpar, ppar, model,
 update_state <- function(state, datlist, fpar, ppar, model) {
   # update the state
   old.state <- state
-  if(model=="IFR") {
-    state <- update_state.ifr(state, datlist, fpar, ppar)    
-  } else if(model=="DFR") {
-    invisible()
+  if(model%in%c("IFR","DFR")) {
+    state <- update_state.ifrdfr(state, datlist, fpar, ppar, model)    
+  } else if(model=="LWB") {
+    state <- update_state.lwb(state, datlist, fpar, ppar, model)    
+  } else if(model=="SBT") {
+    state <- update_state.sbt(state, datlist, fpar, ppar, model)    
+  } else if(model=="MBT") {
+    state <- update_state.mbt(state, datlist, fpar, ppar, model)    
+  } else if(model=="LCV") {
+    state <- update_state.lcv(state, datlist, fpar, ppar, model)    
   } else {
     stop("Specified model has not been implemented")
   }
   return(state)
 }
+update_state.lwb <- function(state, datlist, fpar, ppar, model) { 
+  # Update a LWB state
+  state$count <- state$count + 1
+  stop("Not yet implemented")
+  return(state)
+}
+update_state.sbt <- function(state, datlist, fpar, ppar, model) { 
+  # Update a SBT state
+  state$count <- state$count + 1
+  stop("Not yet implemented")
+  return(state)
+}
+update_state.mbt <- function(state, datlist, fpar, ppar, model) { 
+  # Update a MBT state
+  state$count <- state$count + 1
+  stop("Not yet implemented")
+  return(state)
+}
+update_state.lcv <- function(state, datlist, fpar, ppar, model) { 
+  # Update a LCV state
+  state$count <- state$count + 1
+  stop("Not yet implemented")
+  return(state)
+}
 
-update_state.ifr <- function(state, datlist, fpar, ppar) { 
-  # Update an IFR state
-  model <- "IFR"
+update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) { 
+  # Update an IFR or DFR state
+  state$count <- state$count + 1
   
   # update eta ##!!==  
   if(ppar$update["eta"]) {
@@ -263,6 +295,10 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
     log.r <- ( llike.new - llike.old 
                +log(eta.new/eta.old) - fpar$nu*(eta.new-eta.old) )
     if(ppar$verbose) {
+      cat(sprintf("eta: %g->%g: logr=%g\n",
+                  eta.old, eta.new, log.r))
+    }
+    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
       cat(sprintf("eta: %g->%g: logr=%g\n",
                   eta.old, eta.new, log.r))
     }
@@ -333,6 +369,10 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
       llike.new <- llikef(state, datlist, fpar, model)
       log.r <- log(theta.new/theta.old) - state$phi*(theta.new-theta.old)
       log.r <- log.r + llike.new - llike.old
+      if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+        cat(sprintf("thetavec: %d: %g->%g: logr=%g\n",
+                    k, theta.old, theta.new, log.r))
+      }
       if(runif(1)<exp(log.r)) {
         # accepted
         naccepted <- naccepted + 1
@@ -383,6 +423,10 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
       if(ppar$verbose) cat(sprintf("[%g;%g;%g;%g;%g]\n",
                                    v.old,v.new,llike.old,llike.new,
                                    exp(log.r)))
+      if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+        cat(sprintf("vvec: %d: %g->%g: logr=%g\n",
+                    k, v.old, v.new, log.r))
+      }
       if(runif(1)<exp(log.r)) {
         # accepted
         naccepted <- naccepted + 1
@@ -394,6 +438,10 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
         state$vvec[k] <- v.old
         state <- augment.state(state, fpar)
         if(ppar$verbose) cat("-")
+      }
+      if(any(is.nan(state$vvec)) || any(state$vvec[-fpar$kmax]==1)) { ##!!==
+        cat("vvec:")
+        browser()
       }
     }
     state$accepted["vvec"] <- naccepted
@@ -419,9 +467,14 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
       cat(sprintf("alpha: %g->%g: logr=%g\n",
                   alpha.old, alpha.new, log.r))
     }
+    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+      cat(sprintf("alpha: %g->%g: logr=%g\n",
+                  alpha.old, alpha.new, log.r))
+    }
     if(runif(1)<exp(log.r)) {
       # accepted
       state$alpha <- alpha.new
+      state$llike <- llikef(state, datlist, fpar, model)
       state$lprior <- lpriorf(state, fpar, model)
       state$accepted["alpha"] <- 1
     } else {
@@ -439,6 +492,7 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
     b1star <- fpar$b1+state$alpha
     b2star <- fpar$b2+state$gamma
     state$beta <- rgamma(1, b1star, b2star)
+    state$llike <- llikef(state, datlist, fpar, model)
     state$lprior <- lpriorf(state, fpar, model)
     state$accepted["beta"] <- 1
     if(ppar$verbose) cat("\n")
@@ -451,6 +505,7 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
     f1star <- fpar$f1+fpar$kmax
     f2star <- fpar$f2+sum(state$thetavec)
     state$phi <- rgamma(1, f1star, f2star)
+    state$llike <- llikef(state, datlist, fpar, model)
     state$lprior <- lpriorf(state, fpar, model)
     state$accepted["phi"] <- 1
     if(ppar$verbose) cat("\n")
@@ -478,10 +533,12 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
       w.old <- state$wvec[k]
       w.new <- exp( rnorm(1,log(w.old),ppar$sd.log.w) )
       state$wvec[k] <- w.new
-      gamma.new <- gamma.old-w.old+w.new
+      gamma.new <- sum(state$wvec)
       state$gamma <- gamma.new
       state$uvec <- state$wvec/state$gamma
-      state$vvec <- state$wvec/(rev(cumsum(rev(state$wvec))))
+      state$vvec <- state$uvec/(1-c(0,cumsum(state$uvec[-fpar$kmax])))
+      state$vvec <- pmin(state$vvec, 1-10*.Machine$double.neg.eps)
+      state$vvec[fpar$kmax] <- 1
       state$lambda0 <- state$gamma*state$eta
       
       llike.new <- llikef(state, datlist, fpar, model)
@@ -508,6 +565,15 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
       }
       log.r <- log.r + llike.new - llike.old
       if(ppar$verbose) cat(k)
+      if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+        cat(sprintf("wvec: %d: %g->%g: logr=%g\n",
+                    k, w.old, w.new, log.r))
+        cat(sprintf("%g;%g\n", min(vvec.old[-fpar$kmax]), max(vvec.old[-fpar$kmax])))
+        cat(sprintf("%g;%g\n", min(state$vvec[-fpar$kmax]), max(state$vvec[-fpar$kmax])))
+        cat(sprintf("%g;%g;%g\n", state$alpha, gamma.old, gamma.new))
+        cat(sprintf("%g;%g\n", llike.old, llike.new))
+        browser()
+      }
       if(runif(1)<exp(log.r)) {
         # accepted
         naccepted <- naccepted + 1
@@ -518,6 +584,10 @@ update_state.ifr <- function(state, datlist, fpar, ppar) {
         # reject
         state <- state.old
         if(ppar$verbose) cat("-")
+      }
+      if(any(is.nan(state$vvec)) || any(state$vvec[-fpar$kmax]==1)) { ##!!==
+        cat("wvec:")
+        browser()
       }
     }
     if(ppar$verbose) cat("\n")
