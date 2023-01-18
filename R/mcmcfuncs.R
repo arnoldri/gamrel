@@ -24,6 +24,7 @@ run.chain <- function(nstore, nthin=1, nburn=0,
                       state, datlist, fpar, ppar, model,
                       do.plot=FALSE, show.progress=NULL) {
   tstart <- Sys.time()
+  nthin <- max(1,nthin)
   if(nburn>0) state <- burn.chain(nburn, state, datlist, fpar, ppar, model)
   svec <- state.as.vector(state, fpar, model)
   smat <- array(NA, dim=c(nstore, length(svec)))

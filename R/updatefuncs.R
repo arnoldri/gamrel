@@ -16,16 +16,16 @@ init.objects <- function(tvec, obs,
   if(model%in%c("IFR","DFR")) {
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
-                        a1=1, a2=0.1,
+                        a1=1, a2=1,
                         b1=1, b2=0.1,
                         f1=1, f2=0.1)
     }
     if(is.null(update.par)) {
-      update.par <- list(sd.log.eta=0.01,
-                         sd.log.theta=0.01,
-                         sd.logit.v=0.01,
-                         sd.log.w=0.01,
-                         sd.log.alpha=0.01)
+      update.par <- list(sd.log.eta=1,
+                         sd.log.theta=1,
+                         sd.logit.v=1,
+                         sd.log.w=1,
+                         sd.log.alpha=1)
     }
     # fixed parameters
     parnames <- c("eta","gamma","thetavec","vvec","alpha","beta","phi")
@@ -43,8 +43,8 @@ init.objects <- function(tvec, obs,
     names(update) <- update_parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
-                 ksweep=TRUE, # = all support points are updated each time
-                 ksim=kmax,   # only used if *not* doing a sweep update
+                 ksweep=FALSE, # = all support points are updated each time
+                 ksim=min(kmax,max(5,round(kmax/5))), # only used if *not* doing a sweep update
                  sd.log.eta=update.par$sd.log.eta,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
@@ -171,8 +171,11 @@ augment.state <- function(state, fpar) {
   # given vvec, compute unscaled weights uvec [with sum(uvec)=1]
   # and scaled weights wvec=gamma*uvec
   # [note that vvec[kmax] exists, but is never used for anything]
-  state$uvec <- state$vvec*c(1,cumprod(1-state$vvec[-fpar$kmax]))
-  state$uvec[fpar$kmax] <- 1-sum(state$uvec[-fpar$kmax])
+  cp <- cumprod(1-state$vvec[-fpar$kmax])
+  state$uvec <- state$vvec*c(1,cp)
+  state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
+  #state$uvec <- state$vvec*c(1,cumprod(1-state$vvec[-fpar$kmax]))
+  #state$uvec[fpar$kmax] <- 1-sum(state$uvec[-fpar$kmax])
   state$wvec <- state$gamma * state$uvec
   # compute lambda0
   state$lambda0 <- state$gamma*state$eta
@@ -279,7 +282,7 @@ update_state.lcv <- function(state, datlist, fpar, ppar, model) {
   return(state)
 }
 
-update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) { 
+off.update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) { 
   # Update an IFR or DFR state
   state$count <- state$count + 1
   
