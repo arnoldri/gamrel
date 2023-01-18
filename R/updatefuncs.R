@@ -17,11 +17,12 @@ init.objects <- function(tvec, obs,
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         a1=1, a2=1,
-                        b1=1, b2=0.1,
-                        f1=1, f2=0.1)
+                        b1=1, b2=1,
+                        f1=1, f2=1)
     }
     if(is.null(update.par)) {
-      update.par <- list(sd.log.eta=1,
+      update.par <- list(psweep=0.1, # probability of the sweep move
+                         sd.log.eta=1,
                          sd.log.theta=1,
                          sd.logit.v=1,
                          sd.log.w=1,
@@ -38,13 +39,15 @@ init.objects <- function(tvec, obs,
                  f1=prior.par$f1, f2=prior.par$f2, # prior for phi
                  use.Cpp=use.Cpp) 
     # parameters to update
-    update_parnames <- c(parnames,"wvec")
+    update_parnames <- c(parnames,"wvec","thetaswap")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
                  ksweep=FALSE, # = all support points are updated each time
-                 ksim=min(kmax,max(5,round(kmax/5))), # only used if *not* doing a sweep update
+                 ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
+                 kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
+                 psweep=update.par$psweep,
                  sd.log.eta=update.par$sd.log.eta,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
@@ -352,7 +355,9 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
   # update thetavec ##!!==  
   if(ppar$update["thetavec"]) {
     if(ppar$verbose) cat("thetavec:")
-    if(ppar$ksweep) {
+    sweep <- as.logical(rbinom(1,1,ppar$psweep))
+    if(ppar$verbose && sweep) cat("(sweep):")
+    if(sweep || ppar$ksweep) {
       ksamplevec <- 1:fpar$kmax
     } else {
       ksamplevec <- sample(fpar$kmax, ppar$ksim,
@@ -396,7 +401,9 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
   # update vvec ##!!==  
   if(ppar$update["vvec"]) {
     if(ppar$verbose) cat("vvec:")
-    if(ppar$ksweep) {
+    sweep <- as.logical(rbinom(1,1,ppar$psweep))
+    if(ppar$verbose && sweep) cat("(sweep):")
+    if(sweep || ppar$ksweep) {
       ksamplevec <- 1:(fpar$kmax-1)
     } else {
       ksamplevec <- sample(fpar$kmax-1, ppar$ksim,
@@ -418,7 +425,7 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       state$llike <- llikef(state, datlist, fpar, model)
       state$lprior <- lpriorf(state, fpar, model)
       log.r <- state$llike - state.old$llike
-      if(ppar$ksweep) {
+      if(sweep || ppar$ksweep) {
         # updating in sequence
         log.r <- (log.r + state$alpha*log((1-v.new)/(1-v.old)) 
                   + log(v.new/v.old)
@@ -540,7 +547,9 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
   if(ppar$update["wvec"]) {
     if(ppar$verbose) cat("wvec:")
     # Do not update wvec[kmax]
-    if(ppar$ksweep) {
+    sweep <- as.logical(rbinom(1,1,ppar$psweep))
+    if(ppar$verbose && sweep) cat("(sweep):")
+    if(sweep || ppar$ksweep) {
       ksamplevec <- 1:(fpar$kmax-1)
     } else {
       ksamplevec <- sample(fpar$kmax-1, ppar$ksim,
@@ -591,7 +600,7 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       
       #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
       
-      if(ppar$ksweep) {
+      if(sweep || ppar$ksweep) {
         # updating sequentially
         log.r <- log.r
       } else {
@@ -632,6 +641,46 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       
       #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
       
+    }
+    if(ppar$verbose) cat("\n")
+  }
+  
+  # swap elements of thetavec ##!!==  
+  if(ppar$update["thetaswap"]) {
+    if(ppar$verbose) cat("thetawsap:")
+    ksamplevec1 <- sample(fpar$kmax, ppar$kswap,
+                          prob=state$uvec, replace=TRUE)
+    ksamplevec2 <- sample(fpar$kmax, ppar$kswap, replace=TRUE)
+    naccepted <- 0
+    for(i in 1:ppar$kswap) {
+      k1 <- ksamplevec1[i]
+      k2 <- ksamplevec2[i]
+      state.old <- state
+      state$thetavec[c(k1,k2)] <- state.old$thetavec[c(k2,k1)]
+      state$llike <- llikef(state, datlist, fpar, model)
+      state$lprior <- lpriorf(state, fpar, model)
+      log.r <- state$llike - state.old$llike
+      log.r <- (log.r + log(state$wvec[k2]/state$wvec[k1]))
+      if(ppar$verbose) {
+        cat(sprintf("thetaswap[%d,%d]: (%g;%g) %g->%g: logr=%g\n",
+                    k1, k2, state.old$llike, state$llike,
+                    state.old$thetavec[k1], state.old$thetavec[k2], log.r))
+      }
+      if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+        cat(sprintf("thetaswap[%d,%d]: %g->%g: logr=%g\n",
+                    k1, k2, state.old$thetavec[k1], state.old$thetavec[k2], log.r))
+        browser()
+      }
+      if(runif(1)<exp(log.r)) {
+        # accept
+        naccepted <- naccepted + 1
+        if(ppar$verbose) cat("+")
+      } else {
+        # reject
+        state <- state.old
+        if(ppar$verbose) cat("-")
+      }
+      state$accepted["thetaswap"] <- naccepted
     }
     if(ppar$verbose) cat("\n")
   }
