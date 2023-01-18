@@ -282,7 +282,7 @@ update_state.lcv <- function(state, datlist, fpar, ppar, model) {
   return(state)
 }
 
-off.update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) { 
+update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) { 
   # Update an IFR or DFR state
   state$count <- state$count + 1
   
@@ -290,320 +290,355 @@ off.update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
   if(ppar$update["eta"]) {
     if(ppar$verbose) cat("eta:")
     state.old <- state
-    eta.old <- state$eta
-    # log normal random walk proposal
-    eta.new <- exp( rnorm(1,log(eta.old),ppar$sd.log.eta))
-    llike.old <- state$llike
+    eta.old <- state.old$eta
+    eta.new <- exp( rnorm(1, log(eta.old), ppar$sd.log.eta) )
     state$eta <- eta.new
     state$lambda0 <- state$gamma*state$eta
-    llike.new <- llikef(state, datlist, fpar, model)
-    log.r <- ( llike.new - llike.old 
-               +log(eta.new/eta.old) - fpar$nu*(eta.new-eta.old) )
+    state$llike <- llikef(state, datlist, fpar, model)
+    state$lprior <- lpriorf(state, fpar, model)
+    log.r <- (state$llike - state.old$llike)
+    log.r <- log.r + log(eta.new/eta.old) - fpar$nu*(eta.new-eta.old)
     if(ppar$verbose) {
-      cat(sprintf("eta: %g->%g: logr=%g\n",
+      cat(sprintf("eta: (%g;%g) %g->%g: logr=%g\n",
+                  state.old$llike, state$llike,
                   eta.old, eta.new, log.r))
     }
     if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
       cat(sprintf("eta: %g->%g: logr=%g\n",
                   eta.old, eta.new, log.r))
+      browser()
     }
     if(runif(1)<exp(log.r)) {
-      # accepted
+      # accept
       state$accepted["eta"] <- 1
-      state$llike <- llike.new
-      state$lprior <- lpriorf(state, fpar, model)
+      if(ppar$verbose) cat("+")
     } else {
       # reject
       state <- state.old
       state$accepted["eta"] <- 0
+      if(ppar$verbose) cat("-")
     }
     if(ppar$verbose) cat("\n")
   }
   
-  # update gamma !!==: Gibbs update
+  # update gamma ##!!==  
   if(ppar$update["gamma"]) {
     if(ppar$verbose) cat("gamma:")
+    llike.old <- state$llike
     gamma.old <- state$gamma
-    cc <- sum(int.lambda.func(datlist$tvec, 
-                              model.list=list(model=model, 
-                                              kmax=fpar$kmax,
-                                              lambda0=state$eta, # NB - unscaled lambda0 used here
-                                              thetavec=state$thetavec, 
-                                              wvec=state$uvec),  # NB - unscaled weights used here
-                              fpar$use.Cpp))
+    temp.model.list <- list(model=model, kmax=kmax, 
+                            lambda0=state$eta, ## Note: unscaled
+                            thetavec=state$thetavec,
+                            wvec=state$uvec)   ## Note: unscaled
+    cc <- sum(int.lambda.func(datlist$tvec, model.list=temp.model.list))
     g1star <- state$alpha+datlist$n0
-    g2star <- state$beta+cc
-    state$gamma <- rgamma(1, g1star, g2star)
-    state$accepted["gamma"] <- 1
-    state$wvec <- state$gamma*state$uvec
+    g2star <- state$beta + cc
+    gamma.new <- rgamma(1, g1star, g2star)
+    state$gamma <- gamma.new
     state$lambda0 <- state$gamma*state$eta
+    state$wvec <- state$gamma*state$uvec
     state$llike <- llikef(state, datlist, fpar, model)
     state$lprior <- lpriorf(state, fpar, model)
+    state$accepted["gamma"] <- 1
     if(ppar$verbose) {
-      cat(sprintf("gamma: %g->%g: logr=Gibbs\n",
-                  gamma.old, state$gamma))
+      cat(sprintf("gamma: (%g;%g) %g->%g: logr=Gibbs\n",
+                  llike.old, state$llike,
+                  gamma.old, gamma.new))
+      cat("+")
     }
-    #cat(sprintf("Gamma: %f->%f: r=%f\n",gamma.old, gamma.new, exp(log.r)))
-    #cat(sprintf("q(.|a,b) = %f %f\n",
-    #            state$alpha+datlist$n0, state$beta+cc))
-    #cat(sprintf("  (llike,prior,lq): (%.3f %.3f %.3f)-> (%.3f %.3f %.3f)\n",
-    #            llike.old, lprior.old, lq.new,
-    #            llike.new, lprior.new, lq.old))
     if(ppar$verbose) cat("\n")
   }
   
-  # update thetavec ##!!==
+  # update thetavec ##!!==  
   if(ppar$update["thetavec"]) {
     if(ppar$verbose) cat("thetavec:")
-    # log Normal proposal
     if(ppar$ksweep) {
-      # sweep update
       ksamplevec <- 1:fpar$kmax
     } else {
-      # random support point update
       ksamplevec <- sample(fpar$kmax, ppar$ksim,
                            prob=state$uvec, replace=TRUE)
     }
     naccepted <- 0
     for(k in ksamplevec) {
       state.old <- state
-      llike.old <- state$llike
       theta.old <- state$thetavec[k]
       theta.new <- exp( rnorm(1,log(theta.old),ppar$sd.log.theta) )
       state$thetavec[k] <- theta.new
-      llike.new <- llikef(state, datlist, fpar, model)
-      log.r <- log(theta.new/theta.old) - state$phi*(theta.new-theta.old)
-      log.r <- log.r + llike.new - llike.old
+      state$llike <- llikef(state, datlist, fpar, model)
+      state$lprior <- lpriorf(state, fpar, model)
+      log.r <- state$llike - state.old$llike
+      log.r <- (log.r - state$phi*(theta.new-theta.old)
+                + log(theta.new/theta.old))
+      if(ppar$verbose) {
+        cat(sprintf("thetavec[%d]: (%g;%g) %g->%g: logr=%g\n",
+                    k, state.old$llike, state$llike,
+                    theta.old, theta.new, log.r))
+      }
       if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
-        cat(sprintf("thetavec: %d: %g->%g: logr=%g\n",
+        cat(sprintf("thetavec[%d]: %g->%g: logr=%g\n",
                     k, theta.old, theta.new, log.r))
+        browser()
       }
       if(runif(1)<exp(log.r)) {
-        # accepted
+        # accept
         naccepted <- naccepted + 1
-        state$llike <- llike.new
-        state$lprior <- lpriorf(state, fpar, model)
+        if(ppar$verbose) cat("+")
       } else {
         # reject
         state <- state.old
+        if(ppar$verbose) cat("-")
       }
+      state$accepted["thetavec"] <- naccepted
     }
-    state$accepted["thetavec"] <- naccepted
     if(ppar$verbose) cat("\n")
   }
   
-  # update vvec ##!!==
+  # update vvec ##!!==  
   if(ppar$update["vvec"]) {
     if(ppar$verbose) cat("vvec:")
-    # logistic Normal proposal
     if(ppar$ksweep) {
-      # sweep update
       ksamplevec <- 1:(fpar$kmax-1)
     } else {
-      # random support point update: only select from 1:(kmax-1)
       ksamplevec <- sample(fpar$kmax-1, ppar$ksim,
                            prob=state$uvec[-fpar$kmax], replace=TRUE)
     }
     naccepted <- 0
     for(k in ksamplevec) {
       state.old <- state
-      llike.old <- state$llike
       ukmax.old <- state$uvec[fpar$kmax]
       v.old <- state$vvec[k]
       v.new <- expit( rnorm(1,logit(v.old),ppar$sd.logit.v) )
       state$vvec[k] <- v.new
-      state <- augment.state(state, fpar) # updates uvec, wvec and lambda0
+      cp <- cumprod(1-state$vvec[-fpar$kmax])
+      state$uvec <- state$vvec*c(1,cp)
+      state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
+      #state$uvec[fpar$kmax] <- 1-sum(state$uvec[-fpar$kmax])
+      state$wvec <- state$gamma * state$uvec
       ukmax.new <- state$uvec[fpar$kmax]
-      llike.new <- llikef(state, datlist, fpar, model)
-      
-      log.r <- (state$alpha)*log((1-v.new)/(1-v.old))
-      if(ppar$ksweep) {  # adjust for whether:
-        # the component is being updated in sequence
-        log.r <- log.r + log(v.new/v.old)
+      state$llike <- llikef(state, datlist, fpar, model)
+      state$lprior <- lpriorf(state, fpar, model)
+      log.r <- state$llike - state.old$llike
+      if(ppar$ksweep) {
+        # updating in sequence
+        log.r <- (log.r + state$alpha*log((1-v.new)/(1-v.old)) 
+                  + log(v.new/v.old)
+        )
       } else {
-        # the component was selected at random
-        log.r <- log.r + 2*log(v.new/v.old) + log((1-ukmax.old)/(1-ukmax.new))
+        # updating at random
+        log.r <- (log.r + state$alpha*log((1-v.new)/(1-v.old)) 
+                  + 2*log(v.new/v.old)
+                  + log((1-ukmax.old)/(1-ukmax.new))
+        )
       }
-      log.r <- log.r + llike.new - llike.old
-      if(ppar$verbose) cat(k)
-      #if(ppar$verbose) cat(sprintf("[%g;%g;%g;%g;%g]\n",
-      #                             v.old,v.new,llike.old,llike.new,
-      #                             exp(log.r)))
+      if(ppar$verbose) {
+        cat(sprintf("vvec[%d]: (%g;%g) %g->%g: logr=%g\n",
+                    k, state.old$llike, state$llike,
+                    v.old, v.new, log.r))
+      }
       if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
-        cat(sprintf("vvec: %d: %g->%g: logr=%g\n",
+        cat(sprintf("vvec[%d]: %g->%g: logr=%g\n",
                     k, v.old, v.new, log.r))
         browser()
       }
       if(runif(1)<exp(log.r)) {
-        # accepted
+        # accept
         naccepted <- naccepted + 1
-        state$llike <- llike.new
-        state$lprior <- lpriorf(state, fpar, model)
         if(ppar$verbose) cat("+")
       } else {
         # reject
         state <- state.old
         if(ppar$verbose) cat("-")
       }
-      if(any(is.nan(state$vvec)) || any(state$vvec[-fpar$kmax]==1)) { ##!!==
-        cat("vvec:")
-        browser()
-      }
+      state$accepted["vvec"] <- naccepted
     }
-    state$accepted["vvec"] <- naccepted
     if(ppar$verbose) cat("\n")
   }
   
-  # update alpha ##!!==
+  # update alpha ##!!==  
   if(ppar$update["alpha"]) {
     if(ppar$verbose) cat("alpha:")
     state.old <- state
-    alpha.old <- state$alpha
-    a1star <- fpar$a1+fpar$kmax-1
-    a2star <- ( fpar$a2-log(state$beta*state$gamma)
-                -log(state$uvec[fpar$kmax]) )
-    # log normal random walk proposal
-    alpha.new <- exp( rnorm(1,log(alpha.old),ppar$sd.log.alpha) )
-    log.r <- ( lgamma(alpha.old)-lgamma(alpha.new)
-               + a1star*log(alpha.new/alpha.old)
-               - (alpha.new-alpha.old)*a2star )
-    # gamma(a1star,a2star) proposal
-    #alpha.new <- rgamma(1,a1star,a2star)
-    #log.r <- lgamma(alpha.old)-lgamma(alpha.new)
+    alpha.old <- state.old$alpha
+    alpha.new <- exp( rnorm(1, log(alpha.old), ppar$sd.log.alpha) )
+    state$alpha <- alpha.new
+    state$llike <- llikef(state, datlist, fpar, model)
+    state$lprior <- lpriorf(state, fpar, model)
+    log.ukmax <- log(state$uvec[fpar$kmax]) 
+    #log.ukmax - sum(log(1-state$vvec[-fpar$kmax])) 
+    a1star <- fpar$a1 + fpar$kmax - 1
+    a2star <- fpar$a2 - log.ukmax - log(state$beta*state$gamma)
+    log.r <- (state$llike - state.old$llike)
+    log.r <- ( log.r + a1star*log(alpha.new/alpha.old) 
+               - a2star*(alpha.new-alpha.old) 
+               + lgamma(alpha.old) - lgamma(alpha.new) )
     if(ppar$verbose) {
-      cat(sprintf("alpha: %g->%g: logr=%g\n",
+      cat(sprintf("alpha: (%g;%g) %g->%g: logr=%g\n",
+                  state.old$llike, state$llike,
                   alpha.old, alpha.new, log.r))
     }
     if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
       cat(sprintf("alpha: %g->%g: logr=%g\n",
                   alpha.old, alpha.new, log.r))
+      browser()
     }
     if(runif(1)<exp(log.r)) {
-      # accepted
-      state$alpha <- alpha.new
-      state$llike <- llikef(state, datlist, fpar, model)
-      state$lprior <- lpriorf(state, fpar, model)
+      # accept
       state$accepted["alpha"] <- 1
+      if(ppar$verbose) cat("+")
     } else {
       # reject
       state <- state.old
       state$accepted["alpha"] <- 0
+      if(ppar$verbose) cat("-")
     }
     if(ppar$verbose) cat("\n")
   }
   
-  # update beta [OK]
+  # update beta ##!!==  
   if(ppar$update["beta"]) {
     if(ppar$verbose) cat("beta:")
-    # Gibbs update
-    b1star <- fpar$b1+state$alpha
-    b2star <- fpar$b2+state$gamma
-    state$beta <- rgamma(1, b1star, b2star)
+    beta.old <- state$beta
+    llike.old <- state$llike
+    b1star <- fpar$b1 + state$alpha
+    b2star <- fpar$b2 + state$gamma
+    beta.new <- rgamma(1, b1star, b2star)
+    state$beta <- beta.new
     state$llike <- llikef(state, datlist, fpar, model)
     state$lprior <- lpriorf(state, fpar, model)
     state$accepted["beta"] <- 1
+    if(ppar$verbose) {
+      cat(sprintf("beta: (%g;%g) %g->%g: logr=Gibbs\n",
+                  llike.old, state$llike,
+                  beta.old, beta.new))
+      cat("+")
+    }
     if(ppar$verbose) cat("\n")
   }
   
-  # update phi [OK]
+  # update phi ##!!==  
   if(ppar$update["phi"]) {
     if(ppar$verbose) cat("phi:")
-    # Gibbs update
-    f1star <- fpar$f1+fpar$kmax
-    f2star <- fpar$f2+sum(state$thetavec)
-    state$phi <- rgamma(1, f1star, f2star)
+    phi.old <- state$phi
+    llike.old <- state$llike
+    f1star <- fpar$f1 + fpar$kmax
+    f2star <- fpar$f2 + sum(state$thetavec)
+    phi.new <- rgamma(1, f1star, f2star)
+    state$phi <- phi.new
     state$llike <- llikef(state, datlist, fpar, model)
     state$lprior <- lpriorf(state, fpar, model)
     state$accepted["phi"] <- 1
+    if(ppar$verbose) {
+      cat(sprintf("phi: (%g;%g) %g->%g: logr=Gibbs\n",
+                  llike.old, state$llike,
+                  phi.old, phi.new))
+      cat("+")
+    }
     if(ppar$verbose) cat("\n")
   }
   
-  # update wvec ##!!==
+  # update wvec ##!!==  
   if(ppar$update["wvec"]) {
     if(ppar$verbose) cat("wvec:")
-    # logistic Normal proposal
+    # Do not update wvec[kmax]
     if(ppar$ksweep) {
-      # sweep update
-      ksamplevec <- 1:fpar$kmax
+      ksamplevec <- 1:(fpar$kmax-1)
     } else {
-      # random support point update
-      ksamplevec <- sample(fpar$kmax, ppar$ksim,
-                           prob=state$uvec, replace=TRUE)
+      ksamplevec <- sample(fpar$kmax-1, ppar$ksim,
+                           prob=state$uvec[-fpar$kmax], replace=TRUE)
     }
     naccepted <- 0
-    if(ppar$verbose) cat("wvec:")
+    #errcount <- 0 ##!!==
     for(k in ksamplevec) {
+      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
+      #options(warn=2) ##!!==
+      
       state.old <- state
-      llike.old <- state$llike
-      gamma.old <- state$gamma
       vvec.old <- state$vvec
+      gamma.old <- state$gamma
+      wkmax.old <- state$wvec[fpar$kmax]
       w.old <- state$wvec[k]
       w.new <- exp( rnorm(1,log(w.old),ppar$sd.log.w) )
       state$wvec[k] <- w.new
       gamma.new <- sum(state$wvec)
+      uvec.new <- state$wvec/gamma.new
+      uvec.new <- pmax(.Machine$double.neg.eps, uvec.new) # needed to stabilise
+      uvec.new <- uvec.new/sum(uvec.new)
+      vvec.new <- makev(uvec.new)
+      vvec.new[vvec.new>=1 | vvec.new<=0] <- 0.5 ## numerical stabilisation
       state$gamma <- gamma.new
-      state$uvec <- state$wvec/state$gamma
-      state$vvec <- state$uvec/(1-c(0,cumsum(state$uvec[-fpar$kmax])))
-      #state$vvec <- pmin(state$vvec, 1-10*.Machine$double.neg.eps)
-      state$vvec[fpar$kmax] <- 1
+      state$vvec <- vvec.new
+      state$uvec <- uvec.new
+      state$wvec <- state$gamma*state$uvec
       state$lambda0 <- state$gamma*state$eta
+      wkmax <- state$wvec[fpar$kmax]
       
-      llike.new <- llikef(state, datlist, fpar, model)
-      log.r <- ( (state$beta)*(gamma.new-gamma.old)
-                 +sum( log(state$vvec[1:(fpar$kmax-1)]
-                           /vvec.old[1:(fpar$kmax-1)])  
-                       +(state$alpha-1)*log(
-                         (1-state$vvec[1:(fpar$kmax-1)])
-                         /(1-vvec.old[1:(fpar$kmax-1)]))  
-                 )
-      )
-      if(ppar$ksweep) {  # adjust for whether:
-        # the component is being updated in sequence
-        log.r <- (log.r 
-                  + (state$alpha-1)*log(gamma.new/gamma.old)
-        )
+      #errcount<-errcount+1; cat(sprintf("llike:%d:%d;\n",k,errcount)) ##!!==
+      
+      state$llike <- llikef(state, datlist, fpar, model)
+      
+      #errcount<-errcount+1; cat(sprintf("lprior:%d:%d;\n",k,errcount)) ##!!==
+      
+      state$lprior <- lpriorf(state, fpar, model)
+      #state$lprior <- state$lprior ##!!==
+      
+      #errcount<-errcount+1; cat(sprintf("log.r:%d:%d;\n",k,errcount)) ##!!==
+      
+      #browser() ##!!==
+      
+      log.r <- state$llike - state.old$llike
+      log.r <- (log.r - state$beta*(gamma.new-gamma.old)
+                + sum(log(vvec.new[-fpar$kmax]/vvec.old[-fpar$kmax])))
+      
+      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
+      
+      if(ppar$ksweep) {
+        # updating sequentially
+        log.r <- log.r
       } else {
-        # the component was selected at random
-        log.r <- (log.r 
-                  + (state$alpha-2)*log(gamma.new/gamma.old)
-                  + log(w.new/w.old)
+        # updating at random
+        log.r <- (log.r + log(w.new/w.old)
+                  + log((gamma.old-wkmax)/(gamma.new-wkmax))
         )
       }
-      log.r <- log.r + llike.new - llike.old
-      if(ppar$verbose) cat(k)
+      
+      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
+      
+      if(ppar$verbose) {
+        cat(sprintf("wvec[%d]: (%g;%g) %g->%g: logr=%g\n",
+                    k, state.old$llike, state$llike,
+                    w.old, w.new, log.r))
+      }
+      
+      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
+      
       if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
-        cat(sprintf("%g;%g\n", min(vvec.old[-fpar$kmax]), max(vvec.old[-fpar$kmax])))
-        cat(sprintf("%g;%g\n", min(state$vvec[-fpar$kmax]), max(state$vvec[-fpar$kmax])))
-        cat(sprintf("%g;%g;%g\n", state$alpha, gamma.old, gamma.new))
-        cat(sprintf("%g;%g\n", llike.old, llike.new))
+        cat(sprintf("wvec[%d]: %g->%g: logr=%g\n",
+                    k, w.old, w.new, log.r))
         browser()
       }
-      if(ppar$verbose) {
-        cat(sprintf("wvec: %d: %g->%g: logr=%g\n",
-                    k, w.old, w.new, log.r))
-        cat(sprintf("%g;%g**\n",state.old$uvec[fpar$kmax], state$uvec[fpar$kmax]))
-      }
+      
+      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
+      
       if(runif(1)<exp(log.r)) {
-        # accepted
+        # accept
         naccepted <- naccepted + 1
-        state$llike <- llike.new
-        state$lprior <- lpriorf(state, fpar, model)
         if(ppar$verbose) cat("+")
       } else {
         # reject
         state <- state.old
         if(ppar$verbose) cat("-")
       }
-      if(any(is.nan(state$vvec)) || any(state$vvec[-fpar$kmax]==1)) { ##!!==
-        cat("wvec:")
-        browser()
-      }
+      state$accepted["thetavec"] <- naccepted
+      
+      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
+      
     }
     if(ppar$verbose) cat("\n")
-    state$accepted["wvec"] <- naccepted
   }
   
   return(state)
 }
+
+
 
 ####################################################################################

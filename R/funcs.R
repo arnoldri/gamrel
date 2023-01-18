@@ -17,14 +17,44 @@ makew <- function(vvec) {
 #' 
 #' @param wvec Vector of DPP weights
 #' 
-#' @description Make the DPP Beta draws from a set of stick breaking weights
+#' @description Make the DPP Beta draws from a set of unscaled stick breaking weights
 #' 
 #' @export
-makev <- function(wvec) {
-  # make the v vector
-  kmax <- length(wvec)
-  vvec <- wvec/c(1, 1-cumsum(wvec[-kmax]))
+makev <- function(uvec, use.Cpp=TRUE) {
+  # make the vvec vector from the unscaled weights uvec
+  # note: sum(uvec)==1
+  if(use.Cpp) {
+    return(makev_c(uvec))
+  }
+  kmax <- length(uvec)
+  # direct version is numerically unstable
+  ##vvec <- wvec/c(1, 1-cumsum(wvec[-kmax]))
+  vvec[1] <- uvec[1]
+  if(kmax>1) {
+    cp <- 1
+    for(k in 2:(kmax-1)) {
+      vvec[k] <- uvec[k]/(cp-uvec[k-1])
+      cp <- cp*(1-vvec[k-1])
+    }
+    vvec[kmax] <- 0.5
+  }
   return(vvec)
+}
+
+#' Make the DPP Beta draws
+#' 
+#' @param wvec Vector of DPP weights
+#' 
+#' @description Make the unscaled weights from DPP Beta draws
+#'  
+#' @export
+makeu <- function(vvec, use.Cpp=TRUE) {
+  # make the uvec vector from the DPP beta draws vvec
+  # note: sum(uvec)==1
+  kmax <- length(uvec)
+  uvec <- vvec*c(1,cumprod(1-vvec[1-kmax]))
+  uvec[kmax] <- prod(1-vvec[-kmax])
+  return(uvec)
 }
 ################################################################################
 # Gaussian process
