@@ -24,6 +24,13 @@ mean_c <- function(x) {
     .Call(`_gamrel_mean_c`, x)
 }
 
+#' Make DPP beta draws given a set of unscaled stick breaking weights
+#' 
+#' @export
+makev_c <- function(uvec) {
+    .Call(`_gamrel_makev_c`, uvec)
+}
+
 #' Hazard rate function - IFR
 #' 
 #' @param tvec Locations at which to evaluate the function

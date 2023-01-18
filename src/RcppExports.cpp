@@ -43,6 +43,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// makev_c
+NumericVector makev_c(NumericVector uvec);
+RcppExport SEXP _gamrel_makev_c(SEXP uvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type uvec(uvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(makev_c(uvec));
+    return rcpp_result_gen;
+END_RCPP
+}
 // lambda_func_ifr_c
 NumericVector lambda_func_ifr_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
 RcppExport SEXP _gamrel_lambda_func_ifr_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
@@ -181,6 +192,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_csqrt", (DL_FUNC) &_gamrel_csqrt, 1},
     {"_gamrel_order1_c", (DL_FUNC) &_gamrel_order1_c, 1},
     {"_gamrel_mean_c", (DL_FUNC) &_gamrel_mean_c, 1},
+    {"_gamrel_makev_c", (DL_FUNC) &_gamrel_makev_c, 1},
     {"_gamrel_lambda_func_ifr_c", (DL_FUNC) &_gamrel_lambda_func_ifr_c, 4},
     {"_gamrel_lambda_func_dfr_c", (DL_FUNC) &_gamrel_lambda_func_dfr_c, 4},
     {"_gamrel_lambda_func_lwb_c", (DL_FUNC) &_gamrel_lambda_func_lwb_c, 5},

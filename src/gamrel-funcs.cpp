@@ -29,6 +29,30 @@ double mean_c(NumericVector x) {
   return total / n;
 }
 
+//' Make DPP beta draws given a set of unscaled stick breaking weights
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector makev_c(NumericVector uvec) {
+
+  int kmax = uvec.size();
+  NumericVector vvec(kmax);
+  int k;
+  double cp;
+  
+  vvec[0] = uvec[0];
+  if(kmax>1) {
+    cp = 1.0;
+    for(k=1; k<kmax-1; k++) {
+      vvec[k] = uvec[k]/(cp-uvec[k-1]);
+      cp = cp*(1-vvec[k-1]);
+    }
+    vvec[kmax-1] = 0.5;
+  }
+  
+  return vvec;
+}
+
 //' Hazard rate function - IFR
 //' 
 //' @param tvec Locations at which to evaluate the function
