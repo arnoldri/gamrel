@@ -4,7 +4,7 @@
 \alias{plot_densityfunc}
 \title{Plot probability density function}
 \usage{
-plot_densityfunc(model.list, npts = 101, use.Cpp = TRUE, ...)
+plot_densityfunc(model.list, npts = 101, main = NULL, use.Cpp = TRUE, ...)
 }
 \arguments{
 \item{model.list}{Model specification}

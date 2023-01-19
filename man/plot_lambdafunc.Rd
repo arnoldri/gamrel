@@ -4,7 +4,16 @@
 \alias{plot_lambdafunc}
 \title{Plot hazard rate function}
 \usage{
-plot_lambdafunc(model.list, npts = 101, use.Cpp = TRUE, ...)
+plot_lambdafunc(
+  model.list,
+  npts = 101,
+  xlim = NULL,
+  ylim = NULL,
+  main = NULL,
+  add = FALSE,
+  use.Cpp = TRUE,
+  ...
+)
 }
 \arguments{
 \item{model.list}{Model specification}

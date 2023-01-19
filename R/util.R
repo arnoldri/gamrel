@@ -20,6 +20,7 @@ extend.range <- function(y, p=0) {
   return(r)
 }
 #############################################################################
+#' @export
 rbeta.t <- function(n, shape1, shape2, ncp=0,
                     eps=.Machine$double.neg.eps) {
   # Prevent beta random variates from returning 0 or 1 values
@@ -28,6 +29,7 @@ rbeta.t <- function(n, shape1, shape2, ncp=0,
   return(x)
 }
 #############################################################################
+#' @export
 rcat <- function(n,prob) {
   # draw n times from a categorical variable with probability prob
   apply(rmultinom(n,1,prob),2,which.max)

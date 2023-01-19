@@ -4,7 +4,16 @@
 \alias{plot_survivalfunc}
 \title{Plot survival function}
 \usage{
-plot_survivalfunc(model.list, npts = 101, use.Cpp = TRUE, ...)
+plot_survivalfunc(
+  model.list,
+  npts = 101,
+  xlim = NULL,
+  ylim = NULL,
+  main = NULL,
+  add = FALSE,
+  use.Cpp = TRUE,
+  ...
+)
 }
 \arguments{
 \item{model.list}{Model specification}

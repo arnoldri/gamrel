@@ -1,235 +1,5 @@
 # Updating functions
 
-###############################################################################
-#' Initialise objects for an MCMC chain
-#' 
-#' @export
-init.objects <- function(tvec, obs,
-                         kmax=100,
-                         prior.par=NULL,
-                         update.par=NULL,
-                         model="IFR",
-                         use.Cpp=FALSE,
-                         seed=NULL,
-                         generate="random") {  # generate can be "fixed" or "random"
-  if(!is.null(seed)) set.seed(seed)
-  if(model%in%c("IFR","DFR")) {
-    if(is.null(prior.par)) {
-      prior.par <- list(nu=1,
-                        a1=1, a2=1,
-                        b1=1, b2=1,
-                        f1=1, f2=1)
-    }
-    if(is.null(update.par)) {
-      update.par <- list(psweep=0.1, # probability of the sweep move
-                         sd.log.eta=0.1,
-                         sd.log.theta=0.1,
-                         sd.logit.v=0.1,
-                         sd.log.w=0.1,
-                         sd.log.alpha=0.1)
-    }
-    # fixed parameters
-    parnames <- c("eta","gamma","thetavec","vvec","alpha","beta","phi")
-    fpar <- list(model=model,                      # model name
-                 parnames=parnames,                # parameters
-                 kmax=kmax,                        # sum truncation point
-                 nu=prior.par$nu,                  # prior for eta (lambda0/gamma)
-                 a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
-                 b1=prior.par$b1, b2=prior.par$b2, # prior for beta
-                 f1=prior.par$f1, f2=prior.par$f2, # prior for phi
-                 use.Cpp=use.Cpp) 
-    # parameters to update
-    update_parnames <- c(parnames,"wvec","thetaswap")
-    update <- rep(TRUE, length(update_parnames))
-    names(update) <- update_parnames
-    # proposal parameters for updates
-    ppar <- list(update_parnames=update_parnames,
-                 ksweep=FALSE, # = all support points are updated each time
-                 ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
-                 kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
-                 psweep=update.par$psweep,
-                 sd.log.eta=update.par$sd.log.eta,
-                 sd.log.theta=update.par$sd.log.theta,
-                 sd.logit.v=update.par$sd.logit.v,
-                 sd.log.w=update.par$sd.log.w,
-                 sd.log.alpha=update.par$sd.log.alpha,
-                 update=update,
-                 verbose=FALSE)
-    # parameters to estimate
-    if(generate=="fixed") {
-      epar <- list(eta=1/prior.par$nu,
-                   gamma=NA,
-                   thetavec=NA,
-                   vvec=NA,
-                   alpha=prior.par$a1/prior.par$a2,
-                   beta=prior.par$b1/prior.par$b2,
-                   phi=prior.par$f1/prior.par$b2)
-      epar$gamma <- epar$alpha/epar$beta
-    } else {
-      epar <- list(eta=rexp(1,prior.par$nu),
-                   gamma=NA,
-                   thetavec=NA,
-                   vvec=NA,
-                   alpha=rgamma(1,prior.par$a1,prior.par$a2),
-                   beta=rgamma(1,prior.par$b1,prior.par$b2),
-                   phi=rgamma(1,prior.par$f1,prior.par$b2))
-      epar$gamma <- rgamma(1,epar$alpha,epar$beta)
-    }
-    epar$thetavec <- rexp(kmax, epar$phi)
-    epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
-  } else {
-    stop("Specified model has not been implemented")
-  }
-  # data
-  datlist <- list(n=length(tvec),      # size of data
-                  n0=sum(obs),         # number of uncensored observations
-                  tvec=tvec,           # failure/censoring times
-                  obs=obs)             # vector of indicators: TRUE=observed, FALSE=censored
-  # make the state
-  state <- make.state(epar, datlist, fpar, ppar, model)
-  # augment fpar
-  fpar <- augment.fpar(state, fpar, model)
-  # return all these objects
-  return(list(epar=epar, datlist=datlist,
-              fpar=fpar, ppar=ppar, model=model,
-              state=state))
-}
-
-#' Construct the state object from the parameter vectors and data
-#' 
-#' @export
-make.state <- function(epar, datlist, fpar, ppar, model) {
-  if(model%in%c("IFR","DFR")) {
-    state <- epar
-    # complete state with useful quantities
-    # derive the unscaled weights uvec
-    cp <- cumprod(1-state$vvec[-fpar$kmax])
-    state$uvec <- state$vvec*c(1,cp)
-    state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
-    # compute the scaled weights wvec
-    state$wvec <- state$gamma * state$uvec
-    # compute lambda0
-    state$lambda0 <- state$gamma*state$eta
-    # log L of the current state
-    state$llike <- llikef(state, datlist, fpar, model)
-    # log prior of the current state
-    state$lprior <- lpriorf(state, fpar, model)
-    # was the last update accepted?
-    state$accepted <- rep(0,length(ppar$update))
-    names(state$accepted) <- names(ppar$update)
-    # counter
-    state$count <- 0
-  } else {
-    stop("Specified model has not been implemented")
-  }
-  return(state)
-}
-
-#' Log likelihood of the current state
-#' 
-#' @export
-llikef <- function(state, datlist, fpar, model) {
-  # log likelihood of observations tvec
-  lambda.vec <- lambda.func(tvec=datlist$tvec[datlist$obs],
-                            model.list=c(list(model=model,kmax=fpar$kmax),
-                                         state),
-                            use.Cpp=fpar$use.Cpp)
-  int.lambda.vec <- int.lambda.func(tvec=datlist$tvec,
-                                    model.list=c(list(model=model,kmax=fpar$kmax),state),
-                                    use.Cpp=fpar$use.Cpp)
-  
-  retval <- ( sum(log(lambda.vec)) - sum(int.lambda.vec) )
-  return(retval)
-}
-#' Log prior of the current state
-#' 
-#' @export
-lpriorf <- function(state, fpar, model) {
-  # log prior of the state
-  retval <- sum(lpriorf.vector(state, fpar, model))
-  return(retval)
-}
-#' Components of the log prior of the current state - return as a vector
-#' 
-#' @export
-lpriorf.vector <- function(state, fpar, model) {
-  # log prior of the state
-  lprior.vec <- rep(NA,length=length(fpar$parnames))
-  names(lprior.vec) <- fpar$parnames
-  if(model%in%c("IFR","DFR")) {
-    # prior for eta
-    lprior.vec["eta"] <- dexp(state$eta, fpar$nu)
-    # prior for gamma
-    lprior.vec["gamma"] <- dgamma(state$gamma, state$alpha, state$beta, log=TRUE)
-    # prior for thetavec
-    lprior.vec["thetavec"] <- sum( (log(state$phi)-state$phi*state$thetavec) )
-    # prior for vvec
-    lprior.vec["vvec"] <-  sum( (log(state$alpha) + (state$alpha-1)*log(1-state$vvec[-fpar$kmax])) )
-    # prior for alpha
-    lprior.vec["alpha"] <- dgamma(state$alpha, fpar$a1, fpar$a2, log=TRUE)
-    # prior for beta
-    lprior.vec["beta"] <- dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE)
-    # prior for phi
-    lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
-  } else {
-    stop("Specified model has not been implemented")
-  }
-  return(lprior.vec)
-}
-#' Augment the fixed parameter object (fpar)
-#' 
-#' @export
-augment.fpar <- function(state, fpar, model) {
-  # add some extra stuff to fpar
-  fpar$statenames <- names(state)
-  fpar$stackind <- stack(state)$ind
-  fpar$statevnames <- names(unlist(sapply(sapply(state,length),
-                                          function(i) 1:i)))
-  return(fpar)
-}
-
-################################################################################
-#' Plot a representation of the current state
-#' 
-#' @description Plot the current state
-#' 
-#' @param state The current state
-#' @param datlist The data list
-#' @param fpar The fixed parameters
-#' @param ppar Proposal parameters
-#' @param model Type of model (IFR or DFR)
-#' @param type Type of plot (ignored at the moment)
-#' @param add Logical: add the state to an existing plot?
-#' 
-#' @export
-plot_state <- function(state, datlist, fpar, ppar, model,
-                       type=1, main=NULL, add=FALSE, ...) {
-  # plot the state
-  if(model=="IFR") {
-    if(!add) {
-      # start a new plot
-      if(is.null(main)) {
-        main <- sprintf("LP=%.3f; LL=%.3f; LPost=%.3f",
-                        state$lprior,state$llike,state$llike+state$lprior)        
-      }
-      plot(NA,NA, xlim=range(state$thetavec),
-           ylim=range(state$wvec),
-           xlab=bquote(theta), ylab=bquote(w), main=main, ...)
-    }
-    points(state$thetavec, state$wvec, ...)
-  } else if(model=="DFR") {
-    if(!add) {
-      # start a new plot
-      plot(NA,NA, xlim=range(state$thetavec),
-           ylim=range(state$wvec),
-           xlab=bquote(theta), ylab=bquote(w), main=main, ...)
-    }
-    points(state$thetavec, state$wvec, ...)
-  } else {
-    stop(paste0("Model ",model," not recognised"))
-  }
-  invisible()
-}
 ################################################################################
 #' Update the current state
 #' 
@@ -250,30 +20,6 @@ update_state <- function(state, datlist, fpar, ppar, model) {
   } else {
     stop("Specified model has not been implemented")
   }
-  return(state)
-}
-update_state.lwb <- function(state, datlist, fpar, ppar, model) { 
-  # Update a LWB state
-  state$count <- state$count + 1
-  stop("Not yet implemented")
-  return(state)
-}
-update_state.sbt <- function(state, datlist, fpar, ppar, model) { 
-  # Update a SBT state
-  state$count <- state$count + 1
-  stop("Not yet implemented")
-  return(state)
-}
-update_state.mbt <- function(state, datlist, fpar, ppar, model) { 
-  # Update a MBT state
-  state$count <- state$count + 1
-  stop("Not yet implemented")
-  return(state)
-}
-update_state.lcv <- function(state, datlist, fpar, ppar, model) { 
-  # Update a LCV state
-  state$count <- state$count + 1
-  stop("Not yet implemented")
   return(state)
 }
 
@@ -385,8 +131,8 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
         state <- state.old
         if(ppar$verbose) cat("-")
       }
-      state$accepted["thetavec"] <- naccepted/length(ksamplevec)
     }
+    state$accepted["thetavec"] <- naccepted/length(ksamplevec)
     if(ppar$verbose) cat("\n")
   }
   
@@ -448,8 +194,8 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
         state <- state.old
         if(ppar$verbose) cat("-")
       }
-      state$accepted["vvec"] <- naccepted/length(ksamplevec)
     }
+    state$accepted["vvec"] <- naccepted/length(ksamplevec)
     if(ppar$verbose) cat("\n")
   }
   
@@ -629,11 +375,11 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
         state <- state.old
         if(ppar$verbose) cat("-")
       }
-      state$accepted["thetavec"] <- naccepted/length(ksamplevec)
       
       #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
       
     }
+    state$accepted["thetavec"] <- naccepted/length(ksamplevec)
     if(ppar$verbose) cat("\n")
   }
   
@@ -672,8 +418,8 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
         state <- state.old
         if(ppar$verbose) cat("-")
       }
-      state$accepted["thetaswap"] <- naccepted/length(ksamplevec)
     }
+    state$accepted["thetaswap"] <- naccepted/length(ksamplevec)
     if(ppar$verbose) cat("\n")
   }
   
@@ -681,5 +427,97 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
 }
 
 
+update_state.lwb <- function(state, datlist, fpar, ppar, model) { 
+  # Update a LWB state
+  state$count <- state$count + 1
+  stop("Not yet implemented")
+  
+  # update eta !!==
+  # update a !!==
+  # update gamma !!==
+  # update thetavec !!==
+  # update vvec !!==
+  # update alpha !!==
+  # update beta !!==
+  # update phi !!==
+  # update wvec !!==
+  # thetaswap !!==
+  
+  return(state)
+}
+update_state.sbt <- function(state, datlist, fpar, ppar, model) { 
+  # Update a SBT state
+  state$count <- state$count + 1
+  stop("Not yet implemented")
+
+  # update eta !!==
+  
+  # update gamma1 !!==
+  # update thetavec1 !!==
+  # update vvec1 !!==
+  # update alpha1 !!==
+  # update beta1 !!==
+  # update phi1 !!==
+  # update wvec1 !!==
+  # thetaswap1 !!==
+  
+  # update gamma2 !!==
+  # update thetavec2 !!==
+  # update vvec2 !!==
+  # update alpha2 !!==
+  # update beta2 !!==
+  # update phi2 !!==
+  # update wvec2 !!==
+  # thetaswap2 !!==
+  
+  return(state)
+}
+update_state.mbt <- function(state, datlist, fpar, ppar, model) { 
+  # Update a MBT state
+  state$count <- state$count + 1
+  stop("Not yet implemented")
+  
+  # update pival !!==
+  
+  # update eta1 !!==
+  # update gamma1 !!==
+  # update thetavec1 !!==
+  # update vvec1 !!==
+  # update alpha1 !!==
+  # update beta1 !!==
+  # update phi1 !!==
+  # update wvec1 !!==
+  # thetaswap1 !!==
+  
+  # update eta2 !!==
+  # update gamma2 !!==
+  # update thetavec2 !!==
+  # update vvec2 !!==
+  # update alpha2 !!==
+  # update beta2 !!==
+  # update phi2 !!==
+  # update wvec2 !!==
+  # thetaswap2 !!==
+  
+  return(state)
+}
+update_state.lcv <- function(state, datlist, fpar, ppar, model) { 
+  # Update a LCV state
+  state$count <- state$count + 1
+  stop("Not yet implemented")
+  
+  # update lambda0 !!==
+  # update w0 !!==
+  # update gamma !!==
+  # update thetavec !!==
+  # update vvec !!==
+  # update alpha !!==
+  # update beta !!==
+  # update phi !!==
+  # update wvec !!==
+  # thetaswap !!==
+  
+  return(state)
+}
 
 ####################################################################################
