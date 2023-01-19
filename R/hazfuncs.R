@@ -12,23 +12,29 @@
 #' @param ... Other arguments to plot()
 #' 
 #' @export
-plot_lambdafunc <- function(model.list, npts=101, use.Cpp=TRUE, ...) {
+plot_lambdafunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL, 
+                            main=NULL, add=FALSE, use.Cpp=TRUE, ...) {
   if(model.list$model %in% c("IFR","DFR","LWB","LCV")) {
     tvec <- seq(from=0, to=1.1*max(model.list$thetavec), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec))
     fvec <- lambda.func(tvec, model.list, use.Cpp=use.Cpp)
-    plot(tvec, fvec, ylim=c(0,1.1*max(fvec)),
-         xlab="t", ylab=expression(lambda(t)), main=model.list$model, ...)
   } else if(model.list$model%in%c("SBT","MBT")) {
     tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec1,model.list$thetavec2))
     fvec <- lambda.func(tvec, model.list, use.Cpp=use.Cpp)
-    plot(tvec, fvec, ylim=c(0,1.1*max(fvec)),
-         xlab="t", ylab=expression(lambda(t)), main=model.list$model, ...)
   } else {
     stop(paste0("Model ",model.list$model," not implemented"))
   }
-  invisible()
+  if(add) {
+    lines(tvec, fvec, ...)
+  } else {
+    if(is.null(xlim)) xlim <- c(0,1.05*max(tvec))
+    if(is.null(ylim)) ylim=c(0,1.1*max(fvec))
+    if(is.null(main)) main <- model.list$model
+    plot(tvec, fvec, xlim=xlim, ylim=ylim,
+         xlab="t", ylab=expression(lambda(t)), main=main, ...)
+  }
+  invisible(tvec)
 }
 
 # Evaluate Hazard rate functions
@@ -159,23 +165,29 @@ lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec, use.Cpp=TRUE) {
 #' @param ... Other arguments to plot()
 #' 
 #' @export
-plot_intlambdafunc <- function(model.list, npts=101, use.Cpp=TRUE, ...) {
+plot_intlambdafunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL, 
+                               add=FALSE, use.Cpp=TRUE, main=NULL, ...) {
   if(model.list$model %in% c("IFR","DFR","LWB","LCV")) {
     tvec <- seq(from=0, to=1.1*max(model.list$thetavec), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec))
     fvec <- int.lambda.func(tvec, model.list, use.Cpp=use.Cpp)
-    plot(tvec, fvec, ylim=c(0,1.1*max(fvec)),
-         xlab="t", ylab=expression(Lambda(t)), main=model.list$model, ...)
   } else if(model.list$model%in%c("SBT","MBT")) {
     tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec1,model.list$thetavec2))
     fvec <- int.lambda.func(tvec, model.list, use.Cpp=use.Cpp)
-    plot(tvec, fvec, ylim=c(0,1.1*max(fvec)),
-         xlab="t", ylab=expression(Lambda(t)), main=model.list$model, ...)
   } else {
     stop(paste0("Model ",model.list$model," not implemented"))
   }
-  invisible()
+  if(add) {
+    lines(tvec, fvec, ...)
+  } else {
+    if(is.null(xlim)) xlim=c(0,1.05*max(tvec))
+    if(is.null(ylim)) ylim=c(0,1.1*max(fvec))
+    if(is.null(main)) main <- model.list$model
+    plot(tvec, fvec, xlim=xlim, ylim=ylim,
+         xlab="t", ylab=expression(Lambda(t)), main=main, ...)
+  }
+  invisible(tvec)
 }
 
 #' Integrated hazard rate function 
@@ -366,7 +378,8 @@ both.lambda.funcs <- function(tvec, model.list, use.Cpp=TRUE) {
 #' @param ... Other arguments to plot()
 #' 
 #' @export
-plot_densityfunc <- function(model.list, npts=101, use.Cpp=TRUE, ...) {
+plot_densityfunc <- function(model.list, npts=101, 
+                             main=NULL, use.Cpp=TRUE, ...) {
   if(model.list$model %in% c("IFR","DFR","LWB","LCV")) {
     tvec <- seq(from=0, to=1.1*max(model.list$thetavec), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec))
@@ -379,9 +392,10 @@ plot_densityfunc <- function(model.list, npts=101, use.Cpp=TRUE, ...) {
   lambda.vec <- lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
   int.lambda.vec <- int.lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
   fvec <- lambda.vec*exp(-int.lambda.vec)
+  if(is.null(main)) main <- model.list$model
   plot(tvec, fvec, ylim=c(0,1.1*max(fvec)),
-       xlab="t", ylab=expression(f(t)), main=model.list$model, ...)
-  invisible()
+       xlab="t", ylab=expression(f(t)), main=main, ...)
+  invisible(tvec)
 }
 
 #' Plot survival function
@@ -392,7 +406,8 @@ plot_densityfunc <- function(model.list, npts=101, use.Cpp=TRUE, ...) {
 #' @param ... Other arguments to plot()
 #' 
 #' @export
-plot_survivalfunc <- function(model.list, npts=101, use.Cpp=TRUE, ...) {
+plot_survivalfunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL, 
+                              main=NULL, add=FALSE, use.Cpp=TRUE, ...) {
   if(model.list$model %in% c("IFR","DFR","LWB","LCV")) {
     tvec <- seq(from=0, to=1.1*max(model.list$thetavec), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec))
@@ -404,9 +419,16 @@ plot_survivalfunc <- function(model.list, npts=101, use.Cpp=TRUE, ...) {
   }
   int.lambda.vec <- int.lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
   fvec <- exp(-int.lambda.vec)
-  plot(tvec, fvec, ylim=c(0,1.1*max(fvec)),
-       xlab="t", ylab=expression(bar(F)(t)), main=model.list$model, ...)
-  invisible()
+  if(add) {
+    lines(tvec, fvec, ...)
+  } else {
+    if(is.null(main)) main <- model.list$model
+    if(is.null(xlim)) xlim <- c(0,1.05*max(tvec))
+    if(is.null(ylim)) ylim <- c(0,1.1*max(fvec))
+    plot(tvec, fvec, xlim=xlim, ylim=ylim,
+         xlab="t", ylab=expression(bar(F)(t)), main=main, ...)
+  }
+  invisible(tvec)
 }
 
 
