@@ -132,8 +132,8 @@ int_lambda_func_lwb_c <- function(tvec, lambda0, a, thetavec, wvec) {
 #' a set of discrete locations and weights and integrated
 #' 
 #' @export
-int_lambda_func_lcv_c <- function(tvec, lambda0, w0, thetavec, wvec) {
-    .Call(`_gamrel_int_lambda_func_lcv_c`, tvec, lambda0, w0, thetavec, wvec)
+int_lambda_func_lcv_c <- function(tvec, lambda0, w0, thetavec, wvec, epsilon) {
+    .Call(`_gamrel_int_lambda_func_lcv_c`, tvec, lambda0, w0, thetavec, wvec, epsilon)
 }
 
 #' Function to sort an array using shellSort

@@ -125,7 +125,7 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       if(runif(1)<exp(log.r)) {
         # accept
         naccepted <- naccepted + 1
-        if(ppar$verbose) cat("+")
+        if(ppar$verbose) cat("+"); cat(naccepted); cat(";")
       } else {
         # reject
         state <- state.old
@@ -285,7 +285,8 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
   if(ppar$update["wvec"]) {
     if(ppar$verbose) cat("wvec:")
     # Do not update wvec[kmax]
-    sweep <- as.logical(rbinom(1,1,ppar$psweep))
+    #sweep <- as.logical(rbinom(1,1,ppar$psweep))
+    sweep <- FALSE # do not do a global update of every wvec[k]
     if(ppar$verbose && sweep) cat("(sweep):")
     if(sweep || ppar$ksweep) {
       ksamplevec <- 1:(fpar$kmax-1)
@@ -294,11 +295,7 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
                            prob=state$uvec[-fpar$kmax], replace=TRUE)
     }
     naccepted <- 0
-    #errcount <- 0 ##!!==
     for(k in ksamplevec) {
-      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
-      #options(warn=2) ##!!==
-      
       state.old <- state
       vvec.old <- state$vvec
       gamma.old <- state$gamma
@@ -310,8 +307,10 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       uvec.new <- state$wvec/gamma.new
       uvec.new <- pmax(.Machine$double.neg.eps, uvec.new) # needed to stabilise
       uvec.new <- uvec.new/sum(uvec.new)
-      vvec.new <- makev(uvec.new)
-      vvec.new[vvec.new>=1 | vvec.new<=0] <- 0.5 ## numerical stabilisation
+      
+      # v values only change for indices up to and including k
+      vvec.new <- vvec.old
+      vvec.new[1:k] <- wvec[1:k]/(c(1, 1-cumsum(wvec[-kmax]))[1:k])
       state$gamma <- gamma.new
       state$vvec <- vvec.new
       state$uvec <- uvec.new
@@ -319,53 +318,31 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       state$lambda0 <- state$gamma*state$eta
       wkmax <- state$wvec[fpar$kmax]
       
-      #errcount<-errcount+1; cat(sprintf("llike:%d:%d;\n",k,errcount)) ##!!==
-      
       state$llike <- llikef(state, datlist, fpar, model)
-      
-      #errcount<-errcount+1; cat(sprintf("lprior:%d:%d;\n",k,errcount)) ##!!==
-      
       state$lprior <- lpriorf(state, fpar, model)
-      #state$lprior <- state$lprior ##!!==
-      
-      #errcount<-errcount+1; cat(sprintf("log.r:%d:%d;\n",k,errcount)) ##!!==
-      
-      #browser() ##!!==
-      
+
       log.r <- state$llike - state.old$llike
       log.r <- (log.r - state$beta*(gamma.new-gamma.old)
-                + sum(log(vvec.new[-fpar$kmax]/vvec.old[-fpar$kmax])))
-      
-      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
+                + sum(log(vvec.new[1:k]/vvec.old[1:k])))
       
       if(sweep || ppar$ksweep) {
         # updating sequentially
         log.r <- log.r
       } else {
         # updating at random
-        log.r <- (log.r + log(w.new/w.old)
-                  + log((gamma.old-wkmax)/(gamma.new-wkmax))
-        )
+        log.r <- (log.r + log((w.new/gamma.new)/(w.old/gamma.old)))
       }
-      
-      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
       
       if(ppar$verbose) {
         cat(sprintf("wvec[%d]: (%g;%g) %g->%g: logr=%g\n",
                     k, state.old$llike, state$llike,
                     w.old, w.new, log.r))
       }
-      
-      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
-      
       if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
         cat(sprintf("wvec[%d]: %g->%g: logr=%g\n",
                     k, w.old, w.new, log.r))
         browser()
       }
-      
-      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
-      
       if(runif(1)<exp(log.r)) {
         # accept
         naccepted <- naccepted + 1
@@ -375,11 +352,8 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
         state <- state.old
         if(ppar$verbose) cat("-")
       }
-      
-      #errcount<-errcount+1; cat(sprintf("%d:%d;\n",k,errcount)) ##!!==
-      
     }
-    state$accepted["thetavec"] <- naccepted/length(ksamplevec)
+    state$accepted["wvec"] <- naccepted/length(ksamplevec)
     if(ppar$verbose) cat("\n")
   }
   

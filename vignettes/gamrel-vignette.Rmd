@@ -314,7 +314,7 @@ and suitable priors for $\lambda_{10}|G_1$ and $\lambda_{20}|G_2$ are:
 
 \begin{eqnarray}
    \frac{d\log\lambda(t|\lambda_0,w_0,\gamma,\mathbf{\theta},\mathbf{v})}{dt} 
-   &=& w_0 + \sum_{k=1}^K w_k I(\theta_k\geq t)\\
+   &=& w_0 + \sum_{k=1}^K w_k I(\theta_k\leq t)\\
    \log\lambda(t|\lambda_0,w_0,\gamma,\mathbf{\theta},\mathbf{v}) &=& \log\lambda_0 + w_0 t 
                                            + \sum_{k=1}^K w_k \text{max}(0,t-\theta_k)\\
    \lambda(t|\lambda_0,w_0,\gamma,\mathbf{\theta},\mathbf{v}) &=& \lambda_0 \exp\left(w_0 t + \sum_{k=1}^K w_k \text{max}(0,t-\theta_k)\right)\\

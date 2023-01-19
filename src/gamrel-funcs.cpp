@@ -277,7 +277,8 @@ NumericVector int_lambda_func_lcv_c(NumericVector tvec,
                                     double lambda0, 
                                     double w0,
                                     NumericVector thetavec, 
-                                    NumericVector wvec) {
+                                    NumericVector wvec,
+                                    double epsilon) {  // needs 100*.Machine$double.neg.eps
   int n = tvec.size();
   int kmax = thetavec.size();
   int kmaxp2 = kmax+2;
@@ -305,8 +306,8 @@ NumericVector int_lambda_func_lcv_c(NumericVector tvec,
   s01vec[0] = w0;
   s2vec[0] = 0;
   for(k=1; k<kmaxp2; k++) {
-    s01vec[k] = s01vec[k-1] + owvec[k];
-    s2vec[k] = s2vec[k-1] + owvec[k]*othetavec[k];
+    s01vec[k] = s01vec[k-1] + owvec[k];   // C
+    s2vec[k] = s2vec[k-1] + owvec[k]*othetavec[k];  // D
   }
   
   ssvec[0] = 0;
@@ -321,19 +322,47 @@ NumericVector int_lambda_func_lcv_c(NumericVector tvec,
   }
   ccvec[kmaxp2-1] = ccvec[kmaxp2-2];
   
+  // NumericVector excess(9);
+  
   for(i=0; i<n; i++) {
     k1 = 0;
-    while( (k1<kmaxp2-1) && (othetavec[k1+1]<=tvec[i]) ) {
+    while( (k1<kmaxp2-1) && (othetavec[k1+1]<=tvec[i]) ) {   // try < rather than <=?
       k1++;
     }
     int_lambdavec[i] = ssvec[k1];
-    if(s01vec[k1]==0) {
+    if(std::abs(s01vec[k1])<epsilon) {
+      //excess[0] = -i;
+      //excess[1] = k1;
+      //excess[2] = othetavec[k1];
+      //excess[3] = tvec[i];
+      //excess[4] = othetavec[k1+1];
+      //excess[5] = int_lambdavec[i];
+      //excess[6] = ccvec[k1]*(tvec[i]-othetavec[k1]);
+      //excess[7] = s01vec[k1];
+      //excess[8] = ccvec[k1];
+      
       int_lambdavec[i] += ccvec[k1]*(tvec[i]-othetavec[k1]);
     } else {
+      //excess[0] = i;
+      //excess[1] = k1;
+      //excess[2] = othetavec[k1];
+      //excess[3] = tvec[i];
+      //excess[4] = othetavec[k1+1];
+      //excess[5] = int_lambdavec[i];
+      //excess[6] = (ccvec[k1]/s01vec[k1])*(exp(s01vec[k1]*tvec[i])-exp(s01vec[k1]*othetavec[k1]));
+      //excess[7] = s01vec[k1];
+      //excess[8] = ccvec[k1];
+      
       int_lambdavec[i] += (ccvec[k1]/s01vec[k1])*(exp(s01vec[k1]*tvec[i])-exp(s01vec[k1]*othetavec[k1]));
     }
+    //Rcpp::Rcout << excess << std::endl; // !!==
   }
   
+  //Rcpp::Rcout << "s01vec" << std::endl; // !!==
+  //Rcpp::Rcout << s01vec << std::endl; // **!!==
+  //NumericVector excess(n);
+  //Rcpp::Rcout << std::numeric_limits::epsilon( ) << std::endl;
+
   return int_lambdavec;
 }
 

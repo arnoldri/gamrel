@@ -288,6 +288,8 @@ int.lambda.func.lwb <- function(tvec, lambda0, a, thetavec, wvec, use.Cpp=TRUE) 
                                       ifelse(t<=a, (theta<a)*pmin(t,a-theta),
                                              pmax(0,a-theta)+pmax(0,t-a-theta))
                                     })%*%wvec)
+  int.lambda.vec <- int.lambda.vec + lambda0*tvec
+  
   return(int.lambda.vec)
 }
 
@@ -318,7 +320,8 @@ int.lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec, use.Cpp=TRUE)
   # integrated hazard rate function - Log Convex
   
   if(use.Cpp) {
-    return(int_lambda_func_lcv_c(tvec, lambda0, w0, thetavec, wvec))
+    return(int_lambda_func_lcv_c(tvec, lambda0, w0, thetavec, wvec, 
+                                 .Machine$double.neg.eps*100)) ## needs epsilon
   }
   odx <- order(thetavec) 
   othetavec <- thetavec[odx]  # theta*_k (1...K)
@@ -329,16 +332,16 @@ int.lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec, use.Cpp=TRUE)
   kmaxp2 <- kmax+2            # K+2
   k1vec <- apply(outer(tvec, othetavec, function(t,theta) theta<=t),1,sum)
   k1vec <- pmin(pmax(1,k1vec),kmaxp2-1)
-  
-  s1vec <- cumsum(owvec)
-  s01vec <- w0 + s1vec
-  s2vec <- cumsum(owvec*othetavec)
-  ccvec <- lambda0*exp(-s2vec)/s01vec
+
+  s1vec <- cumsum(owvec)  # C
+  s01vec <- w0 + s1vec    # C0
+  s2vec <- cumsum(owvec*othetavec)    # D
+  ccvec <- lambda0*exp(-s2vec)/s01vec # lambda0.exp(-D)/C0
   ccvec1 <- ccvec[-kmaxp2]
   s01vec1 <- s01vec[-kmaxp2]
   csvec1 <- ccvec1*(exp(s01vec1*othetavec[-1])-exp(s01vec1*othetavec[-kmaxp2]))
-  csvec1 <- ifelse(s01vec==0, 
-                   lambda0*exp(-s2vec)*(othetavec[-1]-othetavec[-kmaxp2]), 
+  csvec1 <- ifelse(s01vec1==0, 
+                   lambda0*exp(-s2vec[-kmaxp2])*(othetavec[-1]-othetavec[-kmaxp2]), 
                    csvec1)
   ssvec <- c(0,cumsum(csvec1))
   
