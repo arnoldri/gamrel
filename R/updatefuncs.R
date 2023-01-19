@@ -125,7 +125,7 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       if(runif(1)<exp(log.r)) {
         # accept
         naccepted <- naccepted + 1
-        if(ppar$verbose) cat("+"); cat(naccepted); cat(";")
+        if(ppar$verbose) cat("+")
       } else {
         # reject
         state <- state.old
