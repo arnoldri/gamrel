@@ -68,7 +68,7 @@ update.gamma.v1 <- function(state, datlist, fpar, ppar, model,
   llike.old <- state$llike
   gamma.old <- state$gamma
   
-  temp.model.list <- list(model=model, kmax=kmax, 
+  temp.model.list <- list(model=model, kmax=fpar$kmax, 
                           lambda0=state[[nm["eta"]]], ## Note: unscaled
                           thetavec=state[[nm["thetavec"]]],
                           wvec=state[[nm["uvec"]]])   ## Note: unscaled
@@ -394,12 +394,12 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
     state[[nm["wvec"]]][k] <- w.new
     gamma.new <- sum(state[[nm["wvec"]]])
     uvec.new <- state[[nm["wvec"]]]/gamma.new
-    uvec.new <- pmax(.Machine$double.neg.eps, uvec.new) # needed to stabilise
+    ##uvec.new <- pmax(.Machine$double.neg.eps, uvec.new) # needed to stabilise
     uvec.new <- uvec.new/sum(uvec.new)
     
     # v values only change for indices up to and including k
     vvec.new <- vvec.old
-    vvec.new[1:k] <- wvec[1:k]/(c(1, 1-cumsum(wvec[-kmax]))[1:k])
+    vvec.new[1:k] <- uvec.new[1:k]/(c(1, 1-cumsum(uvec.new[-fpar$kmax]))[1:k])
     state[[nm["gamma"]]] <- gamma.new
     state[[nm["vvec"]]] <- vvec.new
     state[[nm["uvec"]]] <- uvec.new
@@ -570,7 +570,7 @@ update.lambda0.v1 <- function(state, datlist, fpar, ppar, model,
                                    thetaswap="thetaswap")) {
   
   llike.old <- state$llike
-  temp.model.list <- list(model=model, kmax=kmax, 
+  temp.model.list <- list(model=model, kmax=fpar$kmax, 
                           lambda0=1, ## Note: unscaled
                           w0=state[[nm["w0"]]],
                           thetavec=state[[nm["thetavec"]]],
