@@ -4,7 +4,16 @@
 \alias{update.thetaswap.v1}
 \title{thetaswap V1 (IFR/DFR)}
 \usage{
-\method{update}{thetaswap.v1}(state, datlist, fpar, ppar, model)
+\method{update}{thetaswap.v1}(
+  state,
+  datlist,
+  fpar,
+  ppar,
+  model,
+  nm = c(eta = "eta", gamma = "gamma", thetavec = "thetavec", vvec = "vvec", alpha =
+    "alpha", beta = "beta", phi = "phi", uvec = "uvec", wvec = "wvec", lambda0 =
+    "lambda0", thetaswap = "thetaswap", thetaswap = "thetaswap")
+)
 }
 \description{
 thetaswap V1 (IFR/DFR)

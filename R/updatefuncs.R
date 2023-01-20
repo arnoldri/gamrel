@@ -27,66 +27,69 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
   # Update an IFR or DFR state
   state$count <- state$count + 1
   
+  parnm <- unique(c(names(state),names(ppar$update)))
+  names(parnm) <- parnm
+  
   # update eta ##!!==  
   if(ppar$update["eta"]) {
     if(ppar$verbose) cat("eta:")
-    state <- update.eta.v1(state, datlist, fpar, ppar, model)
+    state <- update.eta.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
   # update gamma ##!!==  
   if(ppar$update["gamma"]) {
     if(ppar$verbose) cat("gamma:")
-    state <- update.gamma.v1(state, datlist, fpar, ppar, model)
+    state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
   # update thetavec ##!!==  
   if(ppar$update["thetavec"]) {
     if(ppar$verbose) cat("thetavec:")
-    state <- update.thetavec.v1(state, datlist, fpar, ppar, model)
+    state <- update.thetavec.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
   # update vvec ##!!==  
   if(ppar$update["vvec"]) {
     if(ppar$verbose) cat("vvec:")
-    state <- update.vvec.v1(state, datlist, fpar, ppar, model)
+    state <- update.vvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
   # update alpha ##!!==  
   if(ppar$update["alpha"]) {
     if(ppar$verbose) cat("alpha:")
-    state <- update.alpha.v1(state, datlist, fpar, ppar, model)
+    state <- update.alpha.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
   # update beta ##!!==  
   if(ppar$update["beta"]) {
     if(ppar$verbose) cat("beta:")
-    state <- update.beta.v1(state, datlist, fpar, ppar, model)
+    state <- update.beta.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
   # update phi ##!!==  
   if(ppar$update["phi"]) {
     if(ppar$verbose) cat("phi:")
-    state <- update.phi.v1(state, datlist, fpar, ppar, model)
+    state <- update.phi.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
   # update wvec ##!!==  
   if(ppar$update["wvec"]) {
     if(ppar$verbose) cat("wvec:")
-    state <- update.wvec.v1(state, datlist, fpar, ppar, model)
+    state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
   # swap elements of thetavec ##!!==  
   if(ppar$update["thetaswap"]) {
     if(ppar$verbose) cat("thetawsap:")
-    state <- update.thetaswap.v1(state, datlist, fpar, ppar, model)
+    state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
@@ -97,6 +100,9 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
 update_state.lwb <- function(state, datlist, fpar, ppar, model) { 
   # Update a LWB state
   state$count <- state$count + 1
+  parnm <- names(state)
+  names(parnm) <- parnm
+  
   stop("Not yet implemented")
   
   # update eta !!==
@@ -115,6 +121,9 @@ update_state.lwb <- function(state, datlist, fpar, ppar, model) {
 update_state.sbt <- function(state, datlist, fpar, ppar, model) { 
   # Update a SBT state
   state$count <- state$count + 1
+  parnm <- names(state)
+  names(parnm) <- parnm
+  
   stop("Not yet implemented")
 
   # update eta !!==
@@ -142,6 +151,9 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
 update_state.mbt <- function(state, datlist, fpar, ppar, model) { 
   # Update a MBT state
   state$count <- state$count + 1
+  parnm <- names(state)
+  names(parnm) <- parnm
+  
   stop("Not yet implemented")
   
   # update pival !!==
@@ -171,6 +183,9 @@ update_state.mbt <- function(state, datlist, fpar, ppar, model) {
 update_state.lcv <- function(state, datlist, fpar, ppar, model) { 
   # Update a LCV state
   state$count <- state$count + 1
+  parnm <- names(state)
+  names(parnm) <- parnm
+  
   stop("Not yet implemented")
   
   # update lambda0 !!==

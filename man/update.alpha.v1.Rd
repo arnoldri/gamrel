@@ -4,7 +4,16 @@
 \alias{update.alpha.v1}
 \title{alpha V1 (IFR/DFR)}
 \usage{
-\method{update}{alpha.v1}(state, datlist, fpar, ppar, model)
+\method{update}{alpha.v1}(
+  state,
+  datlist,
+  fpar,
+  ppar,
+  model,
+  nm = c(eta = "eta", gamma = "gamma", thetavec = "thetavec", vvec = "vvec", alpha =
+    "alpha", beta = "beta", phi = "phi", uvec = "uvec", wvec = "wvec", lambda0 =
+    "lambda0", thetaswap = "thetaswap")
+)
 }
 \description{
 alpha V1 (IFR/DFR)
