@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.eta.v1}
 \alias{update.eta.v1}
-\title{eta V1 (IFR/DFR)}
+\title{eta V1 (IFR/DFR/LWB)}
 \usage{
 \method{update}{eta.v1}(
   state,
@@ -16,5 +16,5 @@
 )
 }
 \description{
-eta V1 (IFR/DFR)
+eta V1 (IFR/DFR/LWB)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.phi.v1}
 \alias{update.phi.v1}
-\title{phi V1 (IFR/DFR)}
+\title{phi V1 (IFR/DFR/LWB)}
 \usage{
 \method{update}{phi.v1}(
   state,
@@ -16,5 +16,5 @@
 )
 }
 \description{
-phi V1 (IFR/DFR)
+phi V1 (IFR/DFR/LWB)
 }

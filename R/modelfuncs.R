@@ -171,7 +171,7 @@ init.objects <- function(tvec, obs,
     # fixed parameters
     parnames <- c("eta",
                   "gamma1","thetavec1","vvec1","alpha1","beta1","phi1",
-                  "gamma2","thetavec1","vvec2","alpha2","beta2","phi2")
+                  "gamma2","thetavec2","vvec2","alpha2","beta2","phi2")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
@@ -181,7 +181,7 @@ init.objects <- function(tvec, obs,
                  f1=prior.par$f1, f2=prior.par$f2, # prior for phi
                  use.Cpp=use.Cpp) 
     # parameters to update
-    update_parnames <- c(parnames,"wvec","thetaswap")
+    update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     # proposal parameters for updates
@@ -268,7 +268,7 @@ init.objects <- function(tvec, obs,
                  f1=prior.par$f1, f2=prior.par$f2, # prior for phi
                  use.Cpp=use.Cpp) 
     # parameters to update
-    update_parnames <- c(parnames,"wvec","thetaswap")
+    update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     # proposal parameters for updates
