@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.thetaswap.v1}
 \alias{update.thetaswap.v1}
-\title{thetaswap V1 (IFR/DFR)}
+\title{thetaswap V1 (IFR/DFR/LWB)}
 \usage{
 \method{update}{thetaswap.v1}(
   state,
@@ -16,5 +16,5 @@
 )
 }
 \description{
-thetaswap V1 (IFR/DFR)
+thetaswap V1 (IFR/DFR/LWB)
 }

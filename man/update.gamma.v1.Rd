@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.gamma.v1}
 \alias{update.gamma.v1}
-\title{gamma V1 (Gibbs) (IFR/DFR)}
+\title{gamma V1 (Gibbs) (IFR/DFR/LWB)}
 \usage{
 \method{update}{gamma.v1}(
   state,
@@ -16,5 +16,5 @@
 )
 }
 \description{
-gamma V1 (Gibbs) (IFR/DFR)
+gamma V1 (Gibbs) (IFR/DFR/LWB)
 }
