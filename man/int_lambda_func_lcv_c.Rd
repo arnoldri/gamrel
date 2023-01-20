@@ -4,7 +4,7 @@
 \alias{int_lambda_func_lcv_c}
 \title{Integrated hazard rate function - Log Convex version}
 \usage{
-int_lambda_func_lcv_c(tvec, lambda0, w0, thetavec, wvec)
+int_lambda_func_lcv_c(tvec, lambda0, w0, thetavec, wvec, epsilon)
 }
 \arguments{
 \item{tvec}{Locations at which to evaluate the function}
