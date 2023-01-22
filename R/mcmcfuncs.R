@@ -61,12 +61,8 @@ state.as.vector <- function(state, fpar, model) {
 #' 
 #' @export
 vector.as.state <- function(statevec, datlist, fpar, ppar, model) {
-  if(model%in%c("IFR","DFR")) {
-    state <- unstack(data.frame(values=statevec,ind=fpar$stackind))
-    names(state$accepted) <- names(ppar$update)
-  } else {
-    stop(paste0("Model ",model," not recognised"))
-  }
+  state <- unstack(data.frame(values=statevec,ind=fpar$stackind))
+  names(state$accepted) <- names(ppar$update)
   return(state)
 }
 
