@@ -126,7 +126,8 @@ init.objects <- function(tvec, obs,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  update=update,
-                 verbose=FALSE)
+                 verbose=FALSE, 
+                 interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
       epar <- list(eta=1/prior.par$nu,
@@ -200,7 +201,8 @@ init.objects <- function(tvec, obs,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  update=update,
-                 verbose=FALSE)
+                 verbose=FALSE, 
+                 interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
       epar <- list(eta=1/prior.par$nu,
@@ -290,7 +292,8 @@ init.objects <- function(tvec, obs,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  update=update,
-                 verbose=FALSE)
+                 verbose=FALSE, 
+                 interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
       epar <- list(pival=0.5,
@@ -381,7 +384,8 @@ init.objects <- function(tvec, obs,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  update=update,
-                 verbose=FALSE)
+                 verbose=FALSE, 
+                 interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
       epar <- list(lambda0=prior.par$s1/prior.par$s2,
@@ -530,6 +534,18 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
 #' @export
 llikef <- function(state, datlist, fpar, model) {
   # log likelihood of observations tvec
+  hazfuncs <- both.lambda.funcs(tvec, 
+                                model.list=c(list(model=model,kmax=fpar$kmax),
+                                             state), 
+                                use.Cpp=fpar$use.Cpp)
+  retval <- sum(log(hazfuncs[,1]) - hazfuncs[,2])
+  return(retval)
+}
+#' Log likelihood of the current state
+#' 
+#' @export
+llikef.old <- function(state, datlist, fpar, model) {
+  # log likelihood of observations tvec
   lambda.vec <- lambda.func(tvec=datlist$tvec[datlist$obs],
                             model.list=c(list(model=model,kmax=fpar$kmax),
                                          state),
@@ -605,7 +621,7 @@ lpriorf.vector <- function(state, fpar, model) {
     # prior for beta1
     lprior.vec["beta1"] <- dgamma(state$beta1, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi1
-    lprior.vec["phi1"] <- dgamma(state$phi1, fpar$f1, fpar$f2, log=TRUE)
+    lprior.vec["phi1"] <- dgamma(state$phi1, fpar$f11, fpar$f21, log=TRUE)
     
     # prior for gamma2
     lprior.vec["gamma2"] <- dgamma(state$gamma2, state$alpha2, state$beta2, log=TRUE)
@@ -618,7 +634,7 @@ lpriorf.vector <- function(state, fpar, model) {
     # prior for beta2
     lprior.vec["beta2"] <- dgamma(state$beta2, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi2
-    lprior.vec["phi2"] <- dgamma(state$phi2, fpar$f1, fpar$f2, log=TRUE)
+    lprior.vec["phi2"] <- dgamma(state$phi2, fpar$f12, fpar$f22, log=TRUE)
     
   } else if(model%in%c("MBT")) {
     # prior for pival
@@ -637,7 +653,7 @@ lpriorf.vector <- function(state, fpar, model) {
     # prior for beta1
     lprior.vec["beta1"] <- dgamma(state$beta1, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi1
-    lprior.vec["phi1"] <- dgamma(state$phi1, fpar$f1, fpar$f2, log=TRUE)
+    lprior.vec["phi1"] <- dgamma(state$phi1, fpar$f11, fpar$f21, log=TRUE)
     
     # prior for eta2
     lprior.vec["eta2"] <- dexp(state$eta2, fpar$nu)
@@ -652,7 +668,7 @@ lpriorf.vector <- function(state, fpar, model) {
     # prior for beta2
     lprior.vec["beta2"] <- dgamma(state$beta2, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi2
-    lprior.vec["phi2"] <- dgamma(state$phi2, fpar$f1, fpar$f2, log=TRUE)
+    lprior.vec["phi2"] <- dgamma(state$phi2, fpar$f12, fpar$f22, log=TRUE)
     
   } else if(model%in%c("LCV")) {
     # prior for lambda0
@@ -772,4 +788,5 @@ plot_state <- function(state, datlist, fpar, ppar, model,
   }
   invisible()
 }
+
 

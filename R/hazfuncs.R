@@ -398,9 +398,11 @@ both.lambda.funcs <- function(tvec, model.list, use.Cpp=TRUE) {
     int.lambda.vec <- int.lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
     retval <- cbind(lambda.vec=lambda.vec,int.lambda.vec=int.lambda.vec)
   } else if(model%in%"LCV") {
-    lambda.vec <- lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
-    int.lambda.vec <- int.lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
-    retval <- cbind(lambda.vec=lambda.vec,int.lambda.vec=int.lambda.vec)
+    retval <- both_lambda_func_lcv_c(tvec, 
+                                     model.list$lambda0, 
+                                     model.list$w0,
+                                     model.list$thetavec, 
+                                     model.list$wvec) 
   }
   return(retval)
 }
