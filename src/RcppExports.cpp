@@ -156,6 +156,49 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// both_lambda_func_ifr_c
+NumericMatrix both_lambda_func_ifr_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_both_lambda_func_ifr_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(both_lambda_func_ifr_c(tvec, lambda0, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// both_lambda_func_dfr_c
+NumericMatrix both_lambda_func_dfr_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_both_lambda_func_dfr_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(both_lambda_func_dfr_c(tvec, lambda0, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// both_lambda_func_lwb_c
+NumericMatrix both_lambda_func_lwb_c(NumericVector tvec, double lambda0, double a, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_both_lambda_func_lwb_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP aSEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(both_lambda_func_lwb_c(tvec, lambda0, a, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
 // shellSort_c
 NumericVector shellSort_c(NumericVector x);
 RcppExport SEXP _gamrel_shellSort_c(SEXP xSEXP) {
@@ -201,6 +244,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_int_lambda_func_dfr_c", (DL_FUNC) &_gamrel_int_lambda_func_dfr_c, 4},
     {"_gamrel_int_lambda_func_lwb_c", (DL_FUNC) &_gamrel_int_lambda_func_lwb_c, 5},
     {"_gamrel_int_lambda_func_lcv_c", (DL_FUNC) &_gamrel_int_lambda_func_lcv_c, 6},
+    {"_gamrel_both_lambda_func_ifr_c", (DL_FUNC) &_gamrel_both_lambda_func_ifr_c, 4},
+    {"_gamrel_both_lambda_func_dfr_c", (DL_FUNC) &_gamrel_both_lambda_func_dfr_c, 4},
+    {"_gamrel_both_lambda_func_lwb_c", (DL_FUNC) &_gamrel_both_lambda_func_lwb_c, 5},
     {"_gamrel_shellSort_c", (DL_FUNC) &_gamrel_shellSort_c, 1},
     {"_gamrel_order_c", (DL_FUNC) &_gamrel_order_c, 1},
     {"_gamrel_rcpp_hello_world", (DL_FUNC) &_gamrel_rcpp_hello_world, 0},

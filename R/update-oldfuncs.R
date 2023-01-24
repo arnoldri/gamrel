@@ -25,7 +25,7 @@ update_state.old.ifrdfr <- function(state, datlist, fpar, ppar, model) {
     if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
       cat(sprintf("eta: %g->%g: logr=%g\n",
                   eta.old, eta.new, log.r))
-      browser()
+      if(ppar$interactive) browser()
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -98,7 +98,7 @@ update_state.old.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
         cat(sprintf("thetavec[%d]: %g->%g: logr=%g\n",
                     k, theta.old, theta.new, log.r))
-        browser()
+        if(ppar$interactive) browser()
       }
       if(runif(1)<exp(log.r)) {
         # accept
@@ -161,7 +161,7 @@ update_state.old.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
         cat(sprintf("vvec[%d]: %g->%g: logr=%g\n",
                     k, v.old, v.new, log.r))
-        browser()
+        if(ppar$interactive) browser()
       }
       if(runif(1)<exp(log.r)) {
         # accept
@@ -202,7 +202,7 @@ update_state.old.ifrdfr <- function(state, datlist, fpar, ppar, model) {
     if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
       cat(sprintf("alpha: %g->%g: logr=%g\n",
                   alpha.old, alpha.new, log.r))
-      browser()
+      if(ppar$interactive) browser()
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -288,7 +288,7 @@ update_state.old.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       
       # v values only change for indices up to and including k
       vvec.new <- vvec.old
-      vvec.new[1:k] <- wvec[1:k]/(c(1, 1-cumsum(wvec[-kmax]))[1:k])
+      vvec.new[1:k] <- uvec.new[1:k]/(c(1, 1-cumsum(uvec.new[-fpar$kmax]))[1:k])
       state$gamma <- gamma.new
       state$vvec <- vvec.new
       state$uvec <- uvec.new
@@ -319,7 +319,7 @@ update_state.old.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
         cat(sprintf("wvec[%d]: %g->%g: logr=%g\n",
                     k, w.old, w.new, log.r))
-        browser()
+        if(ppar$interactive) browser()
       }
       if(runif(1)<exp(log.r)) {
         # accept
@@ -359,7 +359,7 @@ update_state.old.ifrdfr <- function(state, datlist, fpar, ppar, model) {
       if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
         cat(sprintf("thetaswap[%d,%d]: %g->%g: logr=%g\n",
                     k1, k2, state.old$thetavec[k1], state.old$thetavec[k2], log.r))
-        browser()
+        if(ppar$interactive) browser()
       }
       if(runif(1)<exp(log.r)) {
         # accept

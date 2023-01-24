@@ -33,7 +33,7 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
   if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
     cat(sprintf("eta: %g->%g: logr=%g\n",
                 eta.old, eta.new, log.r))
-    browser()
+    if(ppar$interactive) browser()
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -137,7 +137,7 @@ update.thetavec.v1 <- function(state, datlist, fpar, ppar, model,
     if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
       cat(sprintf("thetavec[%d]: %g->%g: logr=%g\n",
                   k, theta.old, theta.new, log.r))
-      browser()
+      if(ppar$interactive) browser()
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -214,7 +214,7 @@ update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
     if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
       cat(sprintf("vvec[%d]: %g->%g: logr=%g\n",
                   k, v.old, v.new, log.r))
-      browser()
+      if(ppar$interactive) browser()
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -269,7 +269,7 @@ update.alpha.v1 <- function(state, datlist, fpar, ppar, model,
   if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
     cat(sprintf("alpha: %g->%g: logr=%g\n",
                 alpha.old, alpha.new, log.r))
-    browser()
+    if(ppar$interactive) browser()
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -335,12 +335,13 @@ update.phi.v1 <- function(state, datlist, fpar, ppar, model,
                                wvec="wvec",
                                lambda0="lambda0",
                                thetaswap="thetaswap",
-                               thetaswap="thetaswap")) {
+                               thetaswap="thetaswap",
+                               f1="f1", f2="f2")) {
   
   phi.old <- state[[nm["phi"]]]
   llike.old <- state$llike
-  f1star <- fpar$f1 + fpar$kmax
-  f2star <- fpar$f2 + sum(state[[nm["thetavec"]]])
+  f1star <- fpar[[nm["f1"]]] + fpar$kmax
+  f2star <- fpar[[nm["f2"]]] + sum(state[[nm["thetavec"]]])
   phi.new <- rgamma(1, f1star, f2star)
   state[[nm["phi"]]] <- phi.new
   state$llike <- llikef(state, datlist, fpar, model)
@@ -432,7 +433,7 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
     if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
       cat(sprintf("wvec[%d]: %g->%g: logr=%g\n",
                   k, w.old, w.new, log.r))
-      browser()
+      if(ppar$interactive) browser()
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -487,7 +488,7 @@ update.thetaswap.v1 <- function(state, datlist, fpar, ppar, model,
     if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
       cat(sprintf("thetaswap[%d,%d]: %g->%g: logr=%g\n",
                   k1, k2, state.old[[nm["thetavec"]]][k1], state.old[[nm["thetavec"]]][k2], log.r))
-      browser()
+      if(ppar$interactive) browser()
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -537,7 +538,7 @@ update.a.v1 <- function(state, datlist, fpar, ppar, model,
   if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
     cat(sprintf("a: %g->%g: logr=%g\n",
                 a.old, a.new, log.r))
-    browser()
+    if(ppar$interactive) browser()
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -626,7 +627,7 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
   if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
     cat(sprintf("w0: %g->%g: logr=%g\n",
                 w0.old, w0.new, log.r))
-    browser()
+    if(ppar$interactive) browser()
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -681,7 +682,7 @@ update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
   if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
     cat(sprintf("gamma: %g->%g: logr=%g\n",
                 gamma.old, gamma.new, log.r))
-    browser()
+    if(ppar$interactive) browser()
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -719,7 +720,7 @@ update.pival.v1 <- function(state, datlist, fpar, ppar, model,
   if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
     cat(sprintf("pival: %g->%g: logr=%g\n",
                 pival.old, pival.new, log.r))
-    browser()
+    if(ppar$interactive) browser()
   }
   if(runif(1)<exp(log.r)) {
     # accept

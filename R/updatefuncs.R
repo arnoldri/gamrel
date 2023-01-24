@@ -29,6 +29,7 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
   
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
+  parnm <- c(parnm,c(f1="f1",f2="f2"))
   
   # update eta ##!!== OK 
   if(ppar$update["eta"]) {
@@ -103,6 +104,7 @@ update_state.lwb <- function(state, datlist, fpar, ppar, model) {
 
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
+  parnm <- c(parnm,c(f1="f1",f2="f2"))
   
   # update eta ##!!== OK
   if(ppar$update["eta"]) {
@@ -181,7 +183,8 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
   state$count <- state$count + 1
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-
+  parnm <- c(parnm,c(f1="f1",f2="f2"))
+  
   # update eta ##!!== OK 
   if(ppar$update["eta"]) {
     if(ppar$verbose) cat("eta:")
@@ -201,7 +204,8 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
                 phi="phi",
                 uvec="uvec",
                 wvec="wvec",
-                thetaswap="thetaswap")
+                thetaswap="thetaswap",
+                f1="f1", f2="f2")
     ntp <- names(tparnm)
     tparnm <- paste0(tparnm,j)
     names(tparnm) <- ntp
@@ -279,7 +283,8 @@ update_state.mbt <- function(state, datlist, fpar, ppar, model) {
   state$count <- state$count + 1
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-
+  parnm <- c(parnm,c(f1="f1",f2="f2"))
+  
   # update pival ##!!== OK 
   if(ppar$update["pival"]) {
     if(ppar$verbose) cat("pival:")
@@ -299,7 +304,8 @@ update_state.mbt <- function(state, datlist, fpar, ppar, model) {
                 uvec="uvec",
                 wvec="wvec",
                 lambda0="lambda0",
-                thetaswap="thetaswap")
+                thetaswap="thetaswap",
+                f1="f1", f2="f2")
     ntp <- names(tparnm)
     tparnm <- paste0(tparnm,j)
     names(tparnm) <- ntp
@@ -385,7 +391,8 @@ update_state.lcv <- function(state, datlist, fpar, ppar, model) {
   state$count <- state$count + 1
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-
+  parnm <- c(parnm,c(f1="f1",f2="f2"))
+  
   # update lambda0 ##!!== 
   if(ppar$update["lambda0"]) {
     if(ppar$verbose) cat("lambda0:")

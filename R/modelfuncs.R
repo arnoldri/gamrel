@@ -55,7 +55,8 @@ init.objects <- function(tvec, obs,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  update=update,
-                 verbose=FALSE)
+                 verbose=FALSE, 
+                 interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
       epar <- list(eta=1/prior.par$nu,
@@ -157,7 +158,8 @@ init.objects <- function(tvec, obs,
       prior.par <- list(nu=1,
                         a1=1, a2=1,
                         b1=1, b2=1,
-                        f1=1, f2=1)
+                        f11=1, f21=1, # DFR
+                        f12=1, f22=1) # IFR
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
@@ -175,10 +177,11 @@ init.objects <- function(tvec, obs,
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
-                 nu=prior.par$nu,                  # prior for eta (lambda0/gamma)
-                 a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
-                 b1=prior.par$b1, b2=prior.par$b2, # prior for beta
-                 f1=prior.par$f1, f2=prior.par$f2, # prior for phi
+                 nu=prior.par$nu,                  # prior for eta1,eta2 (lambda0/gamma)
+                 a1=prior.par$a1, a2=prior.par$a2, # prior for alpha1,alpha2
+                 b1=prior.par$b1, b2=prior.par$b2, # prior for beta1,beta2
+                 f11=prior.par$f11, f21=prior.par$f21, # prior for phi1
+                 f12=prior.par$f12, f22=prior.par$f22, # prior for phi2
                  use.Cpp=use.Cpp) 
     # parameters to update
     update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
@@ -206,13 +209,13 @@ init.objects <- function(tvec, obs,
                    vvec1=NA,
                    alpha1=prior.par$a1/prior.par$a2,
                    beta1=prior.par$b1/prior.par$b2,
-                   phi1=prior.par$f1/prior.par$b2,
+                   phi1=prior.par$f11/prior.par$f21,
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
                    alpha2=prior.par$a1/prior.par$a2,
                    beta2=prior.par$b1/prior.par$b2,
-                   phi2=prior.par$f1/prior.par$b2)
+                   phi2=prior.par$f12/prior.par$f22)
       epar$gamma1 <- epar$alpha1/epar$beta1
       epar$gamma2 <- epar$alpha2/epar$beta2
     } else {
@@ -222,13 +225,13 @@ init.objects <- function(tvec, obs,
                    vvec1=NA,
                    alpha1=rgamma(1,prior.par$a1,prior.par$a2),
                    beta1=rgamma(1,prior.par$b1,prior.par$b2),
-                   phi1=rgamma(1,prior.par$f1,prior.par$b2),
+                   phi1=rgamma(1,prior.par$f11,prior.par$f21),
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
                    alpha2=rgamma(1,prior.par$a1,prior.par$a2),
                    beta2=rgamma(1,prior.par$b1,prior.par$b2),
-                   phi2=rgamma(1,prior.par$f1,prior.par$b2))
+                   phi2=rgamma(1,prior.par$f12,prior.par$f22))
       epar$gamma1 <- rgamma(1,epar$alpha1,epar$beta1)
       epar$gamma2 <- rgamma(1,epar$alpha2,epar$beta2)
     }
@@ -243,7 +246,8 @@ init.objects <- function(tvec, obs,
       prior.par <- list(nu=1,
                         a1=1, a2=1,
                         b1=1, b2=1,
-                        f1=1, f2=1)
+                        f11=1, f21=1,
+                        f12=1, f22=1)
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
@@ -262,10 +266,11 @@ init.objects <- function(tvec, obs,
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
-                 nu=prior.par$nu,                  # prior for eta (lambda0/gamma)
-                 a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
-                 b1=prior.par$b1, b2=prior.par$b2, # prior for beta
-                 f1=prior.par$f1, f2=prior.par$f2, # prior for phi
+                 nu=prior.par$nu,                  # prior for eta1,eta2 (lambda0/gamma)
+                 a1=prior.par$a1, a2=prior.par$a2, # prior for alpha1,alpha2,
+                 b1=prior.par$b1, b2=prior.par$b2, # prior for beta1,beta2
+                 f11=prior.par$f11, f21=prior.par$f21, # prior for phi1
+                 f12=prior.par$f12, f22=prior.par$f22, # prior for phi1
                  use.Cpp=use.Cpp) 
     # parameters to update
     update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
@@ -295,14 +300,14 @@ init.objects <- function(tvec, obs,
                    vvec1=NA,
                    alpha1=prior.par$a1/prior.par$a2,
                    beta1=prior.par$b1/prior.par$b2,
-                   phi1=prior.par$f1/prior.par$b2,
+                   phi1=prior.par$f11/prior.par$f21,
                    eta2=2/prior.par$nu,
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
                    alpha2=prior.par$a1/prior.par$a2,
                    beta2=prior.par$b1/prior.par$b2,
-                   phi2=prior.par$f1/prior.par$b2)
+                   phi2=prior.par$f12/prior.par$f22)
       epar$gamma1 <- epar$alpha1/epar$beta1
       epar$gamma2 <- epar$alpha2/epar$beta2
     } else {
@@ -313,14 +318,14 @@ init.objects <- function(tvec, obs,
                    vvec1=NA,
                    alpha1=rgamma(1,prior.par$a1,prior.par$a2),
                    beta1=rgamma(1,prior.par$b1,prior.par$b2),
-                   phi1=rgamma(1,prior.par$f1,prior.par$b2),
+                   phi1=rgamma(1,prior.par$f11,prior.par$f21),
                    eta2=rexp(1,prior.par$nu),
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
                    alpha2=rgamma(1,prior.par$a1,prior.par$a2),
                    beta2=rgamma(1,prior.par$b1,prior.par$b2),
-                   phi2=rgamma(1,prior.par$f1,prior.par$b2))
+                   phi2=rgamma(1,prior.par$f12,prior.par$f22))
       epar$gamma1 <- rgamma(1,epar$alpha1,epar$beta1)
       epar$gamma2 <- rgamma(1,epar$alpha2,epar$beta2)
     }
