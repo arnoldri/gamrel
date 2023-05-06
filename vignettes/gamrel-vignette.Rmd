@@ -475,16 +475,16 @@ $(w_1,\ldots,w_K)$ is
 
 We will use log Normal:
 \[
-    q(y^+|y) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{1}{2\sigma^2} (y+-y)^2}
+    q(y^+|y) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{1}{2\sigma^2} (y^+-y)^2}
 \]
 the log Normal
 \[
-    q(y^+|y) = \frac{1}{y^+\sqrt{2\pi\sigma^2}}e^{-\frac{1}{2\sigma^2} (\log y+-\log y)^2}
+    q(y^+|y) = \frac{1}{y^+\sqrt{2\pi\sigma^2}}e^{-\frac{1}{2\sigma^2} (\log y^+-\log y)^2}
 \]
 and the logistic Normal
 \[
     q(y^+|y) = \frac{1}{y^+(1-y^+)\sqrt{2\pi\sigma^2}}
-               e^{-\frac{1}{2\sigma^2} (\text{logit}\,y+-\text{\logit}\,y)^2}
+               e^{-\frac{1}{2\sigma^2} (\text{logit}\,y^+-\text{logit}\,y)^2}
 \]
 as proposal distributions in Metropolis-Hastings updates.
 
@@ -714,7 +714,7 @@ $\log w_k^+ | \log w_k, \sigma_w^2 \sim N(\log w_k, \sigma_w^2)$
 Compute
 \begin{eqnarray}
   \gamma^+ &=& \sum_{\ell=1}^K w^+_\ell\\
-  \tilde{w}^+_\ell &=& \frac{w^+_\ell}{\gamma^+}
+  \tilde{w}^+_\ell &=& \frac{w^+_\ell}{\gamma^+}\\
   v^+_\ell &=& \frac{\tilde{w}^+_\ell}{\sum_{j=\ell}^K \tilde{w}_j}\\
   \lambda_0^+ &=& \gamma^+\eta\\
 \end{eqnarray}
@@ -750,7 +750,7 @@ NB: if we update all components in sequence from $k=1,\ldots,K$ (without random 
 don't have the selection probabilties in the proposal ratio.  Therefore it becomes:
 \begin{eqnarray}
 \log r &=& \log LR(\Omega^+|\Omega)\\
-       && + (\alpha-1)\log\left(\frac{\gamma^+}{\gamma}\right)
+       && + (\alpha-1)\log\left(\frac{\gamma^+}{\gamma}\right)\\
        && - \beta(\gamma^+-\gamma)
           + \sum_{\ell=1}^{K-1} \left[
             \log\frac{v^+_\ell}{v_\ell} + (\alpha-1)\log\frac{1-v^+_\ell}{1-v_\ell}
