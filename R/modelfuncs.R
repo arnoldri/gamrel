@@ -2,7 +2,7 @@
 # Model functions
 ###############################################################################
 #' Initialise objects for an MCMC chain
-#' 
+#'
 #' @export
 init.objects <- function(tvec, obs,
                          kmax=100,
@@ -14,7 +14,7 @@ init.objects <- function(tvec, obs,
                          generate="fixed") {  # generate can be "fixed" or "random"
   if(!is.null(seed)) set.seed(seed)
   if(model%in%c("IFR","DFR")) {
-    
+
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         a1=1, a2=1,
@@ -38,7 +38,7 @@ init.objects <- function(tvec, obs,
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta
                  f1=prior.par$f1, f2=prior.par$f2, # prior for phi
-                 use.Cpp=use.Cpp) 
+                 use.Cpp=use.Cpp)
     # parameters to update
     update_parnames <- c(parnames,"wvec","thetaswap")
     update <- rep(TRUE, length(update_parnames))
@@ -55,7 +55,7 @@ init.objects <- function(tvec, obs,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  update=update,
-                 verbose=FALSE, 
+                 verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
@@ -79,9 +79,9 @@ init.objects <- function(tvec, obs,
     }
     epar$thetavec <- rexp(kmax, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
-    
+
   } else if(model%in%c("LWB")) {
-    
+
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         c1=1, c2=1,
@@ -108,7 +108,7 @@ init.objects <- function(tvec, obs,
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta
                  f1=prior.par$f1, f2=prior.par$f2, # prior for phi
-                 use.Cpp=use.Cpp) 
+                 use.Cpp=use.Cpp)
     # parameters to update
     update_parnames <- c(parnames,"wvec","thetaswap")
     update <- rep(TRUE, length(update_parnames))
@@ -126,7 +126,7 @@ init.objects <- function(tvec, obs,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  update=update,
-                 verbose=FALSE, 
+                 verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
@@ -152,9 +152,9 @@ init.objects <- function(tvec, obs,
     }
     epar$thetavec <- rexp(kmax, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
-    
+
   } else if(model%in%c("SBT")) {
-    
+
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         a1=1, a2=1,
@@ -178,12 +178,12 @@ init.objects <- function(tvec, obs,
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
-                 nu=prior.par$nu,                  # prior for eta1,eta2 (lambda0/gamma)
+                 nu=prior.par$nu,                  # prior for eta (lambda0/gamma2)
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha1,alpha2
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta1,beta2
                  f11=prior.par$f11, f21=prior.par$f21, # prior for phi1
                  f12=prior.par$f12, f22=prior.par$f22, # prior for phi2
-                 use.Cpp=use.Cpp) 
+                 use.Cpp=use.Cpp)
     # parameters to update
     update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
     update <- rep(TRUE, length(update_parnames))
@@ -201,7 +201,7 @@ init.objects <- function(tvec, obs,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  update=update,
-                 verbose=FALSE, 
+                 verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
@@ -241,9 +241,9 @@ init.objects <- function(tvec, obs,
     epar$vvec1 <- rbeta.t(kmax, 1, epar$alpha1)
     epar$thetavec2 <- rexp(kmax, epar$phi2)
     epar$vvec2 <- rbeta.t(kmax, 1, epar$alpha2)
-    
+
   } else if(model%in%c("MBT")) {
-    
+
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         a1=1, a2=1,
@@ -273,7 +273,7 @@ init.objects <- function(tvec, obs,
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta1,beta2
                  f11=prior.par$f11, f21=prior.par$f21, # prior for phi1
                  f12=prior.par$f12, f22=prior.par$f22, # prior for phi1
-                 use.Cpp=use.Cpp) 
+                 use.Cpp=use.Cpp)
     # parameters to update
     update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
     update <- rep(TRUE, length(update_parnames))
@@ -292,7 +292,7 @@ init.objects <- function(tvec, obs,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  update=update,
-                 verbose=FALSE, 
+                 verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
@@ -336,9 +336,9 @@ init.objects <- function(tvec, obs,
     epar$vvec1 <- rbeta.t(kmax, 1, epar$alpha1)
     epar$thetavec2 <- rexp(kmax, epar$phi2)
     epar$vvec2 <- rbeta.t(kmax, 1, epar$alpha2)
-    
+
   } else if(model%in%c("LCV")) {
-    
+
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         s1=1, s2=1,
@@ -366,7 +366,7 @@ init.objects <- function(tvec, obs,
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta
                  f1=prior.par$f1, f2=prior.par$f2, # prior for phi
-                 use.Cpp=use.Cpp) 
+                 use.Cpp=use.Cpp)
     # parameters to update
     update_parnames <- c(parnames,"wvec","thetaswap")
     update <- rep(TRUE, length(update_parnames))
@@ -384,7 +384,7 @@ init.objects <- function(tvec, obs,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  update=update,
-                 verbose=FALSE, 
+                 verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
@@ -410,7 +410,7 @@ init.objects <- function(tvec, obs,
     }
     epar$thetavec <- rexp(kmax, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
-    
+
   } else {
     stop("Specified model has not been implemented")
   }
@@ -433,7 +433,7 @@ init.objects <- function(tvec, obs,
 ####################################################################################
 
 #' Construct the state object from the parameter vectors and data
-#' 
+#'
 #' @export
 make.state <- function(epar, datlist, fpar, ppar, model) {
   if(model%in%c("IFR","DFR")) {
@@ -447,7 +447,7 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$wvec <- state$gamma * state$uvec
     # compute lambda0
     state$lambda0 <- state$gamma*state$eta
-    
+
   } else if(model%in%c("LWB")) {
     state <- epar
     # complete state with useful quantities
@@ -459,32 +459,32 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$wvec <- state$gamma * state$uvec
     # compute lambda0
     state$lambda0 <- state$gamma*state$eta
-    
+
   } else if(model%in%c("SBT")) {
     state <- epar
     # complete state with useful quantities
-    
+
     # derive the unscaled weights uvec
     cp <- cumprod(1-state$vvec1[-fpar$kmax])
     state$uvec1 <- state$vvec1*c(1,cp)
     state$uvec1[fpar$kmax] <- cp[fpar$kmax-1]
     # compute the scaled weights wvec
     state$wvec1 <- state$gamma1 * state$uvec1
-    
+
     # derive the unscaled weights uvec
     cp <- cumprod(1-state$vvec2[-fpar$kmax])
     state$uvec2 <- state$vvec2*c(1,cp)
     state$uvec2[fpar$kmax] <- cp[fpar$kmax-1]
     # compute the scaled weights wvec
     state$wvec2 <- state$gamma2 * state$uvec2
-    
+
     # compute lambda0 - comes from the IFR component
     state$lambda0 <- state$gamma2*state$eta
-    
+
   } else if(model%in%c("MBT")) {
     state <- epar
     # complete state with useful quantities
-    
+
     # derive the unscaled weights uvec
     cp <- cumprod(1-state$vvec1[-fpar$kmax])
     state$uvec1 <- state$vvec1*c(1,cp)
@@ -493,7 +493,7 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$wvec1 <- state$gamma1 * state$uvec1
     # compute lambda0
     state$lambda01 <- state$gamma1*state$eta1
-    
+
     # derive the unscaled weights uvec
     cp <- cumprod(1-state$vvec2[-fpar$kmax])
     state$uvec2 <- state$vvec2*c(1,cp)
@@ -502,7 +502,7 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$wvec2 <- state$gamma2 * state$uvec2
     # compute lambda0
     state$lambda02 <- state$gamma2*state$eta2
-    
+
   } else if(model%in%c("LCV")) {
     state <- epar
     # complete state with useful quantities
@@ -512,11 +512,11 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
     # compute the scaled weights wvec
     state$wvec <- state$gamma * state$uvec
-    
+
   } else {
     stop("Specified model has not been implemented")
   }
-  
+
   # log L of the current state
   state$llike <- llikef(state, datlist, fpar, model)
   # log prior of the current state
@@ -530,19 +530,19 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
 }
 
 #' Log likelihood of the current state
-#' 
+#'
 #' @export
 llikef <- function(state, datlist, fpar, model) {
   # log likelihood of observations tvec
-  hazfuncs <- both.lambda.funcs(tvec, 
+  hazfuncs <- both.lambda.funcs(tvec,
                                 model.list=c(list(model=model,kmax=fpar$kmax),
-                                             state), 
+                                             state),
                                 use.Cpp=fpar$use.Cpp)
   retval <- sum(log(hazfuncs[,1]) - hazfuncs[,2])
   return(retval)
 }
 #' Log likelihood of the current state
-#' 
+#'
 #' @export
 llikef.old <- function(state, datlist, fpar, model) {
   # log likelihood of observations tvec
@@ -553,12 +553,12 @@ llikef.old <- function(state, datlist, fpar, model) {
   int.lambda.vec <- int.lambda.func(tvec=datlist$tvec,
                                     model.list=c(list(model=model,kmax=fpar$kmax),state),
                                     use.Cpp=fpar$use.Cpp)
-  
+
   retval <- ( sum(log(lambda.vec)) - sum(int.lambda.vec) )
   return(retval)
 }
 #' Log prior of the current state
-#' 
+#'
 #' @export
 lpriorf <- function(state, fpar, model) {
   # log prior of the state
@@ -566,7 +566,7 @@ lpriorf <- function(state, fpar, model) {
   return(retval)
 }
 #' Components of the log prior of the current state - return as a vector
-#' 
+#'
 #' @export
 lpriorf.vector <- function(state, fpar, model) {
   # log prior of the state
@@ -587,7 +587,7 @@ lpriorf.vector <- function(state, fpar, model) {
     lprior.vec["beta"] <- dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi
     lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
-    
+
   } else if(model%in%c("LWB")) {
     # prior for eta
     lprior.vec["eta"] <- dexp(state$eta, fpar$nu)
@@ -605,11 +605,11 @@ lpriorf.vector <- function(state, fpar, model) {
     lprior.vec["beta"] <- dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi
     lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
-    
+
   } else if(model%in%c("SBT")) {
     # prior for eta
     lprior.vec["eta"] <- dexp(state$eta, fpar$nu)
-    
+
     # prior for gamma1
     lprior.vec["gamma1"] <- dgamma(state$gamma1, state$alpha1, state$beta1, log=TRUE)
     # prior for thetavec1
@@ -622,7 +622,7 @@ lpriorf.vector <- function(state, fpar, model) {
     lprior.vec["beta1"] <- dgamma(state$beta1, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi1
     lprior.vec["phi1"] <- dgamma(state$phi1, fpar$f11, fpar$f21, log=TRUE)
-    
+
     # prior for gamma2
     lprior.vec["gamma2"] <- dgamma(state$gamma2, state$alpha2, state$beta2, log=TRUE)
     # prior for thetavec2
@@ -635,11 +635,11 @@ lpriorf.vector <- function(state, fpar, model) {
     lprior.vec["beta2"] <- dgamma(state$beta2, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi2
     lprior.vec["phi2"] <- dgamma(state$phi2, fpar$f12, fpar$f22, log=TRUE)
-    
+
   } else if(model%in%c("MBT")) {
     # prior for pival
     lprior.vec["pival"] <- 0
-    
+
     # prior for eta1
     lprior.vec["eta1"] <- dexp(state$eta1, fpar$nu)
     # prior for gamma1
@@ -654,7 +654,7 @@ lpriorf.vector <- function(state, fpar, model) {
     lprior.vec["beta1"] <- dgamma(state$beta1, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi1
     lprior.vec["phi1"] <- dgamma(state$phi1, fpar$f11, fpar$f21, log=TRUE)
-    
+
     # prior for eta2
     lprior.vec["eta2"] <- dexp(state$eta2, fpar$nu)
     # prior for gamma2
@@ -669,7 +669,7 @@ lpriorf.vector <- function(state, fpar, model) {
     lprior.vec["beta2"] <- dgamma(state$beta2, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi2
     lprior.vec["phi2"] <- dgamma(state$phi2, fpar$f12, fpar$f22, log=TRUE)
-    
+
   } else if(model%in%c("LCV")) {
     # prior for lambda0
     lprior.vec["lambda0"] <- dgamma(state$lambda0, fpar$s1, fpar$s2)
@@ -687,14 +687,14 @@ lpriorf.vector <- function(state, fpar, model) {
     lprior.vec["beta"] <- dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE)
     # prior for phi
     lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
-    
+
   } else {
     stop("Specified model has not been implemented")
   }
   return(lprior.vec)
 }
 #' Augment the fixed parameter object (fpar)
-#' 
+#'
 #' @export
 augment.fpar <- function(state, fpar, model) {
   # add some extra stuff to fpar
@@ -707,9 +707,9 @@ augment.fpar <- function(state, fpar, model) {
 
 ################################################################################
 #' Plot a representation of the current state
-#' 
+#'
 #' @description Plot the current state
-#' 
+#'
 #' @param state The current state
 #' @param datlist The data list
 #' @param fpar The fixed parameters
@@ -717,14 +717,14 @@ augment.fpar <- function(state, fpar, model) {
 #' @param model Type of model (IFR or DFR)
 #' @param type Type of plot (ignored at the moment)
 #' @param add Logical: add the state to an existing plot?
-#' 
+#'
 #' @export
 plot_state <- function(state, datlist, fpar, ppar, model,
                        type=1, main=NULL, add=FALSE, ...) {
   # plot the state
   if(is.null(main)) {
     main <- sprintf("LP=%.3f; LL=%.3f; LPost=%.3f",
-                    state$lprior,state$llike,state$llike+state$lprior)        
+                    state$lprior,state$llike,state$llike+state$lprior)
   }
   if(model=="IFR") {
     if(!add) {
@@ -734,7 +734,7 @@ plot_state <- function(state, datlist, fpar, ppar, model,
            xlab=bquote(theta), ylab=bquote(w), main=main, ...)
     }
     points(state$thetavec, state$wvec, ...)
-    
+
   } else if(model=="DFR") {
     if(!add) {
       # start a new plot
@@ -743,7 +743,7 @@ plot_state <- function(state, datlist, fpar, ppar, model,
            xlab=bquote(theta), ylab=bquote(w), main=main, ...)
     }
     points(state$thetavec, state$wvec, ...)
-    
+
   } else if(model=="LWB") {
     if(!add) {
       # start a new plot
@@ -753,7 +753,7 @@ plot_state <- function(state, datlist, fpar, ppar, model,
     }
     abline(v=state$a, col="red", lwd=2)
     points(state$thetavec, state$wvec, ...)
-    
+
   } else if(model=="SBT") {
     if(!add) {
       # start a new plot
@@ -763,7 +763,7 @@ plot_state <- function(state, datlist, fpar, ppar, model,
     }
     points(state$thetavec1, state$wvec1, pch=16, ...)
     points(state$thetavec2, state$wvec2, pch=1, ...)
-    
+
   } else if(model=="MBT") {
     if(!add) {
       # start a new plot
@@ -773,7 +773,7 @@ plot_state <- function(state, datlist, fpar, ppar, model,
     }
     points(state$thetavec1, state$wvec1, pch=16, ...)
     points(state$thetavec2, state$wvec2, pch=1, ...)
-    
+
   } else if(model=="LCV") {
     if(!add) {
       # start a new plot
@@ -782,7 +782,7 @@ plot_state <- function(state, datlist, fpar, ppar, model,
            xlab=bquote(theta), ylab=bquote(w), main=main, ...)
     }
     points(state$thetavec, state$wvec, ...)
-    
+
   } else {
     stop(paste0("Model ",model," not recognised"))
   }

@@ -1,6 +1,7 @@
 # General Fragments for updating
 
 #' eta V1 (IFR/DFR/LWB)
+#' (Metropolis-Hastings update: log Normal proposal)
 #'
 #' @export
 update.eta.v1 <- function(state, datlist, fpar, ppar, model,
@@ -15,7 +16,7 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
                                wvec="wvec",
                                lambda0="lambda0",
                                thetaswap="thetaswap")) {
-
+  
   state.old <- state
   eta.old <- state.old[[nm["eta"]]]
   eta.new <- exp( rnorm(1, log(eta.old), ppar$sd.log.eta) )
