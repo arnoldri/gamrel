@@ -1,6 +1,6 @@
 # General Fragments for updating
 
-#' eta V1 (IFR/DFR/LWB)
+#' eta V1 (IFR/DFR/LWB/SBT/MBT)
 #' (Metropolis-Hastings update: log Normal proposal)
 #'
 #' @export
@@ -95,7 +95,7 @@ update.gamma.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)  
 }
 
-#' thetavec V1 (IFR/DFR/LWB)
+#' thetavec V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 #'
 #' @export
 update.thetavec.v1 <- function(state, datlist, fpar, ppar, model,
@@ -155,7 +155,7 @@ update.thetavec.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' vvec V1 (IFR/DFR/LWB)
+#' vvec V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 #'
 #' @export
 update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
@@ -232,7 +232,7 @@ update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' alpha V1 (IFR/DFR/LWB)
+#' alpha V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 #'
 #' @export
 update.alpha.v1 <- function(state, datlist, fpar, ppar, model,
@@ -286,7 +286,7 @@ update.alpha.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' beta V1 (IFR/DFR/LWB)
+#' beta V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 #'
 #' @export
 update.beta.v1 <- function(state, datlist, fpar, ppar, model,
@@ -321,7 +321,7 @@ update.beta.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' phi V1 (IFR/DFR/LWB)
+#' phi V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 #'
 #' @export
 update.phi.v1 <- function(state, datlist, fpar, ppar, model,
@@ -358,7 +358,7 @@ update.phi.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' wvec V1 (IFR/DFR/LWB)
+#' wvec V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 #'
 #' @export
 update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
@@ -451,7 +451,7 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
   return(state) 
 }
     
-#' thetaswap V1 (IFR/DFR/LWB)
+#' thetaswap V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 #'
 #' @export
 update.thetaswap.v1 <- function(state, datlist, fpar, ppar, model,
@@ -644,7 +644,7 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' gamma V2 (MH) (LCV,SBT,MBT)
+#' gamma V2 (MH) (SBT,MBT,LCV)
 #'
 #' @export
 update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
