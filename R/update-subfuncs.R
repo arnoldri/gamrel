@@ -1,6 +1,6 @@
 # General Fragments for updating
 
-#' eta V1 (IFR/DFR/LWB)
+#' eta V1 (IFR/DFR/LWB/SBT/MBT)
 #' (Metropolis-Hastings update: log Normal proposal)
 #'
 #' @export
@@ -50,7 +50,7 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' gamma V1 (Gibbs) (IFR/DFR/LWB)
+#' gamma V1 (Gibbs) (IFR/DFR/LWB/SBT)
 #'
 #' @export
 update.gamma.v1 <- function(state, datlist, fpar, ppar, model,
@@ -644,7 +644,7 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' gamma V2 (MH) (LCV,SBT,MBT)
+#' gamma V2 (MH) (SBT,MBT,LCV)
 #'
 #' @export
 update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
