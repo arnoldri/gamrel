@@ -50,7 +50,7 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' gamma V1 (Gibbs) (IFR/DFR/LWB)
+#' gamma V1 (Gibbs) (IFR/DFR/LWB/SBT)
 #'
 #' @export
 update.gamma.v1 <- function(state, datlist, fpar, ppar, model,
