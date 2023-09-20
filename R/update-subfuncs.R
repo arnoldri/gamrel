@@ -50,7 +50,7 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' gamma V1 (Gibbs) (IFR/DFR/LWB/SBT)
+#' gamma V1 (Gibbs) (IFR/DFR/LWB)
 #'
 #' @export
 update.gamma.v1 <- function(state, datlist, fpar, ppar, model,
@@ -423,7 +423,7 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
       log.r <- log.r
     } else {
       # updating at random
-      log.r <- (log.r + log((w.new/gamma.new)/(w.old/gamma.old)))
+      log.r <- (log.r + log((w.new/(gamma.new-wkmax))/(w.old/(gamma.old-wkmax.old))))
     }
     
     if(ppar$verbose) {
