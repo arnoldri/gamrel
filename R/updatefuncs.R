@@ -312,7 +312,7 @@ update_state.mbt <- function(state, datlist, fpar, ppar, model) {
 
     # update eta ##!!== OK 
     eta.name <- paste0("eta",j)
-    if(ppar$update[eta.name]) {
+    if(j==2 && ppar$update[eta.name]) { # only update eta2 (the IFR component)
       if(ppar$verbose) cat(eta.name)
       state <- update.eta.v1(state, datlist, fpar, ppar, model, nm=tparnm)
       if(ppar$verbose) cat("\n")

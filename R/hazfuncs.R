@@ -637,7 +637,7 @@ rfail.dfr <- function(n, lambda0, thetavec, wvec) {
 
 #' @export
 rfail.mbt <- function(n, pival, lambda01, thetavec1, wvec1, 
-                      lambda02, thetavec2, wvec2) {
+                                lambda02, thetavec2, wvec2) {
   # simulate failure times from an MBT model 
   
   # Numbers selected from DFR and IFR components respectively

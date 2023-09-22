@@ -278,6 +278,7 @@ init.objects <- function(tvec, obs,
     update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    update["eta1"] <- FALSE # eta1 is not a real parameter - it is always zero
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
                  ksweep=FALSE, # = all support points are updated each time
@@ -297,7 +298,7 @@ init.objects <- function(tvec, obs,
     # parameters to estimate
     if(generate=="fixed") {
       epar <- list(pival=0.5,
-                   eta1=1/prior.par$nu,
+                   eta1=0,
                    gamma1=NA,
                    thetavec1=NA,
                    vvec1=NA,
@@ -315,7 +316,7 @@ init.objects <- function(tvec, obs,
       epar$gamma2 <- epar$alpha2/epar$beta2
     } else {
       epar <- list(pival=runif(1),
-                   eta1=rexp(1,prior.par$nu),
+                   eta1=0,
                    gamma1=NA,
                    thetavec1=NA,
                    vvec1=NA,
@@ -485,6 +486,9 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state <- epar
     # complete state with useful quantities
 
+    # ensure eta1=0
+    state$eta1 <- 0
+      
     # derive the unscaled weights uvec
     cp <- cumprod(1-state$vvec1[-fpar$kmax])
     state$uvec1 <- state$vvec1*c(1,cp)
@@ -641,7 +645,7 @@ lpriorf.vector <- function(state, fpar, model) {
     lprior.vec["pival"] <- 0
 
     # prior for eta1
-    lprior.vec["eta1"] <- dexp(state$eta1, fpar$nu)
+    lprior.vec["eta1"] <- 0 ##dexp(state$eta1, fpar$nu)
     # prior for gamma1
     lprior.vec["gamma1"] <- dgamma(state$gamma1, state$alpha1, state$beta1, log=TRUE)
     # prior for thetavec1
