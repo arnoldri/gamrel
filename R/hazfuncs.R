@@ -34,7 +34,7 @@ plot_lambdafunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL,
     plot(tvec, fvec, xlim=xlim, ylim=ylim,
          xlab="t", ylab=expression(lambda(t)), main=main, ...)
   }
-  invisible(tvec)
+  invisible(cbind(tvec,fvec))
 }
 
 # Evaluate Hazard rate functions
@@ -637,7 +637,7 @@ rfail.dfr <- function(n, lambda0, thetavec, wvec) {
 
 #' @export
 rfail.mbt <- function(n, pival, lambda01, thetavec1, wvec1, 
-                      lambda02, thetavec2, wvec2) {
+                                lambda02, thetavec2, wvec2) {
   # simulate failure times from an MBT model 
   
   # Numbers selected from DFR and IFR components respectively
