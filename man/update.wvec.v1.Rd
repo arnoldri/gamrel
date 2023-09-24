@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.wvec.v1}
 \alias{update.wvec.v1}
-\title{wvec V1 (IFR/DFR/LWB)}
+\title{wvec V1 (IFR/DFR/LWB/SBT/MBT/LCV)}
 \usage{
 \method{update}{wvec.v1}(
   state,
@@ -16,5 +16,5 @@
 )
 }
 \description{
-wvec V1 (IFR/DFR/LWB)
+wvec V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 }

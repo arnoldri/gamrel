@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.alpha.v1}
 \alias{update.alpha.v1}
-\title{alpha V1 (IFR/DFR/LWB)}
+\title{alpha V1 (IFR/DFR/LWB/SBT/MBT/LCV)}
 \usage{
 \method{update}{alpha.v1}(
   state,
@@ -16,5 +16,5 @@
 )
 }
 \description{
-alpha V1 (IFR/DFR/LWB)
+alpha V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 }

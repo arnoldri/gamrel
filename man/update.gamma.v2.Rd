@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.gamma.v2}
 \alias{update.gamma.v2}
-\title{gamma V2 (MH) (LCV,SBT,MBT)}
+\title{gamma V2 (MH) (SBT,MBT,LCV)}
 \usage{
 \method{update}{gamma.v2}(
   state,
@@ -16,5 +16,5 @@
 )
 }
 \description{
-gamma V2 (MH) (LCV,SBT,MBT)
+gamma V2 (MH) (SBT,MBT,LCV)
 }
