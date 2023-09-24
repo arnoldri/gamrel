@@ -17,6 +17,23 @@ burn.chain <- function(nburn, state, datlist, fpar, ppar, model) {
   }
   return(state)
 }
+#' Run multiple MCMC chains - with starting states specified in state.list
+#' 
+#' @export
+run.multiple.chains <- function(state.list, nstore, nthin=1, nburn=0,
+                                datlist, fpar, ppar, model,
+                                do.plot=FALSE, show.progress=NULL) {
+  chain.list <- list()
+  for(i in 1:length(state.list)) {
+    if(show.progress) cat(paste0("Chain ",i,":"))
+    chain.list[[i]] <- run.chain(nstore=nstore, nthin=nthin, nburn=nburn,
+                                 state=state.list[[i]], datlist=datlist, fpar=fpar,
+                                 ppar=ppar, model=model, do.plot=do.plot,
+                                 show.progress=show.progress)
+  }
+  return(chain.list)
+}
+
 #' Run an MCMC chain
 #' 
 #' @export

@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.beta.v1}
 \alias{update.beta.v1}
-\title{beta V1 (IFR/DFR/LWB)}
+\title{beta V1 (IFR/DFR/LWB/SBT/MBT/LCV)}
 \usage{
 \method{update}{beta.v1}(
   state,
@@ -16,5 +16,5 @@
 )
 }
 \description{
-beta V1 (IFR/DFR/LWB)
+beta V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 }

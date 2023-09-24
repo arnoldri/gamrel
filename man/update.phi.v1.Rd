@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.phi.v1}
 \alias{update.phi.v1}
-\title{phi V1 (IFR/DFR/LWB)}
+\title{phi V1 (IFR/DFR/LWB/SBT/MBT/LCV)}
 \usage{
 \method{update}{phi.v1}(
   state,
@@ -12,9 +12,9 @@
   model,
   nm = c(eta = "eta", gamma = "gamma", thetavec = "thetavec", vvec = "vvec", alpha =
     "alpha", beta = "beta", phi = "phi", uvec = "uvec", wvec = "wvec", lambda0 =
-    "lambda0", thetaswap = "thetaswap", thetaswap = "thetaswap")
+    "lambda0", thetaswap = "thetaswap", thetaswap = "thetaswap", f1 = "f1", f2 = "f2")
 )
 }
 \description{
-phi V1 (IFR/DFR/LWB)
+phi V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 }

@@ -9,7 +9,7 @@ init.objects <- function(tvec, obs,
                          prior.par=NULL,
                          update.par=NULL,
                          model="IFR",
-                         use.Cpp=FALSE,
+                         use.Cpp=TRUE,
                          seed=NULL,
                          generate="fixed") {  # generate can be "fixed" or "random"
   if(!is.null(seed)) set.seed(seed)

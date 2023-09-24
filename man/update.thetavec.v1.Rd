@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.thetavec.v1}
 \alias{update.thetavec.v1}
-\title{thetavec V1 (IFR/DFR/LWB)}
+\title{thetavec V1 (IFR/DFR/LWB/SBT/MBT/LCV)}
 \usage{
 \method{update}{thetavec.v1}(
   state,
@@ -16,5 +16,5 @@
 )
 }
 \description{
-thetavec V1 (IFR/DFR/LWB)
+thetavec V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 }
