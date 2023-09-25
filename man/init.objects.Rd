@@ -11,7 +11,7 @@ init.objects(
   prior.par = NULL,
   update.par = NULL,
   model = "IFR",
-  use.Cpp = FALSE,
+  use.Cpp = TRUE,
   seed = NULL,
   generate = "fixed"
 )

@@ -31,6 +31,71 @@ makev_c <- function(uvec) {
     .Call(`_gamrel_makev_c`, uvec)
 }
 
+#' Log prior - IFR/DFR
+#' 
+#' 
+#' @param eta eta
+#' @param gamma gamma
+#' 
+#' @description log(prior) for the IFR and DFR models - in vector form
+#' 
+#' @export
+lprior_ifrdfr_c <- function(eta, gamma, thetavec, vvec, alpha, beta, phi, nu, a1, a2, b1, b2, f1, f2) {
+    .Call(`_gamrel_lprior_ifrdfr_c`, eta, gamma, thetavec, vvec, alpha, beta, phi, nu, a1, a2, b1, b2, f1, f2)
+}
+
+#' Log prior - LWB
+#' 
+#' 
+#' @param eta eta
+#' @param gamma gamma
+#' 
+#' @description log(prior) for the LWB model - in vector form
+#' 
+#' @export
+lprior_lwb_c <- function(eta, a, gamma, thetavec, vvec, alpha, beta, phi, nu, c1, c2, a1, a2, b1, b2, f1, f2) {
+    .Call(`_gamrel_lprior_lwb_c`, eta, a, gamma, thetavec, vvec, alpha, beta, phi, nu, c1, c2, a1, a2, b1, b2, f1, f2)
+}
+
+#' Log prior - SBT
+#' 
+#' 
+#' @param eta eta
+#' @param gamma gamma
+#' 
+#' @description log(prior) for the SBT model - in vector form
+#' 
+#' @export
+lprior_sbt_c <- function(eta, gamma1, thetavec1, vvec1, alpha1, beta1, phi1, gamma2, thetavec2, vvec2, alpha2, beta2, phi2, nu, a1, a2, b1, b2, f11, f12, f21, f22) {
+    .Call(`_gamrel_lprior_sbt_c`, eta, gamma1, thetavec1, vvec1, alpha1, beta1, phi1, gamma2, thetavec2, vvec2, alpha2, beta2, phi2, nu, a1, a2, b1, b2, f11, f12, f21, f22)
+}
+
+#' Log prior - MBT
+#' 
+#' 
+#' @param eta eta
+#' @param gamma gamma
+#' 
+#' @description log(prior) for the MBT model - in vector form
+#' 
+#' @export
+lprior_mbt_c <- function(pival, eta1, gamma1, thetavec1, vvec1, alpha1, beta1, phi1, eta2, gamma2, thetavec2, vvec2, alpha2, beta2, phi2, nu, a1, a2, b1, b2, f11, f21, f12, f22) {
+    .Call(`_gamrel_lprior_mbt_c`, pival, eta1, gamma1, thetavec1, vvec1, alpha1, beta1, phi1, eta2, gamma2, thetavec2, vvec2, alpha2, beta2, phi2, nu, a1, a2, b1, b2, f11, f21, f12, f22)
+}
+
+#' Log prior - LCV
+#' 
+#' 
+#' @param eta eta
+#' @param gamma gamma
+#' 
+#' @description log(prior) for the LCV model - in vector form
+#' 
+#' @export
+lprior_lcv_c <- function(lambda0, w0, gamma, thetavec, vvec, alpha, beta, phi, s1, s2, sigmap_w0, a1, a2, b1, b2, f1, f2) {
+    .Call(`_gamrel_lprior_lcv_c`, lambda0, w0, gamma, thetavec, vvec, alpha, beta, phi, s1, s2, sigmap_w0, a1, a2, b1, b2, f1, f2)
+}
+
 #' Hazard rate function - IFR
 #' 
 #' @param tvec Locations at which to evaluate the function

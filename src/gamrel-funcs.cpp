@@ -53,6 +53,282 @@ NumericVector makev_c(NumericVector uvec) {
   return vvec;
 }
 
+//**********************************************************************
+//' Log prior - IFR/DFR
+//' 
+//' 
+//' @param eta eta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the IFR and DFR models - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector lprior_ifrdfr_c(double eta, 
+                              double gamma,
+                              NumericVector thetavec, 
+                              NumericVector vvec,
+                              double alpha, 
+                              double beta,
+                              double phi,
+                              double nu, double a1, double a2, double b1, double b2, double f1, double f2) {
+  
+    int kmax = vvec.size();
+    NumericVector lpriorvec(7);
+    int i;
+  
+    // eta
+    lpriorvec[0] = -eta*nu;
+    // gamma
+    lpriorvec[1] = R::dgamma(gamma, alpha, 1./beta, true);
+    // thetavec
+    lpriorvec[2] = kmax*log(phi);
+    for(i=0; i<kmax; i++) lpriorvec[2] += (-phi*thetavec[i]);
+    // vvec
+    lpriorvec[3] =  (kmax-1)*log(alpha);
+    for(i=0; i<kmax-1; i++) lpriorvec[3] += (alpha-1)*log(1-vvec[i]);
+    // alpha
+    lpriorvec[4] = (a1-1)*log(alpha) - a2*alpha;
+    // beta
+    lpriorvec[5] = (b1-1)*log(beta) - b2*beta;
+    // phi
+    lpriorvec[6] = (f1-1)*log(phi) - f2*phi;
+    
+    return lpriorvec;
+}   
+
+//' Log prior - LWB
+//' 
+//' 
+//' @param eta eta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the LWB model - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector lprior_lwb_c(double eta, 
+                           double a,
+                           double gamma,
+                           NumericVector thetavec, 
+                           NumericVector vvec,
+                           double alpha, 
+                           double beta,
+                           double phi,
+                           double nu, double c1, double c2, 
+                           double a1, double a2, double b1, double b2, double f1, double f2) {
+   
+   int kmax = vvec.size();
+   NumericVector lpriorvec(8);
+   int i;
+   
+   // eta
+   lpriorvec[0] = -eta*nu;
+   // a 
+   lpriorvec[1] = (c1-1)*log(a) - c2*a;
+   // gamma
+   lpriorvec[2] = R::dgamma(gamma, alpha, 1./beta, true);
+   // thetavec
+   lpriorvec[3] = kmax*log(phi);
+   for(i=0; i<kmax; i++) lpriorvec[3] += (-phi*thetavec[i]);
+   // vvec
+   lpriorvec[4] =  (kmax-1)*log(alpha);
+   for(i=0; i<kmax-1; i++) lpriorvec[4] += (alpha-1)*log(1-vvec[i]);
+   // alpha
+   lpriorvec[5] = (a1-1)*log(alpha) - a2*alpha;
+   // beta
+   lpriorvec[6] = (b1-1)*log(beta) - b2*beta;
+   // phi
+   lpriorvec[7] = (f1-1)*log(phi) - f2*phi;
+   
+   return lpriorvec;
+}
+
+//' Log prior - SBT
+//' 
+//' 
+//' @param eta eta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the SBT model - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector lprior_sbt_c(double eta, 
+                           double gamma1,
+                           NumericVector thetavec1, 
+                           NumericVector vvec1,
+                           double alpha1, 
+                           double beta1,
+                           double phi1,
+                           double gamma2,
+                           NumericVector thetavec2, 
+                           NumericVector vvec2,
+                           double alpha2, 
+                           double beta2,
+                           double phi2,
+                           double nu, double a1, double a2, double b1, double b2, 
+                           double f11, double f12, double f21, double f22) {
+   
+   int kmax = vvec1.size();
+   NumericVector lpriorvec(13);
+   int i;
+
+   // eta
+   lpriorvec[0] = -eta*nu;
+   
+   // gamma1
+   lpriorvec[1] = R::dgamma(gamma1, alpha1, 1./beta1, true);
+   // thetavec1
+   lpriorvec[2] = kmax*log(phi1);
+   for(i=0; i<kmax; i++) lpriorvec[2] += (-phi1*thetavec1[i]);
+   // vvec1
+   lpriorvec[3] =  (kmax-1)*log(alpha1);
+   for(i=0; i<kmax-1; i++) lpriorvec[3] += (alpha1-1)*log(1-vvec1[i]);
+   // alpha1
+   lpriorvec[4] = (a1-1)*log(alpha1) - a2*alpha1;
+   // beta1
+   lpriorvec[5] = (b1-1)*log(beta1) - b2*beta1;
+   // phi1
+   lpriorvec[6] = (f11-1)*log(phi1) - f21*phi1;
+   
+   // gamma2
+   lpriorvec[7] = R::dgamma(gamma2, alpha2, 1./beta2, true);
+   // thetavec2
+   lpriorvec[8] = kmax*log(phi2);
+   for(i=0; i<kmax; i++) lpriorvec[8] += (-phi2*thetavec2[i]);
+   // vvec2
+   lpriorvec[9] =  (kmax-1)*log(alpha2);
+   for(i=0; i<kmax-1; i++) lpriorvec[9] += (alpha2-1)*log(1-vvec2[i]);
+   // alpha2
+   lpriorvec[10] = (a1-1)*log(alpha2) - a2*alpha2;
+   // beta2
+   lpriorvec[11] = (b1-1)*log(beta2) - b2*beta2;
+   // phi2
+   lpriorvec[12] = (f12-1)*log(phi2) - f22*phi2;
+   
+   return lpriorvec;
+}
+
+//' Log prior - MBT
+//' 
+//' 
+//' @param eta eta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the MBT model - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector lprior_mbt_c(double pival, 
+                           double eta1, 
+                           double gamma1,
+                           NumericVector thetavec1, 
+                           NumericVector vvec1,
+                           double alpha1, 
+                           double beta1,
+                           double phi1,
+                           double eta2, 
+                           double gamma2,
+                           NumericVector thetavec2, 
+                           NumericVector vvec2,
+                           double alpha2, 
+                           double beta2,
+                           double phi2,
+                           double nu, double a1, double a2, double b1, double b2, 
+                           double f11, double f21, double f12, double f22) {
+   
+   int kmax = vvec1.size();
+   NumericVector lpriorvec(15);
+   int i;
+
+   // pival
+   lpriorvec[0] = 0;
+   
+   // eta1
+   lpriorvec[1] = 0; // always zero-eta*nu;
+   // gamma1
+   lpriorvec[2] = R::dgamma(gamma1, alpha1, 1./beta1, true);
+   // thetavec1
+   lpriorvec[3] = kmax*log(phi1);
+   for(i=0; i<kmax; i++) lpriorvec[3] += (-phi1*thetavec1[i]);
+   // vvec1
+   lpriorvec[4] =  (kmax-1)*log(alpha1);
+   for(i=0; i<kmax-1; i++) lpriorvec[4] += (alpha1-1)*log(1-vvec1[i]);
+   // alpha1
+   lpriorvec[5] = (a1-1)*log(alpha1) - a2*alpha1;
+   // beta1
+   lpriorvec[6] = (b1-1)*log(beta1) - b2*beta1;
+   // phi1
+   lpriorvec[7] = (f11-1)*log(phi1) - f21*phi1;
+   
+   // eta2
+   lpriorvec[8] = -eta2*nu;
+   // gamma2
+   lpriorvec[9] = R::dgamma(gamma2, alpha2, 1./beta2, true);
+   // thetavec2
+   lpriorvec[10] = kmax*log(phi2);
+   for(i=0; i<kmax; i++) lpriorvec[10] += (-phi2*thetavec2[i]);
+   // vvec2
+   lpriorvec[11] =  (kmax-1)*log(alpha2);
+   for(i=0; i<kmax-1; i++) lpriorvec[11] += (alpha2-1)*log(1-vvec2[i]);
+   // alpha2
+   lpriorvec[12] = (a1-1)*log(alpha2) - a2*alpha2;
+   // beta2
+   lpriorvec[13] = (b1-1)*log(beta2) - b2*beta2;
+   // phi2
+   lpriorvec[14] = (f12-1)*log(phi2) - f22*phi2;
+   
+   return lpriorvec;
+}
+
+//' Log prior - LCV
+//' 
+//' 
+//' @param eta eta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the LCV model - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector lprior_lcv_c(double lambda0,
+                           double w0,
+                           double gamma,
+                           NumericVector thetavec, 
+                           NumericVector vvec,
+                           double alpha, 
+                           double beta,
+                           double phi,
+                           double s1, double s2, double sigmap_w0, 
+                           double a1, double a2, double b1, double b2, double f1, double f2) {
+   
+   int kmax = vvec.size();
+   NumericVector lpriorvec(8);
+   int i;
+
+   // lambda0
+   lpriorvec[0] = (s1-1)*log(lambda0) - s2*lambda0;
+   // w0
+   lpriorvec[1] = -0.5*pow(w0/sigmap_w0,2);
+   // gamma
+   lpriorvec[2] = R::dgamma(gamma, alpha, 1./beta, true);
+   // thetavec
+   lpriorvec[3] = kmax*log(phi);
+   for(i=0; i<kmax; i++) lpriorvec[3] += (-phi*thetavec[i]);
+   // vvec
+   lpriorvec[4] =  (kmax-1)*log(alpha);
+   for(i=0; i<kmax-1; i++) lpriorvec[4] += (alpha-1)*log(1-vvec[i]);
+   // alpha
+   lpriorvec[5] = (a1-1)*log(alpha) - a2*alpha;
+   // beta
+   lpriorvec[6] = (b1-1)*log(beta) - b2*beta;
+   // phi
+   lpriorvec[7] = (f1-1)*log(phi) - f2*phi;
+   
+   return lpriorvec;
+}
+
 
 //**********************************************************************
 //' Hazard rate function - IFR

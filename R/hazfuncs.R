@@ -316,12 +316,12 @@ int.lambda.func.mbt <- function(tvec, pival,
 }
 
 #' @export
-int.lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec, use.Cpp=TRUE) {
+int.lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec, 
+                                use.Cpp=TRUE, epsilon=.Machine$double.neg.eps*100) {
   # integrated hazard rate function - Log Convex
   
   if(use.Cpp) {
-    return(int_lambda_func_lcv_c(tvec, lambda0, w0, thetavec, wvec, 
-                                 .Machine$double.neg.eps*100)) ## needs epsilon
+    return(int_lambda_func_lcv_c(tvec, lambda0, w0, thetavec, wvec, epsilon))
   }
   odx <- order(thetavec) 
   othetavec <- thetavec[odx]  # theta*_k (1...K)
@@ -367,7 +367,7 @@ int.lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec, use.Cpp=TRUE)
 #' a set of discrete locations and weights and integrated
 #' 
 #' @export
-both.lambda.funcs <- function(tvec, model.list, use.Cpp=TRUE) {
+both.lambda.funcs <- function(tvec, model.list, use.Cpp=TRUE, epsilon=.Machine$double.neg.eps*100) {
   if(!use.Cpp) {
     lambda.vec <- lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
     int.lambda.vec <- int.lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
@@ -402,7 +402,8 @@ both.lambda.funcs <- function(tvec, model.list, use.Cpp=TRUE) {
                                      model.list$lambda0, 
                                      model.list$w0,
                                      model.list$thetavec, 
-                                     model.list$wvec) 
+                                     model.list$wvec,
+                                     epsilon) 
   }
   return(retval)
 }
