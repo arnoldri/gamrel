@@ -89,7 +89,7 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
   
   # swap elements of thetavec ##!!== OK  
   if(ppar$update["thetaswap"]) {
-    if(ppar$verbose) cat("thetawsap:")
+    if(ppar$verbose) cat("thetaswap:")
     state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
@@ -171,7 +171,7 @@ update_state.lwb <- function(state, datlist, fpar, ppar, model) {
   
   # swap elements of thetavec ##!!== OK  
   if(ppar$update["thetaswap"]) {
-    if(ppar$verbose) cat("thetawsap:")
+    if(ppar$verbose) cat("thetaswap:")
     state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
@@ -270,7 +270,7 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
     # swap elements of thetavec ##!!== OK
     thetaswap.name <- paste0("thetaswap",j)
     if(ppar$update[thetaswap.name]) {
-      if(ppar$verbose) cat(thetawsap.name)
+      if(ppar$verbose) cat(thetaswap.name)
       state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=tparnm)
       if(ppar$verbose) cat("\n")
     }
@@ -377,7 +377,7 @@ update_state.mbt <- function(state, datlist, fpar, ppar, model) {
     # swap elements of thetavec ##!!== OK
     thetaswap.name <- paste0("thetaswap",j)
     if(ppar$update[thetaswap.name]) {
-      if(ppar$verbose) cat(thetawsap.name)
+      if(ppar$verbose) cat(thetaswap.name)
       state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=tparnm)
       if(ppar$verbose) cat("\n")
     }
@@ -458,7 +458,7 @@ update_state.lcv <- function(state, datlist, fpar, ppar, model) {
   
   # swap elements of thetavec ##!!== OK  
   if(ppar$update["thetaswap"]) {
-    if(ppar$verbose) cat("thetawsap:")
+    if(ppar$verbose) cat("thetaswap:")
     state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
