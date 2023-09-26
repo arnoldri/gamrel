@@ -434,6 +434,12 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
     if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
       cat(sprintf("wvec[%d]: %g->%g: logr=%g\n",
                   k, w.old, w.new, log.r))
+      cat("model:"); cat(model); cat("\n")
+      cat("names(state):"); cat(names(state)); cat("\n")
+      cat("nm:\n"); print(nm)
+      cat("k, llike, llike.old, gamma.new, gamma.new, sum(vv/vv, w.new, w.old, wkmax, wkmax.old)\n")
+      cat(c(k, state$llike, state.old$llike, gamma.new, gamma.old, sum(log(vvec.new[1:k]/vvec.old[1:k])),
+            w.new, w.old, wkmax, wkmax.old))
       if(ppar$interactive) browser()
     }
     if(runif(1)<exp(log.r)) {

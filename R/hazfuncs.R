@@ -144,8 +144,10 @@ lambda.func.mbt <- function(tvec, pival, lambda01, thetavec1, wvec1,
   h2vec <- lambda.func.ifr(tvec, lambda02, thetavec2, wvec2, use.Cpp=use.Cpp)
   ih1vec <- int.lambda.func.dfr(tvec, lambda01, thetavec1, wvec1, use.Cpp=use.Cpp)
   ih2vec <- int.lambda.func.ifr(tvec, lambda02, thetavec2, wvec2, use.Cpp=use.Cpp)
-  fs1vec <- exp(-ih1vec)
-  fs2vec <- exp(-ih2vec)
+  # stabilise this calculation to avoid over/underflow
+  mvec <- pmax(ih1vec,ih2vec)
+  fs1vec <- exp(-(ih1vec-mvec))
+  fs2vec <- exp(-(ih2vec-mvec))
   lambda.vec <- (pival*h1vec*fs1vec + (1-pival)*h2vec*fs2vec)/(pival*fs1vec+(1-pival)*fs2vec)
   return(lambda.vec)
 }

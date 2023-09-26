@@ -843,7 +843,7 @@ augment.fpar <- function(state, fpar, model) {
 #'
 #' @export
 plot_state <- function(state, datlist, fpar, ppar, model,
-                       type=1, main=NULL, add=FALSE, ...) {
+                       type=1, main=NULL, add=FALSE, legend.loc="topright", ...) {
   # plot the state
   if(is.null(main)) {
     main <- sprintf("LP=%.3f; LL=%.3f; LPost=%.3f",
@@ -883,6 +883,7 @@ plot_state <- function(state, datlist, fpar, ppar, model,
       plot(NA,NA, xlim=range(c(state$thetavec1,state$thetavec2)),
            ylim=range(c(state$wvec1,state$wvec2)),
            xlab=bquote(theta), ylab=bquote(w), main=main, ...)
+      legend(legend.loc, pch=c(16,1), legend=c("DFR","IFR"))
     }
     points(state$thetavec1, state$wvec1, pch=16, ...)
     points(state$thetavec2, state$wvec2, pch=1, ...)
@@ -893,6 +894,7 @@ plot_state <- function(state, datlist, fpar, ppar, model,
       plot(NA,NA, xlim=range(c(state$thetavec1,state$thetavec2)),
            ylim=range(c(state$wvec1,state$wvec2)),
            xlab=bquote(theta), ylab=bquote(w), main=main, ...)
+      legend(legend.loc, pch=c(16,1), legend=c("DFR","IFR"))
     }
     points(state$thetavec1, state$wvec1, pch=16, ...)
     points(state$thetavec2, state$wvec2, pch=1, ...)
