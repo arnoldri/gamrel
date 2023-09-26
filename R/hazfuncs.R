@@ -137,7 +137,8 @@ lambda.func.sbt <- function(tvec, lambda0, thetavec1, wvec1, thetavec2, wvec2,
 }
 
 #' @export
-lambda.func.mbt <- function(tvec, pival, lambda01, thetavec1, wvec1, 
+lambda.func.mbt <- function(tvec, pival, 
+                            lambda01, thetavec1, wvec1, 
                             lambda02, thetavec2, wvec2, use.Cpp=TRUE) {
   # hazard rate function - Mixture Bathtub
   h1vec <- lambda.func.dfr(tvec, lambda01, thetavec1, wvec1, use.Cpp=use.Cpp)
@@ -145,9 +146,16 @@ lambda.func.mbt <- function(tvec, pival, lambda01, thetavec1, wvec1,
   ih1vec <- int.lambda.func.dfr(tvec, lambda01, thetavec1, wvec1, use.Cpp=use.Cpp)
   ih2vec <- int.lambda.func.ifr(tvec, lambda02, thetavec2, wvec2, use.Cpp=use.Cpp)
   # stabilise this calculation to avoid over/underflow
-  mvec <- pmax(ih1vec,ih2vec)
+  mvec <- pmin(ih1vec,ih2vec)
   fs1vec <- exp(-(ih1vec-mvec))
   fs2vec <- exp(-(ih2vec-mvec))
+  #if(min(fs1vec)==1) {
+  #  lambda.vec <- h2vec  # component 1 is tiny: dominated by 2
+  #} else if(min(fs2vec)==1) {
+  #  lambda.vec <- h1vec  # component 2 is tiny: dominated by 1
+  #} else {
+  #  lambda.vec <- (pival*h1vec*fs1vec + (1-pival)*h2vec*fs2vec)/(pival*fs1vec+(1-pival)*fs2vec)
+  #}
   lambda.vec <- (pival*h1vec*fs1vec + (1-pival)*h2vec*fs2vec)/(pival*fs1vec+(1-pival)*fs2vec)
   return(lambda.vec)
 }
