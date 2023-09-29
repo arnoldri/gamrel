@@ -39,7 +39,7 @@ run.multiple.chains <- function(state.list, nstore, nthin=1, nburn=0,
 #' @export
 run.chain <- function(nstore, nthin=1, nburn=0,
                       state, datlist, fpar, ppar, model,
-                      do.plot=FALSE, show.progress=NULL) {
+                      do.plot=FALSE, show.progress=NULL, tryupdate=FALSE) {
   tstart <- Sys.time()
   nthin <- max(1,nthin)
   if(nburn>0) state <- burn.chain(nburn, state, datlist, fpar, ppar, model)
@@ -58,7 +58,15 @@ run.chain <- function(nstore, nthin=1, nburn=0,
         if(i%%(20*show.progress)==0) cat("\n")
       }
     }
-    state <- burn.chain(nthin, state, datlist, fpar, ppar, model)
+    if(tryupdate) {
+      state <- try(burn.chain(nthin, state, datlist, fpar, ppar, model))
+      if(class(state)=="try=error") {
+        cat(paste0("Update failed at step ",i,": Exiting\n"))
+        break
+      }
+    } else {
+      state <- burn.chain(nthin, state, datlist, fpar, ppar, model)
+    }
     if(do.plot) plot_state(state, datlist, fpar, ppar, model, add=FALSE)
     smat[i,] <- state.as.vector(state, fpar, model)
   }
