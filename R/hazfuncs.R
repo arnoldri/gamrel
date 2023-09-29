@@ -318,10 +318,11 @@ int.lambda.func.mbt <- function(tvec, pival,
                                 lambda02, thetavec2, wvec2, use.Cpp=TRUE) {
   # integrated hazard rate function - Mixture Bathtub
   ih1vec <- int.lambda.func.dfr(tvec, lambda01, thetavec1, wvec1, use.Cpp=use.Cpp)
-  ih2vec <- int.lambda.func.ifr(tvec, lambda02, thetavec2, wvec1, use.Cpp=use.Cpp)
-  fs1vec <- exp(-ih1vec)
-  fs2vec <- exp(-ih2vec)
-  int.lambda.vec <- -log(pival*fs1vec+(1-pival)*fs2vec)
+  ih2vec <- int.lambda.func.ifr(tvec, lambda02, thetavec2, wvec2, use.Cpp=use.Cpp)
+  mvec <- pmin(ih1vec,ih2vec)
+  fs1vec <- exp(-(ih1vec-mvec))
+  fs2vec <- exp(-(ih2vec-mvec))
+  int.lambda.vec <- mvec-log(pival*fs1vec+(1-pival)*fs2vec)
   return(int.lambda.vec)
 }
 

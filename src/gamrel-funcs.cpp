@@ -448,14 +448,15 @@ NumericVector lambda_func_lcv_c(NumericVector tvec,
   int n = tvec.size();
   int kmax = thetavec.size();
   NumericVector lambdavec(n);
+  double s;
   int i,k;
   
   for(i=0; i<n; i++) {
-    lambdavec[i] = w0;
+    s = w0*tvec[i];
     for(k=0; k<kmax; k++) {
-      if(thetavec[k]<=tvec[i]) lambdavec[i] += wvec[k];
+      if(thetavec[k]<=tvec[i]) s += wvec[k]*(tvec[i]-thetavec[k]);
     }
-    lambdavec[i] = lambda0*exp(lambdavec[i]);
+    lambdavec[i] = lambda0*exp(s);
   }
   
   return lambdavec;
@@ -857,19 +858,17 @@ NumericMatrix both_lambda_func_lcv_c(NumericVector tvec,
 
   
   for(i=0; i<n; i++) {
-    bothlambdamat(i,0) = w0;
     k1 = 0;
     while( (k1<kmaxp2-1) && (othetavec[k1+1]<=tvec[i]) ) {   // try < rather than <=?
-      bothlambdamat(i,0) += wvec[k1];
       k1++;
     }
+    bothlambdamat(i,0) = lambda0*exp(s01vec[k1]*tvec[i]-s2vec[k1]);
     bothlambdamat(i,1) = ssvec[k1];
     if(std::abs(s01vec[k1])<epsilon) {
       bothlambdamat(i,1) += ccvec[k1]*(tvec[i]-othetavec[k1]);
     } else {
       bothlambdamat(i,1) += (ccvec[k1]/s01vec[k1])*(exp(s01vec[k1]*tvec[i])-exp(s01vec[k1]*othetavec[k1]));
     }
-    bothlambdamat(i,0) = lambda0*exp(bothlambdamat(i,0));
   }
   
   return bothlambdamat;
