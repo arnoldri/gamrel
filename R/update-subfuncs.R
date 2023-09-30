@@ -431,15 +431,22 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
                   k, state.old$llike, state$llike,
                   w.old, w.new, log.r))
     }
-    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || (log.r>0.9 && ppar$verbose)) { ##!!==
       cat(sprintf("wvec[%d]: %g->%g: logr=%g\n",
                   k, w.old, w.new, log.r))
       cat("model:"); cat(model); cat("\n")
       cat("names(state):"); cat(names(state)); cat("\n")
       cat("nm:\n"); print(nm)
-      cat("k, llike, llike.old, gamma.new, gamma.new, sum(vv/vv, w.new, w.old, wkmax, wkmax.old)\n")
+      cat("k, llike, llike.old, gamma.new, gamma.new, sum(vv/vv), w.new, w.old, wkmax, wkmax.old)\n")
       cat(c(k, state$llike, state.old$llike, gamma.new, gamma.old, sum(log(vvec.new[1:k]/vvec.old[1:k])),
-            w.new, w.old, wkmax, wkmax.old))
+            w.new, w.old, wkmax, wkmax.old)); cat("\n")
+      cat("logr: LR, gamma, sumvv, logw/wold, log.r:\n")
+      cat(c(state$llike - state.old$llike,
+            -state[[nm["beta"]]]*(gamma.new-gamma.old),
+            sum(log(vvec.new[1:k]/vvec.old[1:k])),
+            log((w.new/(gamma.new-wkmax))/(w.old/(gamma.old-wkmax.old))),
+            log.r
+            )); cat("\n")
       if(ppar$interactive) browser()
     }
     if(runif(1)<exp(log.r)) {
@@ -625,7 +632,7 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
   state$llike <- llikef(state, datlist, fpar, model)
   state$lprior <- lpriorf(state, fpar, model)
   log.r <- (state$llike - state.old$llike)
-  log.r <- ( log.r - 0.5*(w0.new^2-w0.old^2)/(ppar$sd.w0^2) ) 
+  log.r <- ( log.r - 0.5*(w0.new^2-w0.old^2)/(fpar$sigmap.w0^2) ) 
   if(ppar$verbose) {
     cat(sprintf("w0: (%g;%g) %g->%g: logr=%g\n",
                 state.old$llike, state$llike,
