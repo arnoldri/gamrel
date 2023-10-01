@@ -336,7 +336,6 @@ update.phi.v1 <- function(state, datlist, fpar, ppar, model,
                                wvec="wvec",
                                lambda0="lambda0",
                                thetaswap="thetaswap",
-                               thetaswap="thetaswap",
                                f1="f1", f2="f2")) {
   
   phi.old <- state[[nm["phi"]]]
@@ -372,7 +371,6 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
                                 uvec="uvec",
                                 wvec="wvec",
                                 lambda0="lambda0",
-                                thetaswap="thetaswap",
                                 thetaswap="thetaswap")) {
 
   # Do not update wvec[kmax]
@@ -431,7 +429,7 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
                   k, state.old$llike, state$llike,
                   w.old, w.new, log.r))
     }
-    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || (log.r>0.9 && ppar$verbose)) { ##!!==
+    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==} || (log.r>0.9 && ppar$verbose)) { ##!!==
       cat(sprintf("wvec[%d]: %g->%g: logr=%g\n",
                   k, w.old, w.new, log.r))
       cat("model:"); cat(model); cat("\n")
@@ -478,7 +476,6 @@ update.thetaswap.v1 <- function(state, datlist, fpar, ppar, model,
                                      uvec="uvec",
                                      wvec="wvec",
                                      lambda0="lambda0",
-                                     thetaswap="thetaswap",
                                      thetaswap="thetaswap")) {
 
   ksamplevec1 <- sample(fpar$kmax, ppar$kswap,
