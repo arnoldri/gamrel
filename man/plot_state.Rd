@@ -13,6 +13,7 @@ plot_state(
   type = 1,
   main = NULL,
   add = FALSE,
+  legend.loc = "topright",
   ...
 )
 }

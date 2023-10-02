@@ -14,7 +14,8 @@ run.chain(
   ppar,
   model,
   do.plot = FALSE,
-  show.progress = NULL
+  show.progress = NULL,
+  tryupdate = FALSE
 )
 }
 \description{

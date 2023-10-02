@@ -51,7 +51,7 @@ makev <- function(uvec, use.Cpp=TRUE) {
 makeu <- function(vvec, use.Cpp=TRUE) {
   # make the uvec vector from the DPP beta draws vvec
   # note: sum(uvec)==1
-  kmax <- length(uvec)
+  kmax <- length(vvec)
   uvec <- vvec*c(1,cumprod(1-vvec[1-kmax]))
   uvec[kmax] <- prod(1-vvec[-kmax])
   return(uvec)

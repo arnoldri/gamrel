@@ -5,6 +5,7 @@
 \title{Log prior - MBT}
 \usage{
 lprior_mbt_c(
+  pival,
   eta1,
   gamma1,
   thetavec1,

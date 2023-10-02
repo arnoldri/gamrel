@@ -12,7 +12,7 @@
   model,
   nm = c(eta = "eta", gamma = "gamma", thetavec = "thetavec", vvec = "vvec", alpha =
     "alpha", beta = "beta", phi = "phi", uvec = "uvec", wvec = "wvec", lambda0 =
-    "lambda0", thetaswap = "thetaswap", thetaswap = "thetaswap")
+    "lambda0", thetaswap = "thetaswap")
 )
 }
 \description{
