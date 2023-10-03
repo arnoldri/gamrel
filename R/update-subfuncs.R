@@ -16,7 +16,7 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
                                wvec="wvec",
                                lambda0="lambda0",
                                thetaswap="thetaswap")) {
-  
+  last.seed <- .Random.seed
   state.old <- state
   eta.old <- state.old[[nm["eta"]]]
   eta.new <- exp( rnorm(1, log(eta.old), ppar$sd.log.eta) )
@@ -35,6 +35,9 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
     cat(sprintf("eta: %g->%g: logr=%g\n",
                 eta.old, eta.new, log.r))
     if(ppar$interactive) browser()
+    update.name <- nm["eta"]
+    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -65,7 +68,7 @@ update.gamma.v1 <- function(state, datlist, fpar, ppar, model,
                                  wvec="wvec",
                                  lambda0="lambda0",
                                  thetaswap="thetaswap")) {
-
+  last.seed <- .Random.seed
   llike.old <- state$llike
   gamma.old <- state$gamma
   
@@ -110,7 +113,7 @@ update.thetavec.v1 <- function(state, datlist, fpar, ppar, model,
                                     wvec="wvec",
                                     lambda0="lambda0",
                                     thetaswap="thetaswap")) {
-
+  last.seed <- .Random.seed
   sweep <- as.logical(rbinom(1,1,ppar$psweep))
   if(ppar$verbose && sweep) cat("(sweep):")
   if(sweep || ppar$ksweep) {
@@ -139,6 +142,9 @@ update.thetavec.v1 <- function(state, datlist, fpar, ppar, model,
       cat(sprintf("thetavec[%d]: %g->%g: logr=%g\n",
                   k, theta.old, theta.new, log.r))
       if(ppar$interactive) browser()
+      update.name <- nm["thetavec"]
+      save(state.old, state, datlist, fpar, ppar, model, last.seed, k,
+           file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -170,7 +176,7 @@ update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
                                 wvec="wvec",
                                 lambda0="lambda0",
                                 thetaswap="thetaswap")) {
-    
+  last.seed <- .Random.seed  
   sweep <- as.logical(rbinom(1,1,ppar$psweep))
   if(ppar$verbose && sweep) cat("(sweep):")
   if(sweep || ppar$ksweep) {
@@ -216,6 +222,9 @@ update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
       cat(sprintf("vvec[%d]: %g->%g: logr=%g\n",
                   k, v.old, v.new, log.r))
       if(ppar$interactive) browser()
+      update.name <- nm["vvec"]
+      save(state.old, state, datlist, fpar, ppar, model, last.seed, k,
+           file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -247,7 +256,7 @@ update.alpha.v1 <- function(state, datlist, fpar, ppar, model,
                                  wvec="wvec",
                                  lambda0="lambda0",
                                  thetaswap="thetaswap")) {
-
+  last.seed <- .Random.seed
   state.old <- state
   alpha.old <- state.old[[nm["alpha"]]]
   alpha.new <- exp( rnorm(1, log(alpha.old), ppar$sd.log.alpha) )
@@ -271,6 +280,9 @@ update.alpha.v1 <- function(state, datlist, fpar, ppar, model,
     cat(sprintf("alpha: %g->%g: logr=%g\n",
                 alpha.old, alpha.new, log.r))
     if(ppar$interactive) browser()
+    update.name <- nm["alpha"]
+    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -301,7 +313,7 @@ update.beta.v1 <- function(state, datlist, fpar, ppar, model,
                                 wvec="wvec",
                                 lambda0="lambda0",
                                 thetaswap="thetaswap")) {
-
+  last.seed <- .Random.seed
   beta.old <- state[[nm["beta"]]]
   llike.old <- state$llike
   b1star <- fpar$b1 + state[[nm["alpha"]]]
@@ -337,7 +349,7 @@ update.phi.v1 <- function(state, datlist, fpar, ppar, model,
                                lambda0="lambda0",
                                thetaswap="thetaswap",
                                f1="f1", f2="f2")) {
-  
+  last.seed <- .Random.seed
   phi.old <- state[[nm["phi"]]]
   llike.old <- state$llike
   f1star <- fpar[[nm["f1"]]] + fpar$kmax
@@ -372,7 +384,7 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
                                 wvec="wvec",
                                 lambda0="lambda0",
                                 thetaswap="thetaswap")) {
-
+  last.seed <- .Random.seed
   # Do not update wvec[kmax]
   #sweep <- as.logical(rbinom(1,1,ppar$psweep))
   sweep <- FALSE # do not do a global update of every wvec[k]
@@ -446,6 +458,9 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
             log.r
             )); cat("\n")
       if(ppar$interactive) browser()
+      update.name <- nm["wvec"]
+      save(state.old, state, datlist, fpar, ppar, model, last.seed, k,
+           file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -477,7 +492,7 @@ update.thetaswap.v1 <- function(state, datlist, fpar, ppar, model,
                                      wvec="wvec",
                                      lambda0="lambda0",
                                      thetaswap="thetaswap")) {
-
+  last.seed <- .Random.seed
   ksamplevec1 <- sample(fpar$kmax, ppar$kswap,
                         prob=state[[nm["uvec"]]], replace=TRUE)
   ksamplevec2 <- sample(fpar$kmax, ppar$kswap, replace=TRUE)
@@ -500,6 +515,9 @@ update.thetaswap.v1 <- function(state, datlist, fpar, ppar, model,
       cat(sprintf("thetaswap[%d,%d]: %g->%g: logr=%g\n",
                   k1, k2, state.old[[nm["thetavec"]]][k1], state.old[[nm["thetavec"]]][k2], log.r))
       if(ppar$interactive) browser()
+      update.name <- nm["thetaswap"]
+      save(state.old, state, datlist, fpar, ppar, model, last.seed, k1, k2, 
+           file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -531,7 +549,7 @@ update.a.v1 <- function(state, datlist, fpar, ppar, model,
                                  wvec="wvec",
                                  lambda0="lambda0",
                                  thetaswap="thetaswap")) {
-  
+  last.seed <- .Random.seed
   state.old <- state
   a.old <- state.old[[nm["a"]]]
   a.new <- exp( rnorm(1, log(a.old), ppar$sd.log.a) )
@@ -550,6 +568,9 @@ update.a.v1 <- function(state, datlist, fpar, ppar, model,
     cat(sprintf("a: %g->%g: logr=%g\n",
                 a.old, a.new, log.r))
     if(ppar$interactive) browser()
+    update.name <- nm["a"]
+    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -580,7 +601,7 @@ update.lambda0.v1 <- function(state, datlist, fpar, ppar, model,
                                    uvec="uvec",
                                    wvec="wvec",
                                    thetaswap="thetaswap")) {
-  
+  last.seed <- .Random.seed
   llike.old <- state$llike
   temp.model.list <- list(model=model, kmax=fpar$kmax, 
                           lambda0=1, ## Note: unscaled
@@ -621,7 +642,7 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
                                    uvec="uvec",
                                    wvec="wvec",
                                    thetaswap="thetaswap")) {
-  
+  last.seed <- .Random.seed
   state.old <- state
   w0.old <- state.old[[nm["w0"]]]
   w0.new <- rnorm(1, w0.old, ppar$sd.w0) 
@@ -639,6 +660,9 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
     cat(sprintf("w0: %g->%g: logr=%g\n",
                 w0.old, w0.new, log.r))
     if(ppar$interactive) browser()
+    update.name <- nm["w0"]
+    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -669,7 +693,7 @@ update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
                                    uvec="uvec",
                                    wvec="wvec",
                                    thetaswap="thetaswap")) {
-  
+  last.seed <- .Random.seed
   state.old <- state
   gamma.old <- state.old[[nm["gamma"]]]
   gamma.new <- exp( rnorm(1, log(gamma.old), ppar$sd.log.gamma) )
@@ -694,6 +718,9 @@ update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
     cat(sprintf("gamma: %g->%g: logr=%g\n",
                 gamma.old, gamma.new, log.r))
     if(ppar$interactive) browser()
+    update.name <- nm["gamma"]
+    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -714,7 +741,7 @@ update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
 #' @export
 update.pival.v1 <- function(state, datlist, fpar, ppar, model,
                             nm=c(pival="pival")) {
-  
+  last.seed <- .Random.seed
   state.old <- state
   pival.old <- state.old[[nm["pival"]]]
   pival.new <- expit( rnorm(1, logit(pival.old), ppar$sd.logit.pival) ) 
@@ -732,6 +759,9 @@ update.pival.v1 <- function(state, datlist, fpar, ppar, model,
     cat(sprintf("pival: %g->%g: logr=%g\n",
                 pival.old, pival.new, log.r))
     if(ppar$interactive) browser()
+    update.name <- nm["pival"]
+    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
     # accept
