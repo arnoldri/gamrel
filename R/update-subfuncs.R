@@ -410,8 +410,10 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
     uvec.new <- uvec.new/sum(uvec.new)
     
     # v values only change for indices up to and including k
-    vvec.new <- vvec.old
-    vvec.new[1:k] <- uvec.new[1:k]/(c(1, 1-cumsum(uvec.new[-fpar$kmax]))[1:k])
+    # but recalculate all due to potential numerical rounding errors, and avoid 1.0 also
+    vvec.new <- pmin(1-fpar$epsilon, uvec.new/rev(cumsum(rev(uvec.new))))
+    # recalculate uvec.new to ensure consistency
+    uvec.new <- c(vvec.new[-fpar$kmax],1)*c(1,cumprod(1-vvec.new[-fpar$kmax]))
     state[[nm["gamma"]]] <- gamma.new
     state[[nm["vvec"]]] <- vvec.new
     state[[nm["uvec"]]] <- uvec.new
