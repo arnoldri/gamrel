@@ -36,7 +36,7 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
                 eta.old, eta.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["eta"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, 
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
@@ -143,7 +143,7 @@ update.thetavec.v1 <- function(state, datlist, fpar, ppar, model,
                   k, theta.old, theta.new, log.r))
       if(ppar$interactive) browser()
       update.name <- nm["thetavec"]
-      save(state.old, state, datlist, fpar, ppar, model, last.seed, k,
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
            file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
@@ -223,7 +223,7 @@ update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
                   k, v.old, v.new, log.r))
       if(ppar$interactive) browser()
       update.name <- nm["vvec"]
-      save(state.old, state, datlist, fpar, ppar, model, last.seed, k,
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
            file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
@@ -281,7 +281,7 @@ update.alpha.v1 <- function(state, datlist, fpar, ppar, model,
                 alpha.old, alpha.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["alpha"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
@@ -459,7 +459,7 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
             )); cat("\n")
       if(ppar$interactive) browser()
       update.name <- nm["wvec"]
-      save(state.old, state, datlist, fpar, ppar, model, last.seed, k,
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
            file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
@@ -516,7 +516,7 @@ update.thetaswap.v1 <- function(state, datlist, fpar, ppar, model,
                   k1, k2, state.old[[nm["thetavec"]]][k1], state.old[[nm["thetavec"]]][k2], log.r))
       if(ppar$interactive) browser()
       update.name <- nm["thetaswap"]
-      save(state.old, state, datlist, fpar, ppar, model, last.seed, k1, k2, 
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k1, k2, 
            file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
@@ -569,7 +569,7 @@ update.a.v1 <- function(state, datlist, fpar, ppar, model,
                 a.old, a.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["a"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
@@ -661,7 +661,7 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
                 w0.old, w0.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["w0"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
@@ -719,7 +719,7 @@ update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
                 gamma.old, gamma.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["gamma"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
@@ -760,7 +760,7 @@ update.pival.v1 <- function(state, datlist, fpar, ppar, model,
                 pival.old, pival.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["pival"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
