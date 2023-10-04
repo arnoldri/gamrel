@@ -31,12 +31,12 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
                 state.old$llike, state$llike,
                 eta.old, eta.new, log.r))
   }
-  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
     cat(sprintf("eta: %g->%g: logr=%g\n",
                 eta.old, eta.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["eta"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, 
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
@@ -138,12 +138,12 @@ update.thetavec.v1 <- function(state, datlist, fpar, ppar, model,
                   k, state.old$llike, state$llike,
                   theta.old, theta.new, log.r))
     }
-    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
       cat(sprintf("thetavec[%d]: %g->%g: logr=%g\n",
                   k, theta.old, theta.new, log.r))
       if(ppar$interactive) browser()
       update.name <- nm["thetavec"]
-      save(state.old, state, datlist, fpar, ppar, model, last.seed, k,
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
            file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
@@ -218,12 +218,12 @@ update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
                   k, state.old$llike, state$llike,
                   v.old, v.new, log.r))
     }
-    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
       cat(sprintf("vvec[%d]: %g->%g: logr=%g\n",
                   k, v.old, v.new, log.r))
       if(ppar$interactive) browser()
       update.name <- nm["vvec"]
-      save(state.old, state, datlist, fpar, ppar, model, last.seed, k,
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
            file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
@@ -276,12 +276,12 @@ update.alpha.v1 <- function(state, datlist, fpar, ppar, model,
                 state.old$llike, state$llike,
                 alpha.old, alpha.new, log.r))
   }
-  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
     cat(sprintf("alpha: %g->%g: logr=%g\n",
                 alpha.old, alpha.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["alpha"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
@@ -441,7 +441,7 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
                   k, state.old$llike, state$llike,
                   w.old, w.new, log.r))
     }
-    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==} || (log.r>0.9 && ppar$verbose)) { ##!!==
+    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==} || (log.r>0.9 && ppar$verbose)) { ##!!==
       cat(sprintf("wvec[%d]: %g->%g: logr=%g\n",
                   k, w.old, w.new, log.r))
       cat("model:"); cat(model); cat("\n")
@@ -459,7 +459,7 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
             )); cat("\n")
       if(ppar$interactive) browser()
       update.name <- nm["wvec"]
-      save(state.old, state, datlist, fpar, ppar, model, last.seed, k,
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
            file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
@@ -511,12 +511,12 @@ update.thetaswap.v1 <- function(state, datlist, fpar, ppar, model,
                   k1, k2, state.old$llike, state$llike,
                   state.old[[nm["thetavec"]]][k1], state.old[[nm["thetavec"]]][k2], log.r))
     }
-    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
       cat(sprintf("thetaswap[%d,%d]: %g->%g: logr=%g\n",
                   k1, k2, state.old[[nm["thetavec"]]][k1], state.old[[nm["thetavec"]]][k2], log.r))
       if(ppar$interactive) browser()
       update.name <- nm["thetaswap"]
-      save(state.old, state, datlist, fpar, ppar, model, last.seed, k1, k2, 
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k1, k2, 
            file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
     }
     if(runif(1)<exp(log.r)) {
@@ -564,12 +564,12 @@ update.a.v1 <- function(state, datlist, fpar, ppar, model,
                 state.old$llike, state$llike,
                 a.old, a.new, log.r))
   }
-  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
     cat(sprintf("a: %g->%g: logr=%g\n",
                 a.old, a.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["a"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
@@ -656,12 +656,12 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
                 state.old$llike, state$llike,
                 w0.old, w0.new, log.r))
   }
-  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
     cat(sprintf("w0: %g->%g: logr=%g\n",
                 w0.old, w0.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["w0"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
@@ -714,12 +714,12 @@ update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
                 state.old$llike, state$llike,
                 gamma.old, gamma.new, log.r))
   }
-  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
     cat(sprintf("gamma: %g->%g: logr=%g\n",
                 gamma.old, gamma.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["gamma"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
@@ -755,12 +755,12 @@ update.pival.v1 <- function(state, datlist, fpar, ppar, model,
                 state.old$llike, state$llike,
                 pival.old, pival.new, log.r))
   }
-  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0) { ##!!==
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
     cat(sprintf("pival: %g->%g: logr=%g\n",
                 pival.old, pival.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["pival"]
-    save(state.old, state, datlist, fpar, ppar, model, last.seed,
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
   }
   if(runif(1)<exp(log.r)) {
