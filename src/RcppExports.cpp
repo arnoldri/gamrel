@@ -198,6 +198,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// lprior_mew_c
+NumericVector lprior_mew_c(double lambda, double alpha, double theta, double gamma, double s1, double s2, double a1, double a2, double t1, double t2, double g1, double g2);
+RcppExport SEXP _gamrel_lprior_mew_c(SEXP lambdaSEXP, SEXP alphaSEXP, SEXP thetaSEXP, SEXP gammaSEXP, SEXP s1SEXP, SEXP s2SEXP, SEXP a1SEXP, SEXP a2SEXP, SEXP t1SEXP, SEXP t2SEXP, SEXP g1SEXP, SEXP g2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< double >::type s1(s1SEXP);
+    Rcpp::traits::input_parameter< double >::type s2(s2SEXP);
+    Rcpp::traits::input_parameter< double >::type a1(a1SEXP);
+    Rcpp::traits::input_parameter< double >::type a2(a2SEXP);
+    Rcpp::traits::input_parameter< double >::type t1(t1SEXP);
+    Rcpp::traits::input_parameter< double >::type t2(t2SEXP);
+    Rcpp::traits::input_parameter< double >::type g1(g1SEXP);
+    Rcpp::traits::input_parameter< double >::type g2(g2SEXP);
+    rcpp_result_gen = Rcpp::wrap(lprior_mew_c(lambda, alpha, theta, gamma, s1, s2, a1, a2, t1, t2, g1, g2));
+    return rcpp_result_gen;
+END_RCPP
+}
 // lambda_func_ifr_c
 NumericVector lambda_func_ifr_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
 RcppExport SEXP _gamrel_lambda_func_ifr_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
@@ -417,6 +439,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_lprior_sbt_c", (DL_FUNC) &_gamrel_lprior_sbt_c, 22},
     {"_gamrel_lprior_mbt_c", (DL_FUNC) &_gamrel_lprior_mbt_c, 24},
     {"_gamrel_lprior_lcv_c", (DL_FUNC) &_gamrel_lprior_lcv_c, 17},
+    {"_gamrel_lprior_mew_c", (DL_FUNC) &_gamrel_lprior_mew_c, 12},
     {"_gamrel_lambda_func_ifr_c", (DL_FUNC) &_gamrel_lambda_func_ifr_c, 4},
     {"_gamrel_lambda_func_dfr_c", (DL_FUNC) &_gamrel_lambda_func_dfr_c, 4},
     {"_gamrel_lambda_func_lwb_c", (DL_FUNC) &_gamrel_lambda_func_lwb_c, 5},

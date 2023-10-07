@@ -330,6 +330,42 @@ NumericVector lprior_lcv_c(double lambda0,
 }
 
 
+//' Log prior - MEW
+ //' 
+ //' 
+ //' @param lambda lambda
+ //' @param alpha alpha
+ //' @param theta theta
+ //' @param gamma gamma
+ //' 
+ //' @description log(prior) for the MEW model - in vector form
+ //' 
+ //' @export
+ // [[Rcpp::export]]
+ NumericVector lprior_mew_c(double lambda,
+                            double alpha,
+                            double theta,
+                            double gamma, 
+                            double s1, double s2, 
+                            double a1, double a2, double t1, double t2, double g1, double g2) {
+   
+   NumericVector lpriorvec(4);
+
+   // lambda
+   lpriorvec[0] = (s1-1)*log(lambda) - s2*lambda;
+   // alpha
+   lpriorvec[1] = (a1-1)*log(alpha) - a2*alpha;
+   // theta
+   lpriorvec[2] = (t1-1)*log(theta) - t2*theta;
+   // gamma
+   lpriorvec[3] = (g1-1)*log(gamma) - g2*gamma;
+   
+   return lpriorvec;
+ }
+
+
+
+
 //**********************************************************************
 //' Hazard rate function - IFR
 //' 
