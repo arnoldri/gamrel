@@ -748,7 +748,7 @@ rfail.mew <- function(n, lambda, alpha, theta, gamma) {
   uvec <- runif(n)
   ff <- function(x, lambda, alpha, theta, gamma, cc) {
            t <- x/(1-x)
-           return(int.lambda.func.mew(t, lambda, theta, gamma)-cc)
+           return(int.lambda.func.mew(t, lambda, alpha, theta, gamma)-cc)
   }
   xvec <- sapply(-log(uvec),
                  function(cc) {

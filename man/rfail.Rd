@@ -23,6 +23,6 @@ DFR (decreasing failure rate),
 LWB (Lo Weng Bathtub),
 SBT (Superposition Bathtub),
 MBT (Mixture Bathtub), 
-or
 LCV (Log Convex Bathtub)
+MEW (Modified Exponentiated Weibull)
 }
