@@ -9,6 +9,7 @@ init.objects <- function(tvec, obs,
                          prior.par=NULL,
                          update.par=NULL,
                          model="IFR",
+                         datscale=1,
                          epsilon=.Machine$double.neg.eps*100, # tiny value if needed
                          use.Cpp=TRUE,
                          seed=NULL,
@@ -418,6 +419,56 @@ init.objects <- function(tvec, obs,
     epar$thetavec <- rexp(kmax, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
 
+  } else if(model%in%c("MEW")) {
+    
+    if(is.null(prior.par)) {
+      prior.par <- list(s1=1, s2=1, # lambda
+                        a1=1, a2=1, # alpha
+                        t1=1, t2=1, # theta
+                        g1=1, g2=1) # gamma
+    }
+    if(is.null(update.par)) {
+      update.par <- list(sd.log.lambda=0.1,
+                         sd.log.alpha=0.1,
+                         sd.log.theta=0.1,
+                         sd.log.gamma=0.1)
+    }
+    # fixed parameters
+    parnames <- c("lambda","alpha","theta","gamma")
+    fpar <- list(model=model,                      # model name
+                 parnames=parnames,                # parameters
+                 s1=prior.par$s1, s2=prior.par$s2, # prior for lambda
+                 a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
+                 t1=prior.par$t1, t2=prior.par$t2, # prior for theta
+                 g1=prior.par$g1, g2=prior.par$g2, # prior for gamma
+                 epsilon=epsilon,
+                 use.Cpp=use.Cpp)
+    # parameters to update
+    update_parnames <- c(parnames)
+    update <- rep(TRUE, length(update_parnames))
+    names(update) <- update_parnames
+    # proposal parameters for updates
+    ppar <- list(update_parnames=update_parnames,
+                 sd.log.lambda=update.par$sd.log.lambda,
+                 sd.log.alpha=update.par$sd.log.alpha,
+                 sd.log.theta=update.par$sd.log.theta,
+                 sd.log.gamma=update.par$sd.log.gamma,
+                 update=update,
+                 verbose=FALSE,
+                 interactive=FALSE)
+    # parameters to estimate
+    if(generate=="fixed") {
+      epar <- list(lambda=prior.par$s1/prior.par$s2,
+                   alpha=prior.par$a1/prior.par$a2,
+                   theta=prior.par$t1/prior.par$t2,
+                   gamma=prior.par$g1/prior.par$g2)
+    } else {
+      epar <- list(lambda=rgamma(1,prior.par$s1,prior.par$s2),
+                   alpha=rgamma(1,prior.par$a1,prior.par$a2),
+                   theta=rgamma(1,prior.par$t1,prior.par$t2),
+                   gamma=rgamma(1,prior.par$g1,prior.par$g2))
+    }
+
   } else {
     stop("Specified model has not been implemented")
   }
@@ -522,7 +573,10 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
     # compute the scaled weights wvec
     state$wvec <- state$gamma * state$uvec
-
+    
+  } else if(model%in%c("MEW")) {
+    state <- epar
+    
   } else {
     stop("Specified model has not been implemented")
   }
@@ -811,6 +865,32 @@ lpriorf.vector <- function(state, fpar, model) {
       #lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
       lprior.vec["phi"] <- (fpar$f1-1)*log(state$phi) - fpar$f2*state$phi
     }
+  } else if(model%in%c("MEW")) {
+    if(fpar$use.Cpp) {
+      lprior.vec <- lprior_mew_c(state$lambda,
+                                 state$alpha,
+                                 state$theta,
+                                 state$gamma, 
+                                 fpar$s1, fpar$s2, 
+                                 fpar$a1, fpar$a2, fpar$t1, fpar$t2, fpar$g1, fpar$g2)
+      names(lprior.vec) <- fpar$parnames
+      #cat("CPP!")
+    } else {
+      #cat("NOT!")
+      # prior for lambda
+      ## lprior.vec["lambda"] <- dgamma(state$lambda, fpar$s1, fpar$s2)
+      lprior.vec["lambda"] <- (fpar$s1-1)*log(state$lambda) - fpar$s2*state$lambda
+      # prior for alpha
+      #lprior.vec["alpha"] <- dgamma(state$alpha, fpar$a1, fpar$a2, log=TRUE)
+      lprior.vec["alpha"] <- (fpar$a1-1)*log(state$alpha) - fpar$a2*state$alpha
+      # prior for theta
+      #lprior.vec["theta"] <- dgamma(state$theta, fpar$t1, fpar$t2, log=TRUE)
+      lprior.vec["theta"] <- (fpar$t1-1)*log(state$theta) - fpar$t2*state$theta
+      # prior for gamma
+      #lprior.vec["gamma"] <- dgamma(state$gamma, fpar$g1, fpar$g2, log=TRUE)
+      lprior.vec["gamma"] <- (fpar$g1-1)*log(state$gamma) - fpar$g2*state$gamma
+    }
+    
   } else {
     stop("Specified model has not been implemented")
   }
@@ -907,7 +987,16 @@ plot_state <- function(state, datlist, fpar, ppar, model,
            xlab=bquote(theta), ylab=bquote(w), main=main, ...)
     }
     points(state$thetavec, state$wvec, ...)
-
+    
+  } else if(model=="MEW") {
+    if(!add) {
+      # start a new plot
+      plot(NA,NA, xlim=range(c(state$lambda,state$alpha,state$theta,state$gamma)),
+           ylim=c(0,1),
+           xlab="parameters", ylab="", main=main, ...)
+    }
+    points(c(state$lambda,state$alpha,state$theta,state$gamma), c(0,0,0,0), ...)
+    
   } else {
     stop(paste0("Model ",model," not recognised"))
   }

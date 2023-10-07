@@ -77,6 +77,10 @@ lambda.func <- function(tvec, model.list, use.Cpp=TRUE) {
                            model.list$lambda0, model.list$w0,
                            model.list$thetavec, model.list$wvec, 
                            use.Cpp=use.Cpp))
+  } else if(model.list$model=="MEW") {
+    return(lambda.func.mew(tvec, 
+                           model.list$lambda, model.list$alpha,
+                           model.list$theta,  model.list$gamma))
   } else {
     stop(paste0("Model ",model.list$model," not implemented"))
   }
@@ -167,6 +171,14 @@ lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec, use.Cpp=TRUE) {
   return(lambda.vec)
 }
 
+#' @export
+lambda.func.mew <- function(tvec, lambda, alpha, theta, gamma, use.Cpp=TRUE) {
+  # hazard rate function - MEW
+  evec <- exp((tvec/theta)^gamma)
+  lambda.vec <- (gamma/theta)*(tvec/gamma)^(gamma-1)*(lambda + alpha*(evec-1)^(alpha-1))
+  return(lambda.vec)
+}
+
 #' Plot integrated hazard rate function
 #' 
 #' @param model.list Model specification
@@ -184,6 +196,9 @@ plot_intlambdafunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL,
   } else if(model.list$model%in%c("SBT","MBT")) {
     tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec1,model.list$thetavec2))
+    fvec <- int.lambda.func(tvec, model.list, use.Cpp=use.Cpp)
+  } else if(model.list$model%in%c("MEW")) {
+    tvec <- seq(from=0, to=1.1*model.list$theta, length=npts)
     fvec <- int.lambda.func(tvec, model.list, use.Cpp=use.Cpp)
   } else {
     stop(paste0("Model ",model.list$model," not implemented"))
@@ -233,6 +248,11 @@ int.lambda.func <- function(tvec, model.list, use.Cpp=TRUE) {
     return(int.lambda.func.lcv(tvec, 
                                model.list$lambda0, model.list$w0, 
                                model.list$thetavec, model.list$wvec, 
+                               use.Cpp=use.Cpp))
+  } else if(model.list$model=="MEW") {
+    return(int.lambda.func.mew(tvec, 
+                               model.list$lambda, model.list$alpha, 
+                               model.list$theta,  model.list$gamma, 
                                use.Cpp=use.Cpp))
   } else {
     stop(paste0("Model ",model.list$model," not implemented"))
@@ -366,6 +386,12 @@ int.lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec,
   return(int.lambda.vec)
 }
 
+int.lambda.func.mew <- function(tvec, lambda, alpha, theta, gamma, use.Cpp=TRUE) {
+  # integrated hazard rate function - MEW
+  evec <- exp((tvec/theta)^gamma)
+  int.lambda.vec <- -lambda*(1-evec) + (evec-1)^alpha
+  return(int.lambda.vec)
+}
 
 
 #' Evaluate both the hazard and integrated hazard functions at the same locations
@@ -415,6 +441,10 @@ both.lambda.funcs <- function(tvec, model.list, use.Cpp=TRUE, epsilon=.Machine$d
                                      model.list$thetavec, 
                                      model.list$wvec,
                                      epsilon) 
+  } else if(model%in%"MEW") {
+    lambda.vec <- lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
+    int.lambda.vec <- int.lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
+    retval <- cbind(lambda.vec=lambda.vec,int.lambda.vec=int.lambda.vec)
   }
   return(retval)
 }
@@ -435,6 +465,8 @@ plot_densityfunc <- function(model.list, npts=101,
   } else if(model.list$model%in%c("SBT","MBT")) {
     tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec1,model.list$thetavec2))
+  } else if(model.list$model %in% c("MEW")) {
+    tvec <- seq(from=0, to=1.1*model.list$theta, length=npts)
   } else {
     stop(paste0("Model ",model.list$model," not implemented"))
   }
@@ -463,6 +495,8 @@ plot_survivalfunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL,
   } else if(model.list$model%in%c("SBT","MBT")) {
     tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec1,model.list$thetavec2))
+  } else if(model.list$model %in% c("MEW")) {
+    tvec <- seq(from=0, to=1.1*model.list$theta, length=npts)
   } else {
     stop(paste0("Model ",model.list$model," not implemented"))
   }
@@ -498,8 +532,8 @@ plot_survivalfunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL,
 #' LWB (Lo Weng Bathtub),
 #' SBT (Superposition Bathtub),
 #' MBT (Mixture Bathtub), 
-#' or
 #' LCV (Log Convex Bathtub)
+#' MEW (Modified Exponentiated Weibull)
 #' 
 #' @export
 rfail <- function(n, model.list, tau=Inf) {
@@ -522,6 +556,10 @@ rfail <- function(n, model.list, tau=Inf) {
     tvec <- rfail.lcv(n,  
                       model.list$lambda0, model.list$w0,
                       model.list$thetavec, model.list$wvec)
+  } else if(model.list$model=="MEW") {
+    tvec <- rfail.mew(n,  
+                      model.list$lambda, model.list$alpha,
+                      model.list$theta, model.list$gamma)
   } else {
     stop(paste0("Model ",model.list$model," not implemented"))
   }
@@ -703,6 +741,27 @@ rfail.lcv <- function(n, lambda0, w0, thetavec, wvec) {
   return(tvec)
 }  
 
+#' @export
+rfail.mew <- function(n, lambda, alpha, theta, gamma) {
+  # simulate failure times from an MEW model
+  epsilon <- .Machine$double.eps*100
+  uvec <- runif(n)
+  ff <- function(x, lambda, alpha, theta, gamma, cc) {
+           t <- x/(1-x)
+           return(int.lambda.func.mew(t, lambda, theta, gamma)-cc)
+  }
+  xvec <- sapply(-log(uvec),
+                 function(cc) {
+                   uniroot(ff, 
+                           interval=c(epsilon, 1-epsilon), 
+                           lambda=lambda, alpha=alpha, 
+                           theta=theta, gamma=gamma,
+                           cc=cc)$root
+                 })
+  tvec <- xvec/(1-xvec)
+  return(tvec)
+}
+  
 ###############################################################################
 #' Log likelihood of failure data
 #' 
