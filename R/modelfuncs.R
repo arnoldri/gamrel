@@ -598,11 +598,11 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
 #' @export
 llikef <- function(state, datlist, fpar, model) {
   # log likelihood of observations tvec
-  hazfuncs <- both.lambda.funcs(tvec,
+  hazfuncs <- both.lambda.funcs(datlist$tvec,
                                 model.list=c(list(model=model,kmax=fpar$kmax),
                                              state),
                                 use.Cpp=fpar$use.Cpp, epsilon=fpar$epsilon)
-  retval <- sum(log(hazfuncs[,1]) - hazfuncs[,2])
+  retval <- sum(log(hazfuncs[datlist$obs,1]) - hazfuncs[,2])
   return(retval)
 }
 #' Log likelihood of the current state
