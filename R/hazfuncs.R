@@ -175,7 +175,7 @@ lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec, use.Cpp=TRUE) {
 lambda.func.mew <- function(tvec, lambda, alpha, theta, gamma, use.Cpp=TRUE) {
   # hazard rate function - MEW
   evec <- exp((tvec/theta)^gamma)
-  lambda.vec <- (gamma/theta)*(tvec/gamma)^(gamma-1)*(lambda + alpha*(evec-1)^(alpha-1))
+  lambda.vec <- (gamma/theta)*(tvec/theta)^(gamma-1)*evec*(lambda + alpha*(evec-1)^(alpha-1))
   return(lambda.vec)
 }
 
@@ -386,10 +386,11 @@ int.lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec,
   return(int.lambda.vec)
 }
 
+#' @export
 int.lambda.func.mew <- function(tvec, lambda, alpha, theta, gamma, use.Cpp=TRUE) {
   # integrated hazard rate function - MEW
   evec <- exp((tvec/theta)^gamma)
-  int.lambda.vec <- -lambda*(1-evec) + (evec-1)^alpha
+  int.lambda.vec <- lambda*(evec-1) + (evec-1)^alpha
   return(int.lambda.vec)
 }
 

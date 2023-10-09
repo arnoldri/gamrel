@@ -10,9 +10,6 @@ csqrt <- function(x) {
     .Call(`_gamrel_csqrt`, x)
 }
 
-#' Log prior - MEW
-NULL
-
 #' C version of order() - bad performance with duplicates
 #' 
 #' @export
@@ -99,6 +96,17 @@ lprior_lcv_c <- function(lambda0, w0, gamma, thetavec, vvec, alpha, beta, phi, s
     .Call(`_gamrel_lprior_lcv_c`, lambda0, w0, gamma, thetavec, vvec, alpha, beta, phi, s1, s2, sigmap_w0, a1, a2, b1, b2, f1, f2)
 }
 
+#' Log prior - MEW
+#' 
+#' 
+#' @param lambda lambda
+#' @param alpha alpha
+#' @param theta theta
+#' @param gamma gamma
+#' 
+#' @description log(prior) for the MEW model - in vector form
+#' 
+#' @export
 lprior_mew_c <- function(lambda, alpha, theta, gamma, s1, s2, a1, a2, t1, t2, g1, g2) {
     .Call(`_gamrel_lprior_mew_c`, lambda, alpha, theta, gamma, s1, s2, a1, a2, t1, t2, g1, g2)
 }

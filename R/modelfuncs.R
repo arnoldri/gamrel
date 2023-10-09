@@ -19,17 +19,17 @@ init.objects <- function(tvec, obs,
 
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
-                        a1=1, a2=1,
+                        a1=4, a2=1,
                         b1=1, b2=1,
-                        f1=1, f2=1)
+                        f1=2, f2=2*datscale)
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
-                         sd.log.eta=0.1,
-                         sd.log.theta=0.1,
-                         sd.logit.v=0.1,
-                         sd.log.w=0.1,
-                         sd.log.alpha=0.1)
+                         sd.log.eta=0.3,
+                         sd.log.theta=0.3,
+                         sd.logit.v=0.3,
+                         sd.log.w=0.3,
+                         sd.log.alpha=0.3)
     }
     # fixed parameters
     parnames <- c("eta","gamma","thetavec","vvec","alpha","beta","phi")
@@ -87,19 +87,19 @@ init.objects <- function(tvec, obs,
 
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
-                        c1=1, c2=1,
-                        a1=1, a2=1,
+                        c1=1, c2=2/datscale,
+                        a1=4, a2=1,
                         b1=1, b2=1,
-                        f1=1, f2=1)
+                        f1=2, f2=2*datscale)
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
-                         sd.log.eta=0.1,
+                         sd.log.eta=0.3,
                          sd.log.a=0.1,
-                         sd.log.theta=0.1,
-                         sd.logit.v=0.1,
-                         sd.log.w=0.1,
-                         sd.log.alpha=0.1)
+                         sd.log.theta=0.3,
+                         sd.logit.v=0.3,
+                         sd.log.w=0.3,
+                         sd.log.alpha=0.3)
     }
     # fixed parameters
     parnames <- c("eta","a","gamma","thetavec","vvec","alpha","beta","phi")
@@ -161,10 +161,10 @@ init.objects <- function(tvec, obs,
 
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
-                        a1=1, a2=1,
+                        a1=4, a2=1,
                         b1=1, b2=1,
-                        f11=1, f21=1, # DFR
-                        f12=1, f22=1) # IFR
+                        f11=1, f21=datscale/2, # DFR
+                        f12=2, f22=2*datscale) # IFR
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
@@ -251,20 +251,20 @@ init.objects <- function(tvec, obs,
 
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
-                        a1=1, a2=1,
+                        a1=4, a2=1,
                         b1=1, b2=1,
-                        f11=1, f21=1,
-                        f12=1, f22=1)
+                        f11=1, f21=datscale/2,
+                        f12=2, f22=2*delta)
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
                          sd.logit.pival=0.1,
-                         sd.log.eta=0.1,
+                         sd.log.eta=0.3,
                          sd.log.gamma=0.1,
-                         sd.log.theta=0.1,
-                         sd.logit.v=0.1,
-                         sd.log.w=0.1,
-                         sd.log.alpha=0.1)
+                         sd.log.theta=0.3,
+                         sd.logit.v=0.3,
+                         sd.log.w=0.3,
+                         sd.log.alpha=0.3)
     }
     # fixed parameters
     parnames <- c("pival",
@@ -350,18 +350,18 @@ init.objects <- function(tvec, obs,
       prior.par <- list(nu=1,
                         s1=1, s2=1,
                         sigmap.w0=1,
-                        a1=1, a2=1,
+                        a1=4, a2=1,
                         b1=1, b2=1,
-                        f1=1, f2=1)
+                        f1=1, f2=datscale)
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
                          sd.w0=0.1,
-                         sd.log.gamma=0.1,
-                         sd.log.theta=0.1,
-                         sd.logit.v=0.1,
-                         sd.log.w=0.1,
-                         sd.log.alpha=0.1)
+                         sd.log.gamma=0.05,
+                         sd.log.theta=0.3,
+                         sd.logit.v=0.3,
+                         sd.log.w=0.3,
+                         sd.log.alpha=0.3)
     }
     # fixed parameters
     parnames <- c("lambda0","w0","gamma","thetavec","vvec","alpha","beta","phi")
@@ -424,14 +424,14 @@ init.objects <- function(tvec, obs,
     if(is.null(prior.par)) {
       prior.par <- list(s1=1, s2=1, # lambda
                         a1=1, a2=1, # alpha
-                        t1=1, t2=1, # theta
+                        t1=1, t2=2/datscale, # theta
                         g1=1, g2=1) # gamma
     }
     if(is.null(update.par)) {
-      update.par <- list(sd.log.lambda=0.1,
-                         sd.log.alpha=0.1,
-                         sd.log.theta=0.1,
-                         sd.log.gamma=0.1)
+      update.par <- list(sd.log.lambda=0.3,
+                         sd.log.alpha=0.3,
+                         sd.log.theta=0.3,
+                         sd.log.gamma=0.3)
     }
     # fixed parameters
     parnames <- c("lambda","alpha","theta","gamma")

@@ -331,23 +331,23 @@ NumericVector lprior_lcv_c(double lambda0,
 
 
 //' Log prior - MEW
- //' 
- //' 
- //' @param lambda lambda
- //' @param alpha alpha
- //' @param theta theta
- //' @param gamma gamma
- //' 
- //' @description log(prior) for the MEW model - in vector form
- //' 
- //' @export
- // [[Rcpp::export]]
- NumericVector lprior_mew_c(double lambda,
-                            double alpha,
-                            double theta,
-                            double gamma, 
-                            double s1, double s2, 
-                            double a1, double a2, double t1, double t2, double g1, double g2) {
+//' 
+//' 
+//' @param lambda lambda
+//' @param alpha alpha
+//' @param theta theta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the MEW model - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector lprior_mew_c(double lambda,
+                           double alpha,
+                           double theta,
+                           double gamma, 
+                           double s1, double s2, 
+                           double a1, double a2, double t1, double t2, double g1, double g2) {
    
    NumericVector lpriorvec(4);
 
@@ -361,7 +361,7 @@ NumericVector lprior_lcv_c(double lambda0,
    lpriorvec[3] = (g1-1)*log(gamma) - g2*gamma;
    
    return lpriorvec;
- }
+}
 
 
 

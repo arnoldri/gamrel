@@ -17,6 +17,8 @@ update_state <- function(state, datlist, fpar, ppar, model) {
     state <- update_state.mbt(state, datlist, fpar, ppar, model)    
   } else if(model=="LCV") {
     state <- update_state.lcv(state, datlist, fpar, ppar, model)    
+  } else if(model=="MEW") {
+    state <- update_state.mew(state, datlist, fpar, ppar, model)    
   } else {
     stop("Specified model has not been implemented")
   }
@@ -463,6 +465,44 @@ update_state.lcv <- function(state, datlist, fpar, ppar, model) {
     if(ppar$verbose) cat("\n")
   }
 
+  return(state)
+}
+
+update_state.mew <- function(state, datlist, fpar, ppar, model) { 
+  # Update a MEW state
+  state$count <- state$count + 1
+  parnm <- unique(c(names(state),names(ppar$update)))
+  names(parnm) <- parnm
+  parnm <- c(parnm,c(f1="f1",f2="f2"))
+  
+  # update lambda ##!!== 
+  if(ppar$update["lambda"]) {
+    if(ppar$verbose) cat("lambda:")
+    state <- update.lambda.mew(state, datlist, fpar, ppar, model, nm=parnm)
+    if(ppar$verbose) cat("\n")
+  }
+  
+  # update alpha ##!!== 
+  if(ppar$update["alpha"]) {
+    if(ppar$verbose) cat("alpha:")
+    state <- update.alpha.mew(state, datlist, fpar, ppar, model, nm=parnm)
+    if(ppar$verbose) cat("\n")
+  }
+  
+  # update theta ##!!== 
+  if(ppar$update["theta"]) {
+    if(ppar$verbose) cat("theta:")
+    state <- update.theta.mew(state, datlist, fpar, ppar, model, nm=parnm)
+    if(ppar$verbose) cat("\n")
+  }
+  
+  # update gamma ##!!== 
+  if(ppar$update["gamma"]) {
+    if(ppar$verbose) cat("gamma:")
+    state <- update.gamma.mew(state, datlist, fpar, ppar, model, nm=parnm)
+    if(ppar$verbose) cat("\n")
+  }
+  
   return(state)
 }
 

@@ -779,3 +779,186 @@ update.pival.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
+## MEW functions
+
+#' lambda (MH) MEW
+#'
+#' @export
+update.lambda.mew <- function(state, datlist, fpar, ppar, model,
+                              nm=c(lambda="lambda",
+                                   alpha="alpha",
+                                   theta="theta",
+                                   gamma="gamma")) {
+  last.seed <- .Random.seed
+  state.old <- state
+  lambda.old <- state.old[[nm["lambda"]]]
+  lambda.new <- exp( rnorm(1, log(lambda.old), ppar$sd.log.lambda) )
+  state[[nm["lambda"]]] <- lambda.new
+  state$llike <- llikef(state, datlist, fpar, model)
+  state$lprior <- lpriorf(state, fpar, model)
+  log.r <- (state$llike - state.old$llike)
+  log.r <- ( log.r + fpar$s1*log(lambda.new/lambda.old) 
+                   - fpar$s2*(lambda.new-lambda.old) )
+  if(ppar$verbose) {
+    cat(sprintf("lambda: (%g;%g) %g->%g: logr=%g\n",
+                state.old$llike, state$llike,
+                lambda.old, lambda.new, log.r))
+  }
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
+    cat(sprintf("lambda: %g->%g: logr=%g\n",
+                lambda.old, lambda.new, log.r))
+    if(ppar$interactive) browser()
+    update.name <- nm["lambda"]
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+  }
+  if(runif(1)<exp(log.r)) {
+    # accept
+    state$accepted[nm["lambda"]] <- 1
+    if(ppar$verbose) cat("+")
+  } else {
+    # reject
+    state <- state.old
+    state$accepted[nm["lambda"]] <- 0
+    if(ppar$verbose) cat("-")
+  }
+  
+  return(state)
+}
+
+#' alpha (MH) MEW
+#'
+#' @export
+update.alpha.mew <- function(state, datlist, fpar, ppar, model,
+                              nm=c(lambda="lambda",
+                                   alpha="alpha",
+                                   theta="theta",
+                                   gamma="gamma")) {
+  last.seed <- .Random.seed
+  state.old <- state
+  alpha.old <- state.old[[nm["alpha"]]]
+  alpha.new <- exp( rnorm(1, log(alpha.old), ppar$sd.log.alpha) )
+  state[[nm["alpha"]]] <- alpha.new
+  state$llike <- llikef(state, datlist, fpar, model)
+  state$lprior <- lpriorf(state, fpar, model)
+  log.r <- (state$llike - state.old$llike)
+  log.r <- ( log.r + fpar$a1*log(alpha.new/alpha.old) 
+             - fpar$a2*(alpha.new-alpha.old) )
+  if(ppar$verbose) {
+    cat(sprintf("alpha: (%g;%g) %g->%g: logr=%g\n",
+                state.old$llike, state$llike,
+                alpha.old, alpha.new, log.r))
+  }
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
+    cat(sprintf("alpha: %g->%g: logr=%g\n",
+                alpha.old, alpha.new, log.r))
+    if(ppar$interactive) browser()
+    update.name <- nm["alpha"]
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+  }
+  if(runif(1)<exp(log.r)) {
+    # accept
+    state$accepted[nm["alpha"]] <- 1
+    if(ppar$verbose) cat("+")
+  } else {
+    # reject
+    state <- state.old
+    state$accepted[nm["alpha"]] <- 0
+    if(ppar$verbose) cat("-")
+  }
+  
+  return(state)
+}
+
+#' theta (MH) MEW
+#'
+#' @export
+update.theta.mew <- function(state, datlist, fpar, ppar, model,
+                              nm=c(lambda="lambda",
+                                   alpha="alpha",
+                                   theta="theta",
+                                   gamma="gamma")) {
+  last.seed <- .Random.seed
+  state.old <- state
+  theta.old <- state.old[[nm["theta"]]]
+  theta.new <- exp( rnorm(1, log(theta.old), ppar$sd.log.theta) )
+  state[[nm["theta"]]] <- theta.new
+  state$llike <- llikef(state, datlist, fpar, model)
+  state$lprior <- lpriorf(state, fpar, model)
+  log.r <- (state$llike - state.old$llike)
+  log.r <- ( log.r + fpar$t1*log(theta.new/theta.old) 
+                   - fpar$t2*(theta.new-theta.old) )
+  if(ppar$verbose) {
+    cat(sprintf("theta: (%g;%g) %g->%g: logr=%g\n",
+                state.old$llike, state$llike,
+                theta.old, theta.new, log.r))
+  }
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
+    cat(sprintf("theta: %g->%g: logr=%g\n",
+                theta.old, theta.new, log.r))
+    if(ppar$interactive) browser()
+    update.name <- nm["theta"]
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+  }
+  if(runif(1)<exp(log.r)) {
+    # accept
+    state$accepted[nm["theta"]] <- 1
+    if(ppar$verbose) cat("+")
+  } else {
+    # reject
+    state <- state.old
+    state$accepted[nm["theta"]] <- 0
+    if(ppar$verbose) cat("-")
+  }
+  
+  return(state)
+}
+
+#' gamma (MH) MEW
+#'
+#' @export
+update.gamma.mew <- function(state, datlist, fpar, ppar, model,
+                              nm=c(lambda="lambda",
+                                   alpha="alpha",
+                                   theta="theta",
+                                   gamma="gamma")) {
+  last.seed <- .Random.seed
+  state.old <- state
+  gamma.old <- state.old[[nm["gamma"]]]
+  gamma.new <- exp( rnorm(1, log(gamma.old), ppar$sd.log.gamma) )
+  state[[nm["gamma"]]] <- gamma.new
+  state$llike <- llikef(state, datlist, fpar, model)
+  state$lprior <- lpriorf(state, fpar, model)
+  log.r <- (state$llike - state.old$llike)
+  log.r <- ( log.r + fpar$g1*log(gamma.new/gamma.old) 
+                   - fpar$g2*(gamma.new-gamma.old) )
+  if(ppar$verbose) {
+    cat(sprintf("gamma: (%g;%g) %g->%g: logr=%g\n",
+                state.old$llike, state$llike,
+                gamma.old, gamma.new, log.r))
+  }
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
+    cat(sprintf("gamma: %g->%g: logr=%g\n",
+                gamma.old, gamma.new, log.r))
+    if(ppar$interactive) browser()
+    update.name <- nm["gamma"]
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+  }
+  if(runif(1)<exp(log.r)) {
+    # accept
+    state$accepted[nm["gamma"]] <- 1
+    if(ppar$verbose) cat("+")
+  } else {
+    # reject
+    state <- state.old
+    state$accepted[nm["gamma"]] <- 0
+    if(ppar$verbose) cat("-")
+  }
+  
+  return(state)
+}
+
+
