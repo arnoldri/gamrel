@@ -254,7 +254,7 @@ init.objects <- function(tvec, obs,
                         a1=4, a2=1,
                         b1=1, b2=1,
                         f11=1, f21=datscale/2,
-                        f12=2, f22=2*delta)
+                        f12=2, f22=2*datscale)
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
@@ -422,10 +422,10 @@ init.objects <- function(tvec, obs,
   } else if(model%in%c("MEW")) {
     
     if(is.null(prior.par)) {
-      prior.par <- list(s1=1, s2=1, # lambda
-                        a1=1, a2=1, # alpha
+      prior.par <- list(s1=1, s2=1,    # lambda
+                        a1=2, a2=0.05, # alpha
                         t1=1, t2=2/datscale, # theta
-                        g1=1, g2=1) # gamma
+                        g1=1, g2=1)    # gamma
     }
     if(is.null(update.par)) {
       update.par <- list(sd.log.lambda=0.3,
