@@ -745,21 +745,22 @@ rfail.lcv <- function(n, lambda0, w0, thetavec, wvec) {
 #' @export
 rfail.mew <- function(n, lambda, alpha, theta, gamma) {
   # simulate failure times from an MEW model
-  epsilon <- .Machine$double.eps*100
-  uvec <- runif(n)
-  ff <- function(x, lambda, alpha, theta, gamma, cc) {
-           t <- x/(1-x)
-           return(int.lambda.func.mew(t, lambda, alpha, theta, gamma)-cc)
+  epsilon <- .Machine$double.eps
+  uvec <- runif(n, epsilon, 1-epsilon)
+  ff <- function(x, lambda, alpha, cc) {
+      v <- x/(1-x)
+      return(lambda*v + v^alpha - cc)
   }
   xvec <- sapply(-log(uvec),
-                 function(cc) {
-                   uniroot(ff, 
-                           interval=c(epsilon, 1-epsilon), 
-                           lambda=lambda, alpha=alpha, 
-                           theta=theta, gamma=gamma,
-                           cc=cc)$root
-                 })
-  tvec <- xvec/(1-xvec)
+                   function(cc) {
+                     uniroot(ff, 
+                             interval=c(epsilon, 1-epsilon), 
+                             lambda=lambda, 
+                             alpha=alpha,
+                             cc=cc)$root
+                   })
+  tvec <- theta*( -log(1-xvec) )^(1/gamma) 
+  #print(cbind(-log(uvec),xvec,tvec))
   return(tvec)
 }
   
