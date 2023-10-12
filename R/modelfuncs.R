@@ -20,7 +20,7 @@ init.objects <- function(tvec, obs,
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         a1=4, a2=1,
-                        b1=1, b2=1,
+                        b1=1, b2=1/datscale,
                         f1=2, f2=2*datscale)
     }
     if(is.null(update.par)) {
@@ -89,7 +89,7 @@ init.objects <- function(tvec, obs,
       prior.par <- list(nu=1,
                         c1=1, c2=2/datscale,
                         a1=4, a2=1,
-                        b1=1, b2=1,
+                        b1=1, b2=1/datscale,
                         f1=2, f2=2*datscale)
     }
     if(is.null(update.par)) {
@@ -162,7 +162,7 @@ init.objects <- function(tvec, obs,
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         a1=4, a2=1,
-                        b1=1, b2=1,
+                        b1=1, b2=1/datscale,
                         f11=1, f21=datscale/2, # DFR
                         f12=2, f22=2*datscale) # IFR
     }
@@ -252,7 +252,7 @@ init.objects <- function(tvec, obs,
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         a1=4, a2=1,
-                        b1=1, b2=1,
+                        b1=1, b2=1/datscale,
                         f11=1, f21=datscale/2,
                         f12=2, f22=2*datscale)
     }
@@ -348,15 +348,15 @@ init.objects <- function(tvec, obs,
 
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
-                        s1=1, s2=1,
-                        sigmap.w0=1,
+                        s1=1, s2=datscale,
+                        sigmap.w0=1./datscale,
                         a1=4, a2=1,
-                        b1=1, b2=1,
+                        b1=1, b2=1/datscale,
                         f1=1, f2=datscale)
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
-                         sd.w0=0.1,
+                         sd.w0=0.1/datscale,
                          sd.log.gamma=0.05,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
