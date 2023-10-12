@@ -349,14 +349,14 @@ init.objects <- function(tvec, obs,
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         s1=1, s2=datscale,
-                        sigmap.w0=1./datscale,
+                        sigmap.w0=100./datscale,
                         a1=4, a2=1,
                         b1=1, b2=1/datscale,
                         f1=1, f2=datscale)
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
-                         sd.w0=0.1/datscale,
+                         sd.w0=0.2*100./datscale,
                          sd.log.gamma=0.05,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
