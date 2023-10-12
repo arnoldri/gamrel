@@ -360,7 +360,7 @@ init.objects <- function(tvec, obs,
                          sd.log.gamma=0.05,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
-                         sd.log.w=0.3,
+                         sd.log.w=0.05,
                          sd.log.alpha=0.3)
     }
     # fixed parameters
