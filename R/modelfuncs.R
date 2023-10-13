@@ -348,7 +348,7 @@ init.objects <- function(tvec, obs,
 
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
-                        s1=1, s2=datscale,
+                        s1=1, s2=datscale/100.,
                         sigmap.w0=100./datscale,
                         a1=4, a2=1,
                         b1=1, b2=1/datscale,
