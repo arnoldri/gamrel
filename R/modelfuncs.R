@@ -356,7 +356,7 @@ init.objects <- function(tvec, obs,
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
-                         sd.w0=0.2*100./datscale,
+                         sd.w0=1./datscale,
                          sd.log.gamma=0.05,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
