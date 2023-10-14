@@ -22,6 +22,10 @@ plot_lambdafunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL,
     tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec1,model.list$thetavec2))
     fvec <- lambda.func(tvec, model.list, use.Cpp=use.Cpp)
+  } else if(model.list$model%in%c("CVX")) {
+    tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
+    tvec <- sort(c(tvec,model.list$tau,model.list$thetavec1,model.list$thetavec2))
+    fvec <- lambda.func(tvec, model.list, use.Cpp=use.Cpp)
   } else {
     stop(paste0("Model ",model.list$model," not implemented"))
   }
@@ -76,6 +80,13 @@ lambda.func <- function(tvec, model.list, use.Cpp=TRUE) {
     return(lambda.func.lcv(tvec, 
                            model.list$lambda0, model.list$w0,
                            model.list$thetavec, model.list$wvec, 
+                           use.Cpp=use.Cpp))
+  } else if(model.list$model=="CVX") {
+    return(lambda.func.cvx(tvec,
+                           model.list$lambda0,
+                           model.list$tau,
+                           model.list$thetavec1, model.list$wvec1, 
+                           model.list$thetavec2, model.list$wvec2, 
                            use.Cpp=use.Cpp))
   } else if(model.list$model=="MEW") {
     return(lambda.func.mew(tvec, 
@@ -170,6 +181,23 @@ lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec, use.Cpp=TRUE) {
   lambda.vec <- lambda0*exp(int.lambda.func.ifr(tvec, w0, thetavec, wvec, use.Cpp=use.Cpp))
   return(lambda.vec)
 }
+
+#' @export
+lambda.func.cvx <- function(tvec, lambda0, tau,
+                            thetavec1, wvec1, 
+                            thetavec2, wvec2, 
+                            use.Cpp=TRUE) {
+  if(use.Cpp) {
+    return(lambda_func_cvx_c(tvec, lambda0, tau, 
+                             thetavec1, wvec1, thetavec2, wvec2))
+  }
+  lambda.vec <- as.vector(outer(tvec, thetavec1, function(t,theta) pmax(0,theta-t))%*%wvec1)
+  lambda.vec <- lambda.vec + as.vector(outer(tvec, thetavec2, function(t,theta) pmax(0,t-theta))%*%wvec2)
+  lambda.vec <- lambda.vec + lambda0
+  
+  return(lambda.vec)
+}
+
 
 #' @export
 lambda.func.mew <- function(tvec, lambda, alpha, theta, gamma, use.Cpp=TRUE) {

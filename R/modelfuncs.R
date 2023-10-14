@@ -419,6 +419,98 @@ init.objects <- function(tvec, obs,
     epar$thetavec <- rexp(kmax, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
 
+  } else if(model%in%c("CVX")) {
+    
+    if(is.null(prior.par)) {
+      prior.par <- list(nu=1,
+                        c1=1, c2=2/datscale, 
+                        a1=4, a2=1,
+                        b1=1, b2=1/datscale,
+                        f1=2, f2=2*datscale) # IFR
+    }
+    if(is.null(update.par)) {
+      update.par <- list(psweep=0.1, # probability of the sweep move
+                         sd.log.eta=0.1,
+                         sd.log.tau=0.1,
+                         sd.log.gamma=0.1,
+                         sd.log.theta=0.1,
+                         sd.logit.v=0.1,
+                         sd.log.w=0.1,
+                         sd.log.alpha=0.1)
+    }
+    # fixed parameters
+    parnames <- c("eta","tau",
+                  "gamma1","thetavec1","vvec1","alpha1","beta1",
+                  "gamma2","thetavec2","vvec2","alpha2","beta2","phi2")
+    fpar <- list(model=model,                      # model name
+                 parnames=parnames,                # parameters
+                 kmax=kmax,                        # sum truncation point
+                 nu=prior.par$nu,                  # prior for eta (lambda0/gamma2)
+                 c1=prior.par$c1, c2=prior.par$c2, # prior for tau
+                 a1=prior.par$a1, a2=prior.par$a2, # prior for alpha1,alpha2
+                 b1=prior.par$b1, b2=prior.par$b2, # prior for beta1,beta2
+                 f1=prior.par$f1, f2=prior.par$f2, # prior for phi
+                 epsilon=epsilon,
+                 use.Cpp=use.Cpp)
+    # parameters to update
+    update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
+    update <- rep(TRUE, length(update_parnames))
+    names(update) <- update_parnames
+    # proposal parameters for updates
+    ppar <- list(update_parnames=update_parnames,
+                 ksweep=FALSE, # = all support points are updated each time
+                 ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
+                 kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
+                 psweep=update.par$psweep,
+                 sd.log.eta=update.par$sd.log.eta,
+                 sd.log.tau=update.par$sd.log.tau,
+                 sd.log.gamma=update.par$sd.log.gamma,
+                 sd.log.theta=update.par$sd.log.theta,
+                 sd.logit.v=update.par$sd.logit.v,
+                 sd.log.w=update.par$sd.log.w,
+                 sd.log.alpha=update.par$sd.log.alpha,
+                 update=update,
+                 verbose=FALSE,
+                 interactive=FALSE)
+    # parameters to estimate
+    if(generate=="fixed") {
+      epar <- list(eta=1/prior.par$nu,
+                   tau=prior.par$c1/prior.par$c2,
+                   gamma1=NA,
+                   thetavec1=NA,
+                   vvec1=NA,
+                   alpha1=prior.par$a1/prior.par$a2,
+                   beta1=prior.par$b1/prior.par$b2,
+                   gamma2=NA,
+                   thetavec2=NA,
+                   vvec2=NA,
+                   alpha2=prior.par$a1/prior.par$a2,
+                   beta2=prior.par$b1/prior.par$b2,
+                   phi=prior.par$f1/prior.par$f2)
+      epar$gamma1 <- epar$alpha1/epar$beta1
+      epar$gamma2 <- epar$alpha2/epar$beta2
+    } else {
+      epar <- list(eta=rexp(1,prior.par$nu),
+                   tau=rgamma(1,prior.par$c1,prior.par$c2),
+                   gamma1=NA,
+                   thetavec1=NA,
+                   vvec1=NA,
+                   alpha1=rgamma(1,prior.par$a1,prior.par$a2),
+                   beta1=rgamma(1,prior.par$b1,prior.par$b2),
+                   gamma2=NA,
+                   thetavec2=NA,
+                   vvec2=NA,
+                   alpha2=rgamma(1,prior.par$a1,prior.par$a2),
+                   beta2=rgamma(1,prior.par$b1,prior.par$b2),
+                   phi=rgamma(1,prior.par$f1,prior.par$f2))
+      epar$gamma1 <- rgamma(1,epar$alpha1,epar$beta1)
+      epar$gamma2 <- rgamma(1,epar$alpha2,epar$beta2)
+    }
+    epar$thetavec1 <- runif(kmax, 0, epar$tau)
+    epar$vvec1 <- rbeta.t(kmax, 1, epar$alpha1)
+    epar$thetavec2 <- epar$tau + rexp(kmax, epar$phi)
+    epar$vvec2 <- rbeta.t(kmax, 1, epar$alpha2)
+    
   } else if(model%in%c("MEW")) {
     
     if(is.null(prior.par)) {
@@ -573,6 +665,27 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
     # compute the scaled weights wvec
     state$wvec <- state$gamma * state$uvec
+    
+  } else if(model%in%c("CVX")) {
+    state <- epar
+    # complete state with useful quantities
+    
+    # derive the unscaled weights uvec
+    cp <- cumprod(1-state$vvec1[-fpar$kmax])
+    state$uvec1 <- state$vvec1*c(1,cp)
+    state$uvec1[fpar$kmax] <- cp[fpar$kmax-1]
+    # compute the scaled weights wvec
+    state$wvec1 <- state$gamma1 * state$uvec1
+    
+    # derive the unscaled weights uvec
+    cp <- cumprod(1-state$vvec2[-fpar$kmax])
+    state$uvec2 <- state$vvec2*c(1,cp)
+    state$uvec2[fpar$kmax] <- cp[fpar$kmax-1]
+    # compute the scaled weights wvec
+    state$wvec2 <- state$gamma2 * state$uvec2
+    
+    # compute lambda0 - comes from the IFR component
+    state$lambda0 <- state$gamma2*state$eta
     
   } else if(model%in%c("MEW")) {
     state <- epar
@@ -872,6 +985,64 @@ lpriorf.vector <- function(state, fpar, model) {
       #lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
       lprior.vec["phi"] <- (fpar$f1-1)*log(state$phi) - fpar$f2*state$phi
     }
+  } else if(model%in%c("CVX")) {
+    if(fpar$use.Cpp) {
+      lprior.vec <- lprior_cvx_c(state$eta, 
+                                 state$tau,
+                                 state$gamma1,
+                                 state$thetavec1, 
+                                 state$vvec1,
+                                 state$alpha1, 
+                                 state$beta1,
+                                 state$gamma2,
+                                 state$thetavec2, 
+                                 state$vvec2,
+                                 state$alpha2, 
+                                 state$beta2,
+                                 state$phi,
+                                 fpar$nu, 
+                                 fpar$c1, fpar$c2,
+                                 fpar$a1, fpar$a2, fpar$b1, fpar$b2, 
+                                 fpar$f1, fpar$f2)
+      names(lprior.vec) <- fpar$parnames
+      #cat("CPP!")
+    } else {
+      #cat("NOT!")
+      # prior for eta
+      ## lprior.vec["eta"] <- dexp(state$eta, fpar$nu)
+      lprior.vec["eta"] <- -state$eta*fpar$nu 
+      # prior for tau
+      lprior.vec["tau"] <- (fpar$c1-1)*log(state$tau) - fpar$c2*tau
+      
+      # prior for gamma1
+      lprior.vec["gamma1"] <- dgamma(state$gamma1, state$alpha1, state$beta1, log=TRUE)
+      # prior for thetavec1
+      lprior.vec["thetavec1"] <- -fpar$kmax*log(state$tau)
+      # prior for vvec1
+      lprior.vec["vvec1"] <-  sum( (log(state$alpha1) + (state$alpha1-1)*log(1-state$vvec1[-fpar$kmax])) )
+      # prior for alpha1
+      #lprior.vec["alpha1"] <- dgamma(state$alpha1, fpar$a1, fpar$a2, log=TRUE)
+      lprior.vec["alpha1"] <- (fpar$a1-1)*log(state$alpha1) - fpar$a2*state$alpha1
+      # prior for beta1
+      #lprior.vec["beta1"] <- dgamma(state$beta1, fpar$b1, fpar$b2, log=TRUE)
+      lprior.vec["beta1"] <- (fpar$b1-1)*log(state$beta1) - fpar$b2*state$beta1
+
+      # prior for gamma2
+      lprior.vec["gamma2"] <- dgamma(state$gamma2, state$alpha2, state$beta2, log=TRUE)
+      # prior for thetavec2
+      lprior.vec["thetavec2"] <- sum( (log(state$phi2)-state$phi2*state$thetavec2) )
+      # prior for vvec2
+      lprior.vec["vvec2"] <-  sum( (log(state$alpha2) + (state$alpha2-1)*log(1-state$vvec2[-fpar$kmax])) )
+      # prior for alpha2
+      #lprior.vec["alpha2"] <- dgamma(state$alpha2, fpar$a1, fpar$a2, log=TRUE)
+      lprior.vec["alpha2"] <- (fpar$a1-1)*log(state$alpha2) - fpar$a2*state$alpha2
+      # prior for beta2
+      #lprior.vec["beta2"] <- dgamma(state$beta2, fpar$b1, fpar$b2, log=TRUE)
+      lprior.vec["beta2"] <- (fpar$b1-1)*log(state$beta2) - fpar$b2*state$beta2
+      # prior for phi
+      #lprior.vec["phi"] <- dgamma(state$phi2, fpar$f12, fpar$f22, log=TRUE)
+      lprior.vec["phi"] <- (fpar$f1-1)*log(state$phi) - fpar$f2*state$phi
+    }
   } else if(model%in%c("MEW")) {
     if(fpar$use.Cpp) {
       lprior.vec <- lprior_mew_c(state$lambda,
@@ -994,6 +1165,17 @@ plot_state <- function(state, datlist, fpar, ppar, model,
            xlab=bquote(theta), ylab=bquote(w), main=main, ...)
     }
     points(state$thetavec, state$wvec, ...)
+    
+  } else if(model=="CVX") {
+    if(!add) {
+      # start a new plot
+      plot(NA,NA, xlim=range(c(state$thetavec1,state$thetavec2)),
+           ylim=range(c(state$wvec1,state$wvec2)),
+           xlab=bquote(theta), ylab=bquote(w), main=main, ...)
+      legend(legend.loc, pch=c(16,1), legend=c("DFR","IFR"))
+    }
+    points(state$thetavec1, state$wvec1, pch=16, ...)
+    points(state$thetavec2, state$wvec2, pch=1, ...)
     
   } else if(model=="MEW") {
     if(!add) {
