@@ -145,16 +145,16 @@ NumericVector lprior_lwb_c(double eta,
 }
 
 //' Log prior - SBT
- //' 
- //' 
- //' @param eta eta
- //' @param gamma gamma
- //' 
- //' @description log(prior) for the SBT model - in vector form
- //' 
- //' @export
- // [[Rcpp::export]]
- NumericVector lprior_sbt_c(double eta, 
+//' 
+//' 
+//' @param eta eta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the SBT model - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector lprior_sbt_c(double eta, 
                             double gamma1,
                             NumericVector thetavec1, 
                             NumericVector vvec1,
@@ -208,75 +208,8 @@ NumericVector lprior_lwb_c(double eta,
    lpriorvec[12] = (f12-1)*log(phi2) - f22*phi2;
    
    return lpriorvec;
- }
+}
 
-//' Log prior - CVX
- //' 
- //' 
- //' @param eta eta
- //' @param gamma gamma
- //' 
- //' @description log(prior) for the CVX model - in vector form
- //' 
- //' @export
- // [[Rcpp::export]]
- NumericVector lprior_cvx_c(double eta, 
-                            double tau,
-                            double gamma1,
-                            NumericVector thetavec1, 
-                            NumericVector vvec1,
-                            double alpha1, 
-                            double beta1,
-                            double phi1,
-                            double gamma2,
-                            NumericVector thetavec2, 
-                            NumericVector vvec2,
-                            double alpha2, 
-                            double beta2,
-                            double phi2,
-                            double nu, 
-                            double c1, double c2, 
-                            double a1, double a2, double b1, double b2, 
-                            double f1, double f2) {
-   
-   int kmax = vvec1.size();
-   NumericVector lpriorvec(13);
-   int i;
-   
-   // eta
-   lpriorvec[0] = -eta*nu;
-   // tau
-   lpriorvec[1] = (c1-1)*log(tau) - c2*tau;
-   
-   // gamma1
-   lpriorvec[2] = R::dgamma(gamma1, alpha1, 1./beta1, true);
-   // thetavec1
-   lpriorvec[3] = -kmax*log(tau);
-   // vvec1
-   lpriorvec[4] =  (kmax-1)*log(alpha1);
-   for(i=0; i<kmax-1; i++) lpriorvec[3] += (alpha1-1)*log(1-vvec1[i]);
-   // alpha1
-   lpriorvec[5] = (a1-1)*log(alpha1) - a2*alpha1;
-   // beta1
-   lpriorvec[6] = (b1-1)*log(beta1) - b2*beta1;
-
-   // gamma2
-   lpriorvec[7] = R::dgamma(gamma2, alpha2, 1./beta2, true);
-   // thetavec2
-   lpriorvec[8] = kmax*log(phi2);
-   for(i=0; i<kmax; i++) lpriorvec[8] += (-phi2*thetavec2[i]);
-   // vvec2
-   lpriorvec[9] =  (kmax-1)*log(alpha2);
-   for(i=0; i<kmax-1; i++) lpriorvec[9] += (alpha2-1)*log(1-vvec2[i]);
-   // alpha2
-   lpriorvec[10] = (a1-1)*log(alpha2) - a2*alpha2;
-   // beta2
-   lpriorvec[11] = (b1-1)*log(beta2) - b2*beta2;
-   // phi
-   lpriorvec[12] = (f1-1)*log(phi2) - f2*phi2;
-   
-   return lpriorvec;
- }
 
 //' Log prior - MBT
 //' 
@@ -393,6 +326,74 @@ NumericVector lprior_lcv_c(double lambda0,
    lpriorvec[6] = (b1-1)*log(beta) - b2*beta;
    // phi
    lpriorvec[7] = (f1-1)*log(phi) - f2*phi;
+   
+   return lpriorvec;
+}
+
+//' Log prior - CVX
+//' 
+//' 
+//' @param eta eta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the CVX model - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector lprior_cvx_c(double eta, 
+                            double tau,
+                            double gamma1,
+                            NumericVector thetavec1, 
+                            NumericVector vvec1,
+                            double alpha1, 
+                            double beta1,
+                            double phi1,
+                            double gamma2,
+                            NumericVector thetavec2, 
+                            NumericVector vvec2,
+                            double alpha2, 
+                            double beta2,
+                            double phi2,
+                            double nu, 
+                            double c1, double c2, 
+                            double a1, double a2, double b1, double b2, 
+                            double f1, double f2) {
+   
+   int kmax = vvec1.size();
+   NumericVector lpriorvec(13);
+   int i;
+   
+   // eta
+   lpriorvec[0] = -eta*nu;
+   // tau
+   lpriorvec[1] = (c1-1)*log(tau) - c2*tau;
+   
+   // gamma1
+   lpriorvec[2] = R::dgamma(gamma1, alpha1, 1./beta1, true);
+   // thetavec1
+   lpriorvec[3] = -kmax*log(tau);
+   // vvec1
+   lpriorvec[4] =  (kmax-1)*log(alpha1);
+   for(i=0; i<kmax-1; i++) lpriorvec[3] += (alpha1-1)*log(1-vvec1[i]);
+   // alpha1
+   lpriorvec[5] = (a1-1)*log(alpha1) - a2*alpha1;
+   // beta1
+   lpriorvec[6] = (b1-1)*log(beta1) - b2*beta1;
+   
+   // gamma2
+   lpriorvec[7] = R::dgamma(gamma2, alpha2, 1./beta2, true);
+   // thetavec2
+   lpriorvec[8] = kmax*log(phi2);
+   for(i=0; i<kmax; i++) lpriorvec[8] += (-phi2*thetavec2[i]);
+   // vvec2
+   lpriorvec[9] =  (kmax-1)*log(alpha2);
+   for(i=0; i<kmax-1; i++) lpriorvec[9] += (alpha2-1)*log(1-vvec2[i]);
+   // alpha2
+   lpriorvec[10] = (a1-1)*log(alpha2) - a2*alpha2;
+   // beta2
+   lpriorvec[11] = (b1-1)*log(beta2) - b2*beta2;
+   // phi
+   lpriorvec[12] = (f1-1)*log(phi2) - f2*phi2;
    
    return lpriorvec;
 }
