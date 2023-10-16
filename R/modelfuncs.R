@@ -1102,7 +1102,6 @@ lpriorf.vector <- function(state, fpar, model) {
                                  state$beta2,
                                  state$phi2,
                                  fpar$nu, 
-                                 fpar$c1, fpar$c2,
                                  fpar$a1, fpar$a2, fpar$b1, fpar$b2, 
                                  fpar$f11, fpar$f21,
                                  fpar$f12, fpar$f22)

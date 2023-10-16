@@ -399,7 +399,8 @@ NumericVector lprior_cvx_c(double eta,
                            double alpha2, 
                            double beta2,
                            double phi2,
-                           double nu, double a1, double a2, double b1, double b2, 
+                           double nu, 
+                           double a1, double a2, double b1, double b2, 
                            double f11, double f21, double f12, double f22) {
    
    int kmax = vvec1.size();
