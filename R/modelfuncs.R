@@ -168,12 +168,12 @@ init.objects <- function(tvec, obs,
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
-                         sd.log.eta=0.1,
+                         sd.log.eta=0.3,
                          sd.log.gamma=0.1,
-                         sd.log.theta=0.1,
-                         sd.logit.v=0.1,
-                         sd.log.w=0.1,
-                         sd.log.alpha=0.1)
+                         sd.log.theta=0.3,
+                         sd.logit.v=0.3,
+                         sd.log.w=0.3,
+                         sd.log.alpha=0.3)
     }
     # fixed parameters
     parnames <- c("eta",
@@ -497,12 +497,12 @@ init.objects <- function(tvec, obs,
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
-                         sd.log.eta=0.1,
+                         sd.log.eta=0.3,
                          sd.log.gamma=0.1,
-                         sd.log.theta=0.1,
-                         sd.logit.v=0.1,
-                         sd.log.w=0.1,
-                         sd.log.alpha=0.1)
+                         sd.log.theta=0.3,
+                         sd.logit.v=0.3,
+                         sd.log.w=0.3,
+                         sd.log.alpha=0.3)
     }
     # fixed parameters
     parnames <- c("eta",
