@@ -14,17 +14,13 @@
 #' @export
 plot_lambdafunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL, 
                             main=NULL, add=FALSE, use.Cpp=TRUE, ...) {
-  if(model.list$model %in% c("IFR","DFR","LWB","LCV")) {
+  if(model.list$model %in% c("IFR","DFR","LWB","LCV","CIR","CDR")) {
     tvec <- seq(from=0, to=1.1*max(model.list$thetavec), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec))
     fvec <- lambda.func(tvec, model.list, use.Cpp=use.Cpp)
-  } else if(model.list$model%in%c("SBT","MBT")) {
+  } else if(model.list$model%in%c("SBT","MBT","CVX")) {
     tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec1,model.list$thetavec2))
-    fvec <- lambda.func(tvec, model.list, use.Cpp=use.Cpp)
-  } else if(model.list$model%in%c("CVX")) {
-    tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
-    tvec <- sort(c(tvec,model.list$tau,model.list$thetavec1,model.list$thetavec2))
     fvec <- lambda.func(tvec, model.list, use.Cpp=use.Cpp)
   } else {
     stop(paste0("Model ",model.list$model," not implemented"))
@@ -81,10 +77,15 @@ lambda.func <- function(tvec, model.list, use.Cpp=TRUE) {
                            model.list$lambda0, model.list$w0,
                            model.list$thetavec, model.list$wvec, 
                            use.Cpp=use.Cpp))
+  } else if(model.list$model=="CIR") {
+    return(lambda.func.cir(tvec, model.list$lambda0, model.list$thetavec, model.list$wvec,  
+                           use.Cpp=use.Cpp))
+  } else if(model.list$model=="CDR") {
+    return(lambda.func.cdr(tvec, model.list$lambda0, model.list$thetavec, model.list$wvec,  
+                           use.Cpp=use.Cpp))
   } else if(model.list$model=="CVX") {
     return(lambda.func.cvx(tvec,
                            model.list$lambda0,
-                           model.list$tau,
                            model.list$thetavec1, model.list$wvec1, 
                            model.list$thetavec2, model.list$wvec2, 
                            use.Cpp=use.Cpp))
@@ -183,18 +184,34 @@ lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec, use.Cpp=TRUE) {
 }
 
 #' @export
-lambda.func.cvx <- function(tvec, lambda0, tau,
+lambda.func.cir <- function(tvec, lambda0, thetavec, wvec, use.Cpp=TRUE) {
+  if(use.Cpp) {
+    return(lambda_func_cir_c(tvec, lambda0, thetavec, wvec))
+  }
+  lambda.vec <- as.vector(outer(tvec, thetavec, function(t,theta) pmax(0,t-theta))%*%wvec)
+  lambda.vec <- lambda.vec + lambda0
+  
+  return(lambda.vec)
+}
+
+#' @export
+lambda.func.cdr <- function(tvec, lambda0, thetavec, wvec, use.Cpp=TRUE) {
+  if(use.Cpp) {
+    return(lambda_func_cdr_c(tvec, lambda0, thetavec, wvec))
+  }
+  lambda.vec <- as.vector(outer(tvec, thetavec, function(t,theta) pmax(0,theta-t))%*%wvec)
+  lambda.vec <- lambda.vec + lambda0
+  
+  return(lambda.vec)
+}
+
+#' @export
+lambda.func.cvx <- function(tvec, lambda0, 
                             thetavec1, wvec1, 
                             thetavec2, wvec2, 
                             use.Cpp=TRUE) {
-  if(use.Cpp) {
-    return(lambda_func_cvx_c(tvec, lambda0, tau, 
-                             thetavec1, wvec1, thetavec2, wvec2))
-  }
-  lambda.vec <- as.vector(outer(tvec, thetavec1, function(t,theta) pmax(0,theta-t))%*%wvec1)
-  lambda.vec <- lambda.vec + as.vector(outer(tvec, thetavec2, function(t,theta) pmax(0,t-theta))%*%wvec2)
-  lambda.vec <- lambda.vec + lambda0
-  
+  lambda.vec <- ( lambda.func.cdr(tvec, 0, thetavec1, wvec1, use.Cpp)
+                 +lambda.func.cir(tvec, lambda0, thetavec2, wvec2, use.Cpp) )
   return(lambda.vec)
 }
 
@@ -217,11 +234,11 @@ lambda.func.mew <- function(tvec, lambda, alpha, theta, gamma, use.Cpp=TRUE) {
 #' @export
 plot_intlambdafunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL, 
                                add=FALSE, use.Cpp=TRUE, main=NULL, ...) {
-  if(model.list$model %in% c("IFR","DFR","LWB","LCV")) {
+  if(model.list$model %in% c("IFR","DFR","LWB","LCV","CIR","CDR")) {
     tvec <- seq(from=0, to=1.1*max(model.list$thetavec), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec))
     fvec <- int.lambda.func(tvec, model.list, use.Cpp=use.Cpp)
-  } else if(model.list$model%in%c("SBT","MBT")) {
+  } else if(model.list$model%in%c("SBT","MBT","CVX")) {
     tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec1,model.list$thetavec2))
     fvec <- int.lambda.func(tvec, model.list, use.Cpp=use.Cpp)
@@ -276,6 +293,22 @@ int.lambda.func <- function(tvec, model.list, use.Cpp=TRUE) {
     return(int.lambda.func.lcv(tvec, 
                                model.list$lambda0, model.list$w0, 
                                model.list$thetavec, model.list$wvec, 
+                               use.Cpp=use.Cpp))
+  } else if(model.list$model=="CIR") {
+    return(int.lambda.func.cir(tvec, 
+                               model.list$lambda0, model.list$w0, 
+                               model.list$thetavec, model.list$wvec, 
+                               use.Cpp=use.Cpp))
+  } else if(model.list$model=="CDR") {
+    return(int.lambda.func.cdr(tvec, 
+                               model.list$lambda0, model.list$w0, 
+                               model.list$thetavec, model.list$wvec, 
+                               use.Cpp=use.Cpp))
+  } else if(model.list$model=="CVX") {
+    return(int.lambda.func.cvx(tvec, 
+                               model.list$lambda0, 
+                               model.list$thetavec1, model.list$wvec1, 
+                               model.list$thetavec2, model.list$wvec2, 
                                use.Cpp=use.Cpp))
   } else if(model.list$model=="MEW") {
     return(int.lambda.func.mew(tvec, 
@@ -414,6 +447,66 @@ int.lambda.func.lcv <- function(tvec, lambda0, w0, thetavec, wvec,
   return(int.lambda.vec)
 }
 
+#' Integrated hazard rate function - CIR case
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param thetavec Set of support locations
+#' @param wvec Set of associated weights
+#' @param use.Cpp Use cpp to evaluate the function?
+#' 
+#' @description Integrated hazard rate function generated by 
+#' a set of discrete locations and weights and integrated
+#' 
+#' @export
+int.lambda.func.cir <- function(tvec, lambda0, thetavec, wvec, use.Cpp=TRUE) {
+  # integrated hazard rate function - CIR case
+  if(use.Cpp) {
+    return(int_lambda_func_cir_c(tvec, lambda0, thetavec, wvec))
+  }
+  int.lambda.vec <- as.vector(outer(tvec, thetavec, 
+                                    function(t,theta) 0.5*pmax(0,t-theta)*(t-theta))%*%wvec)
+  int.lambda.vec <- int.lambda.vec + lambda0*tvec
+  
+  return(int.lambda.vec)
+}
+
+
+#' Integrated hazard rate function - CDR case
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param thetavec Set of support locations
+#' @param wvec Set of associated weights
+#' @param use.Cpp Use cpp to evaluate the function?
+#' 
+#' @description Integrated hazard rate function generated by 
+#' a set of discrete locations and weights and integrated
+#' 
+#' @export
+int.lambda.func.cdr <- function(tvec, lambda0, thetavec, wvec, use.Cpp=TRUE) {
+  # integrated hazard rate function - CDR case
+  if(use.Cpp) {
+    return(int_lambda_func_cdr_c(tvec, lambda0, thetavec, wvec))
+  }
+  int.lambda.vec <- as.vector(outer(tvec, thetavec, 
+                                    function(t,theta) (-0.5)*pmax(0,theta-t)*(theta-t))%*%wvec)
+  int.lambda.vec <- int.lambda.vec + lambda0*tvec + 0.5*sum(wvec*thetvec^2)
+  
+  return(int.lambda.vec)
+}
+
+
+
+#' @export
+int.lambda.func.cvx <- function(tvec, lambda0, thetavec1, wvec1, thetavec2, wvec2, use.Cpp=TRUE) {
+  # integrated hazard rate function - Convex Bathtub
+  int.lambda.vec <- ( lambda0*tvec 
+                      + int.lambda.func.cir(tvec, 0, thetavec1, wvec1, use.Cpp=use.Cpp)
+                      + int.lambda.func.cdr(tvec, 0, thetavec2, wvec2, use.Cpp=use.Cpp) )
+  return(int.lambda.vec)
+}
+
 #' @export
 int.lambda.func.mew <- function(tvec, lambda, alpha, theta, gamma, use.Cpp=TRUE) {
   # integrated hazard rate function - MEW
@@ -470,6 +563,21 @@ both.lambda.funcs <- function(tvec, model.list, use.Cpp=TRUE, epsilon=.Machine$d
                                      model.list$thetavec, 
                                      model.list$wvec,
                                      epsilon) 
+  } else if(model%in%c("CIR")) {
+    retval <- both_lambda_func_cir_c(tvec, 
+                                     model.list$lambda0, 
+                                     model.list$thetavec, 
+                                     model.list$wvec) 
+    
+  } else if(model%in%c("CDR")) {
+    retval <- both_lambda_func_cdr_c(tvec, 
+                                     model.list$lambda0, 
+                                     model.list$thetavec, 
+                                     model.list$wvec) 
+  } else if(model%in%"CVX") {
+    lambda.vec <- lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
+    int.lambda.vec <- int.lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
+    retval <- cbind(lambda.vec=lambda.vec,int.lambda.vec=int.lambda.vec)
   } else if(model%in%"MEW") {
     lambda.vec <- lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
     int.lambda.vec <- int.lambda.func(tvec=tvec, model.list=model.list, use.Cpp=use.Cpp) 
@@ -488,10 +596,10 @@ both.lambda.funcs <- function(tvec, model.list, use.Cpp=TRUE, epsilon=.Machine$d
 #' @export
 plot_densityfunc <- function(model.list, npts=101, 
                              main=NULL, use.Cpp=TRUE, ...) {
-  if(model.list$model %in% c("IFR","DFR","LWB","LCV")) {
+  if(model.list$model %in% c("IFR","DFR","LWB","LCV","CIR","CDR")) {
     tvec <- seq(from=0, to=1.1*max(model.list$thetavec), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec))
-  } else if(model.list$model%in%c("SBT","MBT")) {
+  } else if(model.list$model%in%c("SBT","MBT","CVX")) {
     tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec1,model.list$thetavec2))
   } else if(model.list$model %in% c("MEW")) {
@@ -518,10 +626,10 @@ plot_densityfunc <- function(model.list, npts=101,
 #' @export
 plot_survivalfunc <- function(model.list, npts=101, xlim=NULL, ylim=NULL, 
                               main=NULL, add=FALSE, use.Cpp=TRUE, ...) {
-  if(model.list$model %in% c("IFR","DFR","LWB","LCV")) {
+  if(model.list$model %in% c("IFR","DFR","LWB","LCV","CIR","CDR")) {
     tvec <- seq(from=0, to=1.1*max(model.list$thetavec), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec))
-  } else if(model.list$model%in%c("SBT","MBT")) {
+  } else if(model.list$model%in%c("SBT","MBT","CVX")) {
     tvec <- seq(from=0, to=1.1*max(c(model.list$thetavec1,model.list$thetavec2)), length=npts)
     tvec <- sort(c(tvec,model.list$thetavec1,model.list$thetavec2))
   } else if(model.list$model %in% c("MEW")) {
@@ -576,7 +684,9 @@ rfail <- function(n, model.list, tau=Inf) {
   } else if(model.list$model=="LWB") {
     tvec <- rfail.gen(n, model.list)
   } else if(model.list$model=="SBT") {
-    tvec <- rfail.gen(n, model.list)
+    tvec <- rfail.sbt(n, model.list$lambda0, 
+                         model.list$thetavec1, model.list$wvec1,
+                         model.list$thetavec2, model.list$wvec2)
   } else if(model.list$model=="MBT") {
     tvec <- rfail.mbt(n, model.list$pival,
                       model.list$lambda01, model.list$thetavec1, model.list$wvec1, 
@@ -585,6 +695,14 @@ rfail <- function(n, model.list, tau=Inf) {
     tvec <- rfail.lcv(n,  
                       model.list$lambda0, model.list$w0,
                       model.list$thetavec, model.list$wvec)
+  } else if(model.list$model=="CIR") {
+    tvec <- rfail.cir(n, model.list$lambda0, model.list$thetavec, model.list$wvec)
+  } else if(model.list$model=="CDR") {
+    tvec <- rfail.cdr(n, model.list$lambda0, model.list$thetavec, model.list$wvec)
+  } else if(model.list$model=="CVX") {
+    tvec <- rfail.cvx(n, model.list$lambda0, 
+                         model.list$thetavec1, model.list$wvec1,
+                         model.list$thetavec2, model.list$wvec2)
   } else if(model.list$model=="MEW") {
     tvec <- rfail.mew(n,  
                       model.list$lambda, model.list$alpha,
@@ -599,7 +717,7 @@ rfail <- function(n, model.list, tau=Inf) {
 #' @export
 rfail.gen <- function(n, model.list) {
   # Generate failure times where the integrated hazard is piecewise linear
-  if(model.list$model%in%c("IFR","DFR","LWB","SBT")) {
+  if(model.list$model%in%c("IFR","DFR","LWB")) {
     # Integrated hazard is piecewise linear
     if(model.list$model %in% c("IFR","DFR")) {
       tknot <- sort(unique(model.list$thetavec))
@@ -609,8 +727,6 @@ rfail.gen <- function(n, model.list) {
                              model.list$a+model.list$thetavec,
                              model.list$a-model.list$thetavec)))
       tknot <- tknot[tknot>=0]
-    } else if(model.list$model=="SBT") {
-      tknot <- sort(unique(c(model.list$thetavec1, model.list$thetavec2)))
     } else {
       stop(paste0("Model ",model.list$model," not implemented"))
     }
@@ -715,6 +831,15 @@ rfail.dfr <- function(n, lambda0, thetavec, wvec) {
 }
 
 #' @export
+rfail.sbt <- function(n, lambda0, thetavec1, wvec1, thetavec2, wvec2) {
+  # simulate failure times from an SBT model 
+  tvec <- pmin(rfail.dfr(n, 0, thetavec1, wvec1),
+               rfail.ifr(n, lambda0, thetavec2, wvec2))
+  return(tvec)
+}
+
+
+#' @export
 rfail.mbt <- function(n, pival, lambda01, thetavec1, wvec1, 
                                 lambda02, thetavec2, wvec2) {
   # simulate failure times from an MBT model 
@@ -769,6 +894,103 @@ rfail.lcv <- function(n, lambda0, w0, thetavec, wvec) {
   
   return(tvec)
 }  
+
+#' Simulate from a CIR model
+#' 
+#' @param n Number of failure times to simulate
+#' @param thetavec Set of support locations
+#' @param wvec Set of associated weights
+#' @param lambda0 Offset to be added to the hazard rate
+#' 
+#' @export
+rfail.cir <- function(n, lambda0, thetavec, wvec) {
+  # simulate failure times from a CIR model, 
+  # given a set of weights and locations
+  odx <- order(thetavec)
+  othetavec <- thetavec[odx]
+  owvec <- wvec[odx]
+  kmax <- length(othetavec)
+  othetavec <- c(0,othetavec,1.1*othetavec[kmax])
+  owvec <- c(0,owvec,0)
+  kmaxp2 <- kmax+2
+  nluvec <- -log(runif(n,0,1))
+  
+  s1vec <- cumsum(owvec)
+  s2vec <- cumsum(owvec*othetavec)
+  s3vec <- cumsum(owvec*othetavec^2)
+
+  svec <- s3vec + (lambda0-s2vec)*othetavec + 0.5*s1vec*othetavec^2
+  k1vec <- apply(outer(nluvec, svec, function(nlu,s) nlu>=s),1,sum)
+  k1vec <- pmin(k1vec,kmaxp2-1)
+  
+  avec <- 0.5*s1vec[k1vec]
+  bvec <- lambda0 - s2vec[k1vec]
+  cvec <- s3vec[k1vec]-nluvec
+
+  tvec <- (0.5/avec)*( -bvec + sqrt(bvec^2 - 4*avec*cvec) )
+  
+  # check 
+  #int.lambda.vec <- int.lambda.func.ifr(tvec, lambda0, thetavec, wvec)
+  #cat("!!"); print(range(nluvec-int.lambda.vec))
+  #all( tvec>othetavec[kmaxp2] | exp(-int.lambda.vec[k2vec+1])<= uvec & uvec <= exp(-int.lambda.vec[k1vec+1]) )
+  #all( tvec>othetavec[kmaxp2] | (othetavec[k2vec] <= tvec & tvec <= othetavec[k2vec+1]) )
+  #all( nluvec>svec[kmaxp2-1] | svec[k1vec]<= nluvec & nluvec <= svec[k2vec] )
+  
+  return(tvec)
+}
+
+#' Simulate from a CDR model
+#' 
+#' @param n Number of failure times to simulate
+#' @param thetavec Set of support locations
+#' @param wvec Set of associated weights
+#' @param lambda0 Offset to be added to the hazard rate
+#' 
+#' @export
+rfail.cdr <- function(n, lambda0, thetavec, wvec) {
+  # simulate failure times from a CDR model, 
+  # given a set of weights and locations
+  odx <- order(thetavec)
+  othetavec <- thetavec[odx]
+  owvec <- wvec[odx]
+  kmax <- length(othetavec)
+  othetavec <- c(0,othetavec,1.1*othetavec[kmax])
+  owvec <- c(0,owvec,0)
+  kmaxp2 <- kmax+2
+  nluvec <- -log(runif(n,0,1))
+  
+  s1vec <- cumsum(owvec)
+  s2vec <- cumsum(owvec*othetavec)
+  s3vec <- cumsum(owvec*othetavec^2)
+  
+  svec <- s3vec + (lambda0-s2vec)*othetavec + 0.5*s1vec*othetavec^2
+  k1vec <- apply(outer(nluvec, svec, function(nlu,s) nlu>=s),1,sum)
+  k1vec <- pmin(k1vec,kmaxp2-1)
+  
+  avec <- -0.5*(s1vec[kmaxp2]-s1vec[k1vec])
+  bvec <- lambda0 + (s2vec[kmaxp2]-s2vec[k1vec])
+  cvec <- 0.5*s3vec[k1vec]-nluvec
+  
+  tvec <- (0.5/avec)*( -bvec + sqrt(bvec^2 - 4*avec*cvec) )
+
+  # check 
+  #int.lambda.vec <- int.lambda.func.ifr(tvec, lambda0, thetavec, wvec)
+  #cat("!!"); print(range(nluvec-int.lambda.vec))
+  #all( tvec>othetavec[kmaxp2] | exp(-int.lambda.vec[k2vec+1])<= uvec & uvec <= exp(-int.lambda.vec[k1vec+1]) )
+  #all( tvec>othetavec[kmaxp2] | (othetavec[k2vec] <= tvec & tvec <= othetavec[k2vec+1]) )
+  #all( nluvec>svec[kmaxp2-1] | svec[k1vec]<= nluvec & nluvec <= svec[k2vec] )
+  
+  return(tvec)
+}
+
+
+#' @export
+rfail.cvx <- function(n, lambda0, thetavec1, wvec1, thetavec2, wvec2) {
+  # simulate failure times from a CVX model 
+  tvec <- pmin(rfail.cdr(n, 0, thetavec1, wvec1),
+               rfail.cir(n, lambda0, thetavec2, wvec2))
+  return(tvec)
+}
 
 #' @export
 rfail.mew <- function(n, lambda, alpha, theta, gamma) {

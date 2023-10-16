@@ -16,7 +16,7 @@ init.objects <- function(tvec, obs,
                          generate="fixed") {  # generate can be "fixed" or "random"
   if(!is.null(seed)) set.seed(seed)
   if(model%in%c("IFR","DFR")) {
-
+    
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         a1=4, a2=1,
@@ -419,14 +419,82 @@ init.objects <- function(tvec, obs,
     epar$thetavec <- rexp(kmax, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
 
+  } else if(model%in%c("CIR","CDR")) {
+    
+    if(is.null(prior.par)) {
+      prior.par <- list(nu=1/datscale,
+                        a1=4, a2=1,
+                        b1=1, b2=1/(datscale^2),
+                        f1=2, f2=2*datscale)
+    }
+    if(is.null(update.par)) {
+      update.par <- list(psweep=0.1, # probability of the sweep move
+                         sd.log.eta=0.3,
+                         sd.log.theta=0.3,
+                         sd.logit.v=0.3,
+                         sd.log.w=0.3,
+                         sd.log.alpha=0.3)
+    }
+    # fixed parameters
+    parnames <- c("eta","gamma","thetavec","vvec","alpha","beta","phi")
+    fpar <- list(model=model,                      # model name
+                 parnames=parnames,                # parameters
+                 kmax=kmax,                        # sum truncation point
+                 nu=prior.par$nu,                  # prior for eta (lambda0/gamma)
+                 a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
+                 b1=prior.par$b1, b2=prior.par$b2, # prior for beta
+                 f1=prior.par$f1, f2=prior.par$f2, # prior for phi
+                 epsilon=epsilon,
+                 use.Cpp=use.Cpp)
+    # parameters to update
+    update_parnames <- c(parnames,"wvec","thetaswap")
+    update <- rep(TRUE, length(update_parnames))
+    names(update) <- update_parnames
+    # proposal parameters for updates
+    ppar <- list(update_parnames=update_parnames,
+                 ksweep=FALSE, # = all support points are updated each time
+                 ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
+                 kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
+                 psweep=update.par$psweep,
+                 sd.log.eta=update.par$sd.log.eta,
+                 sd.log.theta=update.par$sd.log.theta,
+                 sd.logit.v=update.par$sd.logit.v,
+                 sd.log.w=update.par$sd.log.w,
+                 sd.log.alpha=update.par$sd.log.alpha,
+                 update=update,
+                 verbose=FALSE,
+                 interactive=FALSE)
+    # parameters to estimate
+    if(generate=="fixed") {
+      epar <- list(eta=1/prior.par$nu,
+                   gamma=NA,
+                   thetavec=NA,
+                   vvec=NA,
+                   alpha=prior.par$a1/prior.par$a2,
+                   beta=prior.par$b1/prior.par$b2,
+                   phi=prior.par$f1/prior.par$b2)
+      epar$gamma <- epar$alpha/epar$beta
+    } else {
+      epar <- list(eta=rexp(1,prior.par$nu),
+                   gamma=NA,
+                   thetavec=NA,
+                   vvec=NA,
+                   alpha=rgamma(1,prior.par$a1,prior.par$a2),
+                   beta=rgamma(1,prior.par$b1,prior.par$b2),
+                   phi=rgamma(1,prior.par$f1,prior.par$b2))
+      epar$gamma <- rgamma(1,epar$alpha,epar$beta)
+    }
+    epar$thetavec <- rexp(kmax, epar$phi)
+    epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
+    
   } else if(model%in%c("CVX")) {
     
     if(is.null(prior.par)) {
-      prior.par <- list(nu=1,
-                        c1=1, c2=2/datscale, 
+      prior.par <- list(nu=1/datscale,
                         a1=4, a2=1,
-                        b1=1, b2=1/datscale,
-                        f1=2, f2=2*datscale) # IFR
+                        b1=1, b2=1/(datscale^2),
+                        f11=2, f21=datscale/2, # DFR
+                        f12=2, f22=2*datscale) # IFR
     }
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
