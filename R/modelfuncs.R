@@ -488,7 +488,6 @@ init.objects <- function(tvec, obs,
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
     
   } else if(model%in%c("CVX")) {
-    
     if(is.null(prior.par)) {
       prior.par <- list(nu=1/datscale,
                         a1=4, a2=1,
@@ -499,7 +498,6 @@ init.objects <- function(tvec, obs,
     if(is.null(update.par)) {
       update.par <- list(psweep=0.1, # probability of the sweep move
                          sd.log.eta=0.1,
-                         sd.log.tau=0.1,
                          sd.log.gamma=0.1,
                          sd.log.theta=0.1,
                          sd.logit.v=0.1,
@@ -507,17 +505,17 @@ init.objects <- function(tvec, obs,
                          sd.log.alpha=0.1)
     }
     # fixed parameters
-    parnames <- c("eta","tau",
-                  "gamma1","thetavec1","vvec1","alpha1","beta1",
+    parnames <- c("eta",
+                  "gamma1","thetavec1","vvec1","alpha1","beta1","phi1",
                   "gamma2","thetavec2","vvec2","alpha2","beta2","phi2")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
                  nu=prior.par$nu,                  # prior for eta (lambda0/gamma2)
-                 c1=prior.par$c1, c2=prior.par$c2, # prior for tau
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha1,alpha2
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta1,beta2
-                 f1=prior.par$f1, f2=prior.par$f2, # prior for phi
+                 f11=prior.par$f11, f21=prior.par$f21, # prior for phi1
+                 f12=prior.par$f12, f22=prior.par$f22, # prior for phi2
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
@@ -531,7 +529,6 @@ init.objects <- function(tvec, obs,
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
                  psweep=update.par$psweep,
                  sd.log.eta=update.par$sd.log.eta,
-                 sd.log.tau=update.par$sd.log.tau,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
@@ -543,40 +540,40 @@ init.objects <- function(tvec, obs,
     # parameters to estimate
     if(generate=="fixed") {
       epar <- list(eta=1/prior.par$nu,
-                   tau=prior.par$c1/prior.par$c2,
                    gamma1=NA,
                    thetavec1=NA,
                    vvec1=NA,
                    alpha1=prior.par$a1/prior.par$a2,
                    beta1=prior.par$b1/prior.par$b2,
+                   phi1=prior.par$f11/prior.par$f21,
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
                    alpha2=prior.par$a1/prior.par$a2,
                    beta2=prior.par$b1/prior.par$b2,
-                   phi=prior.par$f1/prior.par$f2)
+                   phi2=prior.par$f12/prior.par$f22)
       epar$gamma1 <- epar$alpha1/epar$beta1
       epar$gamma2 <- epar$alpha2/epar$beta2
     } else {
       epar <- list(eta=rexp(1,prior.par$nu),
-                   tau=rgamma(1,prior.par$c1,prior.par$c2),
                    gamma1=NA,
                    thetavec1=NA,
                    vvec1=NA,
                    alpha1=rgamma(1,prior.par$a1,prior.par$a2),
                    beta1=rgamma(1,prior.par$b1,prior.par$b2),
+                   phi1=rgamma(1,prior.par$f11,prior.par$f21),
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
                    alpha2=rgamma(1,prior.par$a1,prior.par$a2),
                    beta2=rgamma(1,prior.par$b1,prior.par$b2),
-                   phi=rgamma(1,prior.par$f1,prior.par$f2))
+                   phi2=rgamma(1,prior.par$f12,prior.par$f22))
       epar$gamma1 <- rgamma(1,epar$alpha1,epar$beta1)
       epar$gamma2 <- rgamma(1,epar$alpha2,epar$beta2)
     }
-    epar$thetavec1 <- runif(kmax, 0, epar$tau)
+    epar$thetavec1 <- rexp(kmax, epar$phi1)
     epar$vvec1 <- rbeta.t(kmax, 1, epar$alpha1)
-    epar$thetavec2 <- epar$tau + rexp(kmax, epar$phi)
+    epar$thetavec2 <- rexp(kmax, epar$phi2)
     epar$vvec2 <- rbeta.t(kmax, 1, epar$alpha2)
     
   } else if(model%in%c("MEW")) {
@@ -1116,7 +1113,7 @@ lpriorf.vector <- function(state, fpar, model) {
       # prior for gamma1
       lprior.vec["gamma1"] <- dgamma(state$gamma1, state$alpha1, state$beta1, log=TRUE)
       # prior for thetavec1
-      lprior.vec["thetavec1"] <- -fpar$kmax*log(state$tau)
+      lprior.vec["thetavec1"] <- sum( (log(state$phi1)-state$phi1*state$thetavec1) )
       # prior for vvec1
       lprior.vec["vvec1"] <-  sum( (log(state$alpha1) + (state$alpha1-1)*log(1-state$vvec1[-fpar$kmax])) )
       # prior for alpha1
