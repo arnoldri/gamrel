@@ -296,12 +296,12 @@ int.lambda.func <- function(tvec, model.list, use.Cpp=TRUE) {
                                use.Cpp=use.Cpp))
   } else if(model.list$model=="CIR") {
     return(int.lambda.func.cir(tvec, 
-                               model.list$lambda0, model.list$w0, 
+                               model.list$lambda0, 
                                model.list$thetavec, model.list$wvec, 
                                use.Cpp=use.Cpp))
   } else if(model.list$model=="CDR") {
     return(int.lambda.func.cdr(tvec, 
-                               model.list$lambda0, model.list$w0, 
+                               model.list$lambda0, 
                                model.list$thetavec, model.list$wvec, 
                                use.Cpp=use.Cpp))
   } else if(model.list$model=="CVX") {

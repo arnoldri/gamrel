@@ -6,7 +6,6 @@
 \usage{
 lprior_cvx_c(
   eta,
-  tau,
   gamma1,
   thetavec1,
   vvec1,
@@ -20,14 +19,14 @@ lprior_cvx_c(
   beta2,
   phi2,
   nu,
-  c1,
-  c2,
   a1,
   a2,
   b1,
   b2,
-  f1,
-  f2
+  f11,
+  f21,
+  f12,
+  f22
 )
 }
 \arguments{
