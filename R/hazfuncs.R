@@ -491,7 +491,7 @@ int.lambda.func.cdr <- function(tvec, lambda0, thetavec, wvec, use.Cpp=TRUE) {
   }
   int.lambda.vec <- as.vector(outer(tvec, thetavec, 
                                     function(t,theta) (-0.5)*pmax(0,theta-t)*(theta-t))%*%wvec)
-  int.lambda.vec <- int.lambda.vec + lambda0*tvec + 0.5*sum(wvec*thetvec^2)
+  int.lambda.vec <- int.lambda.vec + lambda0*tvec + 0.5*sum(wvec*thetavec^2)
   
   return(int.lambda.vec)
 }
@@ -502,8 +502,8 @@ int.lambda.func.cdr <- function(tvec, lambda0, thetavec, wvec, use.Cpp=TRUE) {
 int.lambda.func.cvx <- function(tvec, lambda0, thetavec1, wvec1, thetavec2, wvec2, use.Cpp=TRUE) {
   # integrated hazard rate function - Convex Bathtub
   int.lambda.vec <- ( lambda0*tvec 
-                      + int.lambda.func.cir(tvec, 0, thetavec1, wvec1, use.Cpp=use.Cpp)
-                      + int.lambda.func.cdr(tvec, 0, thetavec2, wvec2, use.Cpp=use.Cpp) )
+                      + int.lambda.func.cdr(tvec, 0, thetavec1, wvec1, use.Cpp=use.Cpp)
+                      + int.lambda.func.cir(tvec, 0, thetavec2, wvec2, use.Cpp=use.Cpp) )
   return(int.lambda.vec)
 }
 
@@ -927,8 +927,10 @@ rfail.cir <- function(n, lambda0, thetavec, wvec) {
   bvec <- lambda0 - s2vec[k1vec]
   cvec <- s3vec[k1vec]-nluvec
 
-  tvec <- (0.5/avec)*( -bvec + sqrt(bvec^2 - 4*avec*cvec) )
-  
+  tvec <- ifelse(avec==0, 
+                 -cvec/bvec,
+                 (0.5/avec)*( -bvec + sqrt(bvec^2 - 4*avec*cvec) ) )
+
   # check 
   #int.lambda.vec <- int.lambda.func.ifr(tvec, lambda0, thetavec, wvec)
   #cat("!!"); print(range(nluvec-int.lambda.vec))
@@ -963,7 +965,7 @@ rfail.cdr <- function(n, lambda0, thetavec, wvec) {
   s2vec <- cumsum(owvec*othetavec)
   s3vec <- cumsum(owvec*othetavec^2)
   
-  svec <- s3vec + (lambda0-s2vec)*othetavec + 0.5*s1vec*othetavec^2
+  svec <- 0.5*s3vec + (lambda0+s2vec[kmaxp2]-s2vec)*othetavec - 0.5*(s1vec[kmaxp2]-s1vec)*othetavec^2
   k1vec <- apply(outer(nluvec, svec, function(nlu,s) nlu>=s),1,sum)
   k1vec <- pmin(k1vec,kmaxp2-1)
   
@@ -971,8 +973,12 @@ rfail.cdr <- function(n, lambda0, thetavec, wvec) {
   bvec <- lambda0 + (s2vec[kmaxp2]-s2vec[k1vec])
   cvec <- 0.5*s3vec[k1vec]-nluvec
   
-  tvec <- (0.5/avec)*( -bvec + sqrt(bvec^2 - 4*avec*cvec) )
+  tvec <- ifelse(avec==0, 
+                 -cvec/bvec,
+                 (0.5/avec)*( -bvec + sqrt(bvec^2 - 4*avec*cvec) ) )
 
+  if(any(is.nan(tvec)) || any(is.na(tvec))) browser() ##!!==
+  
   # check 
   #int.lambda.vec <- int.lambda.func.ifr(tvec, lambda0, thetavec, wvec)
   #cat("!!"); print(range(nluvec-int.lambda.vec))
