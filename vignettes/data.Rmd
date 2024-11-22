@@ -1,0 +1,99 @@
+---
+title: "Data"
+author: "Richard Arnold"
+date: '2024-11-22'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Datasets
+
+- Kumar
+- Aarset
+- NZ mortality (https://www.stats.govt.nz) (https://www.stats.govt.nz/topics/population) New Zealand Population data
+
+## NZ Mortality
+
+```{r}
+library(dplyr)
+library(readxl)
+library(tidyverse)
+list.files("../../data/")
+mort <- read_excel("../../data/Monthly-death-registrations-by-ethnicity-age-sex-Jan2010-Jun2024.xlsx",sheet=2)
+```
+
+```{r}
+#View(mort)
+summary(mort) 
+# years 2010-2024
+# months 1-12 (2024 incomplete - only up to June)
+names(mort)
+mort %>% group_by(year_reg) %>% summarise(min(month_reg),max(month_reg))
+table(mort$age_group)
+a1 <- c(0,1,5*(1:19))
+a2 <- c(0,4,a1[-c(1,2)]+4)
+age.levels <- sprintf("%02d_%02d",a1,a2)
+age.levels[age.levels=="95_99"] <- "95_"
+age.levels
+all(unique(mort$age_group)%in%age.levels) # TRUE
+all(age.levels%in%unique(mort$age_group)) # TRUE
+mort$age_group <- factor(mort$age_group, levels=age.levels)
+dcounts <- mort %>% 
+  filter(ethnicity=="Total", year_reg==2023) %>% 
+  group_by(sex,age_group) %>% 
+  summarise(count=sum(count)) %>%
+  ungroup() %>% 
+  spread(sex,count) %>%
+  as.data.frame()
+dcounts
+
+ss <- strsplit(dcounts$age_group,split="_",fixed=TRUE)
+ss[[length(ss)]] <- c("95","99")
+ss <- lapply(ss,as.numeric)
+ss <- as.data.frame(do.call(rbind,ss))
+names(ss) <- c("agemin","agemax")
+dcounts <- cbind(dcounts,ss)
+dcounts$agemid <- 0.5+apply(ss,1,mean)
+dcounts$age_group <- gsub("_","-",dcounts$age_group)
+dcounts$age_group <- gsub("00-00","00",dcounts$age_group,fixed=TRUE)
+dcounts$age_group <- gsub("95-","95+",dcounts$age_group,fixed=TRUE)
+write.csv(dcounts,"../../data/NZDeaths2023.csv",row.names=FALSE)
+
+dcounts <- read.csv("../../data/NZDeaths2023.csv")
+NZDeaths2023 <- dcounts
+save(NZDeaths2023,file="../data/NZDeaths2023.rda")
+
+rm('NZDeaths2023')
+load("../data/NZDeaths2023")
+NZDeaths2023
+dcounts <- NZDeaths2023
+
+dunit.m <- unlist(apply(dcounts[,-1],1,
+                 function(dd) {
+                   sort(floor(runif(dd['Male'], dd['agemin'], dd['agemax']+0.999)))
+                 }))
+dunit.f <- unlist(apply(dcounts[,-1],1,
+                 function(dd) {
+                   sort(floor(runif(dd['Female'], dd['agemin'], dd['agemax']+0.999)))
+                 }))
+
+hist(dunit.m, xlab="Age", ylab="Counts", main="2023 Deaths - Males")
+hist(dunit.f, xlab="Age", ylab="Counts", main="2023 Deaths - Females")
+```
+```{r}
+barplot(t(as.matrix(dcounts[,c("Male","Female")])),
+        beside=TRUE,
+        names=dcounts$age_group, las=2, cex.lab=1.0, 
+        cex.names=0.8, cex.axis=0.8,
+        legend=TRUE, args.legend=list(x="topleft"),
+        xlab="Age group", ylab="Counts",
+        main="Deaths in 2023")
+mtext("Source: Statistics New Zealand", 
+      side=1, line=3, adj=1, cex=0.5)
+```
+
+
