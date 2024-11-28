@@ -116,3 +116,15 @@ waicfunc <- function(smat, datlist, fpar, ppar, model) {
   waic <- -2*sum(log(apply(exp(llmat),2,mean))) +2*sum(apply(llmat,2,var))
   return(waic)
 }
+
+#' Augment the fixed parameter object (fpar)
+#'
+#' @export
+augment.fpar <- function(state, fpar, model) {
+  # add some extra stuff to fpar
+  fpar$statenames <- names(state)
+  fpar$stackind <- stack(state)$ind
+  fpar$statevnames <- names(unlist(sapply(sapply(state,length),
+                                          function(i) 1:i)))
+  return(fpar)
+}

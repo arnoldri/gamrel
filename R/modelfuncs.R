@@ -1173,17 +1173,7 @@ lpriorf.vector <- function(state, fpar, model) {
   }
   return(lprior.vec)
 }
-#' Augment the fixed parameter object (fpar)
-#'
-#' @export
-augment.fpar <- function(state, fpar, model) {
-  # add some extra stuff to fpar
-  fpar$statenames <- names(state)
-  fpar$stackind <- stack(state)$ind
-  fpar$statevnames <- names(unlist(sapply(sapply(state,length),
-                                          function(i) 1:i)))
-  return(fpar)
-}
+
 
 ################################################################################
 #' Plot a representation of the current state
