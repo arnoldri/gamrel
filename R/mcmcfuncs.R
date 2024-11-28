@@ -25,7 +25,7 @@ run.multiple.chains <- function(state.list, nstore, nthin=1, nburn=0,
                                 do.plot=FALSE, show.progress=NULL) {
   chain.list <- list()
   for(i in 1:length(state.list)) {
-    if(show.progress) cat(paste0("Chain ",i,":"))
+    if(!is.null(show.progress)) cat(paste0("Chain ",i,":"))
     chain.list[[i]] <- run.chain(nstore=nstore, nthin=nthin, nburn=nburn,
                                  state=state.list[[i]], datlist=datlist, fpar=fpar,
                                  ppar=ppar, model=model, do.plot=do.plot,
@@ -115,4 +115,16 @@ waicfunc <- function(smat, datlist, fpar, ppar, model) {
   
   waic <- -2*sum(log(apply(exp(llmat),2,mean))) +2*sum(apply(llmat,2,var))
   return(waic)
+}
+
+#' Augment the fixed parameter object (fpar)
+#'
+#' @export
+augment.fpar <- function(state, fpar, model) {
+  # add some extra stuff to fpar
+  fpar$statenames <- names(state)
+  fpar$stackind <- stack(state)$ind
+  fpar$statevnames <- names(unlist(sapply(sapply(state,length),
+                                          function(i) 1:i)))
+  return(fpar)
 }
