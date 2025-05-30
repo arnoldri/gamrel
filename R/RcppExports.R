@@ -407,6 +407,42 @@ both_lambda_func_cdr_c <- function(tvec, lambda0, thetavec, wvec) {
     .Call(`_gamrel_both_lambda_func_cdr_c`, tvec, lambda0, thetavec, wvec)
 }
 
+#' Hazard rate function - CON
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' 
+#' @description Hazard rate function for constant hazard
+#' 
+#' @export
+hazf_con_c <- function(tvec, lambda0) {
+    .Call(`_gamrel_hazf_con_c`, tvec, lambda0)
+}
+
+#' Integrated Hazard rate function - CON
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' 
+#' @description Integrated hazard rate function for constant hazard
+#' 
+#' @export
+chzf_con_c <- function(tvec, lambda0) {
+    .Call(`_gamrel_chzf_con_c`, tvec, lambda0)
+}
+
+#' Inverse survival function - CON
+#' 
+#' @param uvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' 
+#' @description Inverse survival function for constant hazard
+#' 
+#' @export
+invsurvf_con_c <- function(uvec, lambda0) {
+    .Call(`_gamrel_invsurvf_con_c`, uvec, lambda0)
+}
+
 #' Function to sort an array using shellSort
 #'  
 #' @export

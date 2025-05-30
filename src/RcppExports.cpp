@@ -536,6 +536,42 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// hazf_con_c
+NumericVector hazf_con_c(NumericVector tvec, double lambda0);
+RcppExport SEXP _gamrel_hazf_con_c(SEXP tvecSEXP, SEXP lambda0SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_con_c(tvec, lambda0));
+    return rcpp_result_gen;
+END_RCPP
+}
+// chzf_con_c
+NumericVector chzf_con_c(NumericVector tvec, double lambda0);
+RcppExport SEXP _gamrel_chzf_con_c(SEXP tvecSEXP, SEXP lambda0SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    rcpp_result_gen = Rcpp::wrap(chzf_con_c(tvec, lambda0));
+    return rcpp_result_gen;
+END_RCPP
+}
+// invsurvf_con_c
+NumericVector invsurvf_con_c(NumericVector uvec, double lambda0);
+RcppExport SEXP _gamrel_invsurvf_con_c(SEXP uvecSEXP, SEXP lambda0SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type uvec(uvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    rcpp_result_gen = Rcpp::wrap(invsurvf_con_c(uvec, lambda0));
+    return rcpp_result_gen;
+END_RCPP
+}
 // shellSort_c
 NumericVector shellSort_c(NumericVector x);
 RcppExport SEXP _gamrel_shellSort_c(SEXP xSEXP) {
@@ -600,6 +636,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_both_lambda_func_lcv_c", (DL_FUNC) &_gamrel_both_lambda_func_lcv_c, 6},
     {"_gamrel_both_lambda_func_cir_c", (DL_FUNC) &_gamrel_both_lambda_func_cir_c, 4},
     {"_gamrel_both_lambda_func_cdr_c", (DL_FUNC) &_gamrel_both_lambda_func_cdr_c, 4},
+    {"_gamrel_hazf_con_c", (DL_FUNC) &_gamrel_hazf_con_c, 2},
+    {"_gamrel_chzf_con_c", (DL_FUNC) &_gamrel_chzf_con_c, 2},
+    {"_gamrel_invsurvf_con_c", (DL_FUNC) &_gamrel_invsurvf_con_c, 2},
     {"_gamrel_shellSort_c", (DL_FUNC) &_gamrel_shellSort_c, 1},
     {"_gamrel_order_c", (DL_FUNC) &_gamrel_order_c, 1},
     {"_gamrel_rcpp_hello_world", (DL_FUNC) &_gamrel_rcpp_hello_world, 0},
