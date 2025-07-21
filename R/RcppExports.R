@@ -407,6 +407,18 @@ both_lambda_func_cdr_c <- function(tvec, lambda0, thetavec, wvec) {
     .Call(`_gamrel_both_lambda_func_cdr_c`, tvec, lambda0, thetavec, wvec)
 }
 
+#' Inverse survival function - MEW
+#' 
+#' @param uvec Locations at which to evaluate the function
+#' @param alpha alpha
+#' @param beta beta
+#' @param nu nu
+#' @param mu mu 
+#' 
+#' @description Inverse survival function for MEW hazard
+#' 
+NULL
+
 #' Hazard rate function - CON
 #' 
 #' @param tvec Locations at which to evaluate the function
@@ -441,6 +453,36 @@ chzf_con_c <- function(tvec, lambda0) {
 #' @export
 invsurvf_con_c <- function(uvec, lambda0) {
     .Call(`_gamrel_invsurvf_con_c`, uvec, lambda0)
+}
+
+#' Hazard rate function - MEW
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param alpha alpha
+#' @param beta beta
+#' @param nu nu
+#' @param mu mu 
+#' 
+#' @description Hazard rate function for MEW hazard
+#' 
+#' @export
+hazf_mew_c <- function(tvec, alpha, beta, mu, nu) {
+    .Call(`_gamrel_hazf_mew_c`, tvec, alpha, beta, mu, nu)
+}
+
+#' Integrated Hazard rate function - MEW
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param alpha alpha
+#' @param beta beta
+#' @param nu nu
+#' @param mu mu 
+#' 
+#' @description Integrated hazard rate function for MEW hazard
+#' 
+#' @export
+chzf_mew_c <- function(tvec, alpha, beta, mu, nu) {
+    .Call(`_gamrel_chzf_mew_c`, tvec, alpha, beta, mu, nu)
 }
 
 #' Function to sort an array using shellSort
