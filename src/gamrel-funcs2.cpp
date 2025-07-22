@@ -80,6 +80,144 @@ NumericVector invsurvf_con_c(NumericVector uvec,
 
 
 //**********************************************************************
+//* IFR - Increasing hazard rate
+//**********************************************************************
+//' Hazard rate function - IFR
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Hazard rate function for IFR hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector hazf_ifr_c(NumericVector tvec,
+                         double lambda0, 
+                         NumericVector thetavec, 
+                         NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector lambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   lambdavec[i] = lambda0;
+   for(k=0; k<kmax; k++) {
+     if(thetavec[k]<tvec[i]) lambdavec[i] += wvec[k];
+   }
+ }
+ 
+ return lambdavec;
+}
+
+//**********************************************************************
+//' Integrated Hazard rate function - IFR
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Integrated hazard rate function for IFR hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector chzf_ifr_c(NumericVector tvec,
+                         double lambda0,
+                         NumericVector thetavec, 
+                         NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector clambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   clambdavec[i] = lambda0*tvec[i];
+   for(k=0; k<kmax; k++) {
+     if(thetavec[k]<tvec[i]) clambdavec[i] += wvec[k]*(tvec[i]-thetavec[k]);
+   }
+ }
+ 
+ return clambdavec;
+}
+
+
+//**********************************************************************
+//* DFR - Decreasing hazard rate
+//**********************************************************************
+//' Hazard rate function - DFR
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Hazard rate function for DFR hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector hazf_dfr_c(NumericVector tvec,
+                        double lambda0, 
+                        NumericVector thetavec, 
+                        NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector lambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   lambdavec[i] = lambda0;
+   for(k=0; k<kmax; k++) {
+     if(thetavec[k]>tvec[i]) lambdavec[i] += wvec[k];
+   }
+ }
+ 
+ return lambdavec;
+}
+
+//**********************************************************************
+//' Integrated Hazard rate function - DFR
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Integrated hazard rate function for DFR hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector chzf_dfr_c(NumericVector tvec,
+                        double lambda0,
+                        NumericVector thetavec, 
+                        NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector clambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   clambdavec[i] = lambda0*tvec[i];
+   for(k=0; k<kmax; k++) {
+     if(thetavec[k]<tvec[i]) {
+       clambdavec[i] += wvec[k]*thetavec[k]; 
+     } else {
+       clambdavec[i] += wvec[k]*tvec[i]; 
+     }
+   }
+ }
+ 
+ return clambdavec;
+}
+
+
+//**********************************************************************
 //* MEW - Modified Expontential Weibull
 //**********************************************************************
 //' Hazard rate function - MEW
@@ -142,34 +280,6 @@ NumericVector chzf_mew_c(NumericVector tvec,
   return clambdavec;
 }
 
-//**********************************************************************
-//' Inverse survival function - MEW
-//' 
-//' @param uvec Locations at which to evaluate the function
-//' @param alpha alpha
-//' @param beta beta
-//' @param nu nu
-//' @param mu mu 
-//' 
-//' @description Inverse survival function for MEW hazard
-//' 
-//--//' @export
-//--// [[Rcpp::export]]
-//--// NOT IMPLEMENTED 
-NumericVector invsurvf_mew_c(NumericVector uvec,
-                             double alpha, double beta,
-                             double mu, double nu
-) {
-  int n = uvec.size();
-  NumericVector tvec(n);
-  int i;
 
-  for(i=0; i<n; i++) {
-    tvec[i] = 0;
-  }
-  
-  return tvec;
-}
- 
  
  

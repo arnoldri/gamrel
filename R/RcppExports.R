@@ -407,18 +407,6 @@ both_lambda_func_cdr_c <- function(tvec, lambda0, thetavec, wvec) {
     .Call(`_gamrel_both_lambda_func_cdr_c`, tvec, lambda0, thetavec, wvec)
 }
 
-#' Inverse survival function - MEW
-#' 
-#' @param uvec Locations at which to evaluate the function
-#' @param alpha alpha
-#' @param beta beta
-#' @param nu nu
-#' @param mu mu 
-#' 
-#' @description Inverse survival function for MEW hazard
-#' 
-NULL
-
 #' Hazard rate function - CON
 #' 
 #' @param tvec Locations at which to evaluate the function
@@ -453,6 +441,62 @@ chzf_con_c <- function(tvec, lambda0) {
 #' @export
 invsurvf_con_c <- function(uvec, lambda0) {
     .Call(`_gamrel_invsurvf_con_c`, uvec, lambda0)
+}
+
+#' Hazard rate function - IFR
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Hazard rate function for IFR hazard
+#' 
+#' @export
+hazf_ifr_c <- function(tvec, lambda0, thetavec, wvec) {
+    .Call(`_gamrel_hazf_ifr_c`, tvec, lambda0, thetavec, wvec)
+}
+
+#' Integrated Hazard rate function - IFR
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Integrated hazard rate function for IFR hazard
+#' 
+#' @export
+chzf_ifr_c <- function(tvec, lambda0, thetavec, wvec) {
+    .Call(`_gamrel_chzf_ifr_c`, tvec, lambda0, thetavec, wvec)
+}
+
+#' Hazard rate function - DFR
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Hazard rate function for DFR hazard
+#' 
+#' @export
+hazf_dfr_c <- function(tvec, lambda0, thetavec, wvec) {
+    .Call(`_gamrel_hazf_dfr_c`, tvec, lambda0, thetavec, wvec)
+}
+
+#' Integrated Hazard rate function - DFR
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Integrated hazard rate function for DFR hazard
+#' 
+#' @export
+chzf_dfr_c <- function(tvec, lambda0, thetavec, wvec) {
+    .Call(`_gamrel_chzf_dfr_c`, tvec, lambda0, thetavec, wvec)
 }
 
 #' Hazard rate function - MEW
