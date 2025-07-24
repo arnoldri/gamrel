@@ -1,4 +1,35 @@
 ####################################################
+# Utils
+unitquadratic <- function(u,a) {
+  # -1 < a < 1 for function increasing at both 0 and 1
+  # may have vector u and scalar a, or both vectors of the same length
+  a*u^2 + (1-a)*u
+}
+solveunitquadratic <- function(d,a) {
+  # -1 < a < 1 for function increasing at both 0 and 1
+  # return solution in 0<u<1, assuming 0<d<1
+  # may have vector u and scalar a, or both vectors of the same length
+  a <- rep_len(a,length.out=length(d))
+  u <- ifelse(a==0,d,
+              -(1/(2.*a))*( 1-a - sqrt( (1-a)^2+4*a*d) ))
+  return(u)
+}
+ptquadratic <- function(t,t1,t2,f1,f2,f1dash) {
+  # quadratic passing through (t1,f1) and (t2,f2)
+  # with gradient f1 at t1
+  dfdt <- (f2-f1)/(t2-t1)
+  a <- ifelse(f1==f2 | dfdt==f1dash,0,
+              1 - f1dash/dfdt)
+  f1 + (f2-f1)*unitquadratic((t-t1)/(t2-t1),a)
+}
+solveptquadratic <- function(f,t1,t2,f1,f2,f1dash) {
+  dfdt <- (f2-f1)/(t2-t1)
+  a <- ifelse(f1==f2 | dfdt==f1dash,0,
+              1 - f1dash/dfdt)
+  t1 + (t2-t1)*solveunitquadratic((f-f1)/(f2-f1),a)
+}
+
+####################################################
 # Generic
 hazf <- function(tvec, model.list, use.Cpp=FALSE) {
   switch(model.list$model, 
@@ -210,6 +241,48 @@ invsurvf.DFR <- function(uvec, model.list, use.Cpp=FALSE) {
           )
   return(tvec)
 }
+
+####################################################
+# CIR
+# lambda(t) = lambda0 + int_0^t int_0^u G(dv) du
+# model.list = list(model="CIR", kmax, lambda0, thetavec, wvec)
+hazf.CIR <- function(tvec, model.list, use.Cpp=FALSE) {
+  if(use.Cpp) {
+    lambdavec <- hazf_cir_c(tvec, model.list$lambda0, model.list$thetavec, model.list$wvec)
+  } else {
+    lambdavec <- lambda0 + as.vector(outer(tvec,model.list$thetavec,function(t,theta) pmax(0,t-theta))%*%model.list$wvec)
+  }
+  return(lambdavec)
+}
+chzf.CIR <- function(tvec, model.list, use.Cpp=FALSE) {
+  if(use.Cpp) {
+    clambdavec <- chzf_cir_c(tvec, model.list$lambda0, model.list$thetavec, model.list$wvec)
+  } else {
+    clambdavec <- ( model.list$lambda0*tvec
+                    + 0.5*as.vector(outer(tvec,model.list$thetavec,function(t,theta) (pmax(0,t-theta))^2)%*%model.list$wvec)
+    )
+  }
+  return(clambdavec)
+}
+invsurvf.CIR <- function(uvec, model.list, use.Cpp=FALSE) {
+  # ordering of theta values
+  odx <- order(model.list$thetavec)
+  othetavec <- thetavec[odx]  ##!!== not finished!!
+  # hazard at these values
+  hvec <- c(0,hazf(othetavec,model.list,use.Cpp))
+  # integrated hazard at these values
+  ivec <- c(0,chzf(othetavec,model.list,use.Cpp))
+  # location of -log(uvec) in the integrated hazards
+  kvec <- findInterval(-log(uvec),ivec)
+  # quadratic interpolation
+  tvec <- solveptquadratic(-log(uvec),
+                           othetavec[kvec],othetavec[kvec+1],
+                           ivec[kvec],ivec[kvec+1],
+                           hvec[kvec]) 
+  return(tvec)
+}
+
+
 
 ####################################################
 # MEW
