@@ -499,6 +499,62 @@ chzf_dfr_c <- function(tvec, lambda0, thetavec, wvec) {
     .Call(`_gamrel_chzf_dfr_c`, tvec, lambda0, thetavec, wvec)
 }
 
+#' Hazard rate function - CIR
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Hazard rate function for CIR hazard
+#' 
+#' @export
+hazf_cir_c <- function(tvec, lambda0, thetavec, wvec) {
+    .Call(`_gamrel_hazf_cir_c`, tvec, lambda0, thetavec, wvec)
+}
+
+#' Integrated Hazard rate function - CIR
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Integrated hazard rate function for CIR hazard
+#' 
+#' @export
+chzf_cir_c <- function(tvec, lambda0, thetavec, wvec) {
+    .Call(`_gamrel_chzf_cir_c`, tvec, lambda0, thetavec, wvec)
+}
+
+#' Hazard rate function - CDR
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Hazard rate function for CDR hazard
+#' 
+#' @export
+hazf_cdr_c <- function(tvec, lambda0, thetavec, wvec) {
+    .Call(`_gamrel_hazf_cdr_c`, tvec, lambda0, thetavec, wvec)
+}
+
+#' Integrated Hazard rate function - CDR
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Integrated hazard rate function for CIR hazard
+#' 
+#' @export
+chzf_cdr_c <- function(tvec, lambda0, thetavec, wvec) {
+    .Call(`_gamrel_chzf_cdr_c`, tvec, lambda0, thetavec, wvec)
+}
+
 #' Hazard rate function - MEW
 #' 
 #' @param tvec Locations at which to evaluate the function

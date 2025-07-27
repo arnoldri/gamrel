@@ -218,6 +218,145 @@ NumericVector chzf_dfr_c(NumericVector tvec,
 
 
 //**********************************************************************
+//* CIR - Piecewise linear increasing hazard rate
+//**********************************************************************
+//' Hazard rate function - CIR
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Hazard rate function for CIR hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector hazf_cir_c(NumericVector tvec,
+                        double lambda0, 
+                        NumericVector thetavec, 
+                        NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector lambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   lambdavec[i] = lambda0;
+   for(k=0; k<kmax; k++) {
+     if(thetavec[k]<tvec[i]) lambdavec[i] += wvec[k]*(tvec[i]-thetavec[k]);
+   }
+ }
+ 
+ return lambdavec;
+}
+
+//**********************************************************************
+//' Integrated Hazard rate function - CIR
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Integrated hazard rate function for CIR hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector chzf_cir_c(NumericVector tvec,
+                        double lambda0,
+                        NumericVector thetavec, 
+                        NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector clambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   clambdavec[i] = lambda0*tvec[i];
+   for(k=0; k<kmax; k++) {
+     if(thetavec[k]<tvec[i]) clambdavec[i] += 0.5*wvec[k]*pow(tvec[i]-thetavec[k],2);
+   }
+ }
+ 
+ return clambdavec;
+}
+
+
+
+
+//**********************************************************************
+//* CDR - Piecewise linear decreasing hazard rate
+//**********************************************************************
+//' Hazard rate function - CDR
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Hazard rate function for CDR hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector hazf_cdr_c(NumericVector tvec,
+                        double lambda0, 
+                        NumericVector thetavec, 
+                        NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector lambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   lambdavec[i] = lambda0;
+   for(k=0; k<kmax; k++) {
+     if(thetavec[k]>tvec[i]) lambdavec[i] += wvec[k]*(thetavec[k]-tvec[i]);
+   }
+ }
+ 
+ return lambdavec;
+}
+
+//**********************************************************************
+//' Integrated Hazard rate function - CDR
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Integrated hazard rate function for CIR hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector chzf_cdr_c(NumericVector tvec,
+                        double lambda0,
+                        NumericVector thetavec, 
+                        NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector clambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   clambdavec[i] = lambda0*tvec[i];
+   for(k=0; k<kmax; k++) {
+     clambdavec[i] += 0.5*wvec[k]*pow(thetavec[k],2);
+     if(thetavec[k]>tvec[i]) clambdavec[i] += -0.5*wvec[k]*pow(thetavec[k]-tvec[i],2);
+   }
+ }
+ 
+ return clambdavec;
+}
+
+
+
+
+//**********************************************************************
 //* MEW - Modified Expontential Weibull
 //**********************************************************************
 //' Hazard rate function - MEW
