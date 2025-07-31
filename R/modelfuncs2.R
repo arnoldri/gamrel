@@ -23,10 +23,21 @@ ptquadratic <- function(t,t1,t2,f1,f2,f1dash) {
   f1 + (f2-f1)*unitquadratic((t-t1)/(t2-t1),a)
 }
 solveptquadratic <- function(f,t1,t2,f1,f2,f1dash) {
+  # find t where f(t)=f
   dfdt <- (f2-f1)/(t2-t1)
   a <- ifelse(f1==f2 | dfdt==f1dash,0,
               1 - f1dash/dfdt)
   t1 + (t2-t1)*solveunitquadratic((f-f1)/(f2-f1),a)
+}
+ptlinear <- function(t,t1,t2,f1,f2) {
+  # linear function passing through (t1,f1) and (t2,f2)
+  dfdt <- (f2-f1)/(t2-t1)
+  f1 + (t-t1)*dfdt
+}
+solveptlinear <- function(f,t1,t2,f1,f2) {
+  # find t where f(t)=f
+  dfdt <- (f2-f1)/(t2-t1)
+  t1 + (f-f1)/dfdt
 }
 
 ####################################################
@@ -38,6 +49,8 @@ hazf <- function(tvec, model.list, use.Cpp=FALSE) {
          DFR=hazf.DFR(tvec, model.list, use.Cpp),
          CIR=hazf.CIR(tvec, model.list, use.Cpp),
          CDR=hazf.CDR(tvec, model.list, use.Cpp),
+         LWB=hazf.LWB(tvec, model.list, use.Cpp),
+         HBT=hazf.HBT(tvec, model.list, use.Cpp),
          MEW=hazf.MEW(tvec, model.list, use.Cpp)
   )
 }
@@ -48,6 +61,8 @@ chzf <- function(tvec, model.list, use.Cpp=FALSE) {
          DFR=chzf.DFR(tvec, model.list, use.Cpp),
          CIR=chzf.CIR(tvec, model.list, use.Cpp),
          CDR=chzf.CDR(tvec, model.list, use.Cpp),
+         LWB=chzf.LWB(tvec, model.list, use.Cpp),
+         HBT=chzf.HBT(tvec, model.list, use.Cpp),
          MEW=chzf.MEW(tvec, model.list, use.Cpp)
   )
 }
@@ -61,6 +76,8 @@ invsurvf <- function(uvec, model.list, use.Cpp=FALSE) {
          DFR=invsurvf.DFR(uvec, model.list, use.Cpp),
          CIR=invsurvf.CIR(uvec, model.list, use.Cpp),
          CDR=invsurvf.CDR(uvec, model.list, use.Cpp),
+         LWB=invsurvf.LWB(uvec, model.list, use.Cpp),
+         HBT=invsurvf.HBT(uvec, model.list, use.Cpp),
          MEW=invsurvf.MEW(uvec, model.list, use.Cpp)
   )
 }
@@ -273,7 +290,7 @@ chzf.CIR <- function(tvec, model.list, use.Cpp=FALSE) {
 invsurvf.CIR <- function(uvec, model.list, use.Cpp=FALSE) {
   # ordering of theta values
   odx <- order(model.list$thetavec)
-  othetavec <- thetavec[odx]
+  othetavec <- model.list$thetavec[odx]
   othetavec <- c(0,othetavec,2.*othetavec[length(othetavec)])
   # hazard at these values
   hvec <- hazf(othetavec,model.list,use.Cpp)
@@ -316,7 +333,7 @@ chzf.CDR <- function(tvec, model.list, use.Cpp=FALSE) {
 invsurvf.CDR <- function(uvec, model.list, use.Cpp=FALSE) {
   # ordering of theta values
   odx <- order(model.list$thetavec)
-  othetavec <- thetavec[odx]
+  othetavec <- model.list$thetavec[odx]
   othetavec <- c(0,othetavec,2.*othetavec[length(othetavec)])
   # hazard at these values
   hvec <- hazf(othetavec,model.list,use.Cpp)
@@ -329,6 +346,142 @@ invsurvf.CDR <- function(uvec, model.list, use.Cpp=FALSE) {
                            othetavec[kvec],othetavec[kvec+1],
                            ivec[kvec],ivec[kvec+1],
                            hvec[kvec]) 
+  return(tvec)
+}
+
+####################################################
+# LWB
+# lambda(t) = lambda0 + int_0^|t-a| G(du)
+# model.list = list(model="LWB", kmax, lambda0, a, thetavec, wvec)
+hazf.LWB <- function(tvec, model.list, use.Cpp=FALSE) {
+  if(use.Cpp) {
+    lambdavec <- hazf_lwb_c(tvec, model.list$lambda0, model.list$a, model.list$thetavec, model.list$wvec)
+  } else {
+    lambdavec <- lambda0 + ifelse(tvec<model.list$a,
+                                  as.vector(outer(tvec,model.list$a-model.list$thetavec,"<")%*%model.list$wvec),
+                                  as.vector(outer(tvec,model.list$a+model.list$thetavec,">")%*%model.list$wvec))
+  }
+  return(lambdavec)
+}
+chzf.LWB <- function(tvec, model.list, use.Cpp=FALSE) {
+  if(use.Cpp) {
+    clambdavec <- chzf_lwb_c(tvec, model.list$lambda0, model.list$a, model.list$thetavec, model.list$wvec)
+  } else {
+    clambdavec <- model.list$lambda0*tvec
+    clambdavec <- clambdavec + as.vector(outer(pmin(model.list$a,tvec),(model.list$a-model.list$thetavec),pmin)
+                                         %*%
+                                         ((model.list$thetavec<model.list$a)*model.list$wvec)
+                                        )
+    clambdavec <- clambdavec + ifelse(tvec>model.list$a,
+                                      as.vector(outer(tvec,model.list$thetavec,
+                                                      function(t,theta) (t-model.list$a-theta)*(theta<t-a))
+                                                %*%model.list$wvec),
+                                      0)
+  }
+  return(clambdavec)
+}
+invsurvf.LWB <- function(uvec, model.list, use.Cpp=FALSE) {
+  # knots at which the function changes behaviour
+  othetavec <- model.list$a + c(0,model.list$thetavec,-model.list$thetavec)
+  othetavec <- othetavec[othetavec>0]
+  othetavec <- sort(othetavec)
+  othetavec <- c(0,othetavec,2.*othetavec[length(othetavec)])
+  # integrated hazard at these values
+  ivec <- chzf(othetavec,model.list,use.Cpp)
+  # location of -log(uvec) in the integrated hazards
+  kvec <- findInterval(-log(uvec),ivec)
+  # linear interpolation
+  tvec <- solveptlinear(-log(uvec),
+                        othetavec[kvec],othetavec[kvec+1],
+                        ivec[kvec],ivec[kvec+1])
+  return(tvec)
+}
+
+####################################################
+# HBT
+# lambda(t) = lambda0 + int_min(a,t)^a G(du) + int_a^max(a,t) G(du)
+# model.list = list(model="CIR", kmax, lambda0, a, thetavec, wvec)
+hazf.HBT <- function(tvec, model.list, use.Cpp=FALSE) {
+  if(use.Cpp) {
+    lambdavec <- hazf_hbt_c(tvec, model.list$lambda0, model.list$a, model.list$thetavec, model.list$wvec)
+  } else {
+    lambdavec <- lambda0 + ifelse(tvec<model.list$a,
+                                  as.vector(outer(tvec,model.list$thetavec,function(t,theta) (t<theta & theta<model.list$a))%*%model.list$wvec),
+                                  as.vector(outer(tvec,model.list$thetavec,function(t,theta) (model.list$a<theta & theta<t))%*%model.list$wvec)
+    )
+  }
+  return(lambdavec)
+}
+chzf.HBT <- function(tvec, model.list, use.Cpp=FALSE) {
+  if(use.Cpp) {
+    clambdavec <- chzf_hbt_c(tvec, model.list$lambda0, model.list$a, model.list$thetavec, model.list$wvec)
+  } else {
+    clambdavec <- model.list$lambda0*tvec
+    clambdavec <- clambdavec + ifelse(tvec<model.list$a,
+                                      as.vector(outer(tvec,model.list$thetavec,function(t,theta) ((theta<model.list$a)*pmin(t,theta)))%*%model.list$wvec),
+                                      as.vector(outer(tvec,model.list$thetavec,function(t,theta) ((theta<model.list$a)*pmin(model.list$a,theta)))%*%model.list$wvec)
+                                      +as.vector(outer(tvec,model.list$thetavec,function(t,theta) ((theta>model.list$a)*pmax(t-theta,0)))%*%model.list$wvec)
+    )
+  }
+  return(clambdavec)
+}
+invsurvf.HBT <- function(uvec, model.list, use.Cpp=FALSE) {
+  # ordering of theta values
+  othetavec <- c(model.list$a, model.list$thetavec)
+  othetavec <- sort(othetavec)
+  othetavec <- c(0,othetavec,2.*othetavec[length(othetavec)])
+  # integrated hazard at these values
+  ivec <- chzf(othetavec,model.list,use.Cpp)
+  # location of -log(uvec) in the integrated hazards
+  kvec <- findInterval(-log(uvec),ivec)
+  # quadratic interpolation
+  tvec <- solveptlinear(-log(uvec),
+                        othetavec[kvec],othetavec[kvec+1],
+                        ivec[kvec],ivec[kvec+1])
+  return(tvec)
+}
+
+####################################################
+# HCV
+# lambda(t) = lambda0 + int_t^infty int_min(a,u)^a G(dv)du + int_0^t int_a^max(a,u) G(dv)dt
+# model.list = list(model="HCV", kmax, lambda0, a, thetavec, wvec)
+hazf.HCV <- function(tvec, model.list, use.Cpp=FALSE) {
+  if(use.Cpp) {
+    lambdavec <- hazf_hcv_c(tvec, model.list$lambda0, model.list$a, model.list$thetavec, model.list$wvec)
+  } else {
+    lambdavec <- lambda0 + ifelse(tvec<model.list$a,
+                                  as.vector(outer(tvec,model.list$thetavec,function(t,theta) (t<theta & theta<model.list$a))%*%model.list$wvec),
+                                  as.vector(outer(tvec,model.list$thetavec,function(t,theta) (model.list$a<theta & theta<t))%*%model.list$wvec)
+    )
+  }
+  return(lambdavec)
+}
+chzf.HCV <- function(tvec, model.list, use.Cpp=FALSE) {
+  if(use.Cpp) {
+    clambdavec <- chzf_hcv_c(tvec, model.list$lambda0, model.list$a, model.list$thetavec, model.list$wvec)
+  } else {
+    clambdavec <- model.list$lambda0*tvec
+    clambdavec <- clambdavec + ifelse(tvec<model.list$a,
+                                      as.vector(outer(tvec,model.list$thetavec,function(t,theta) ((theta<model.list$a)*pmin(t,theta)))%*%model.list$wvec),
+                                      as.vector(outer(tvec,model.list$thetavec,function(t,theta) ((theta<model.list$a)*pmin(model.list$a,theta)))%*%model.list$wvec)
+                                      +as.vector(outer(tvec,model.list$thetavec,function(t,theta) ((theta>model.list$a)*pmax(t-theta,0)))%*%model.list$wvec)
+    )
+  }
+  return(clambdavec)
+}
+invsurvf.HCV <- function(uvec, model.list, use.Cpp=FALSE) {
+  # ordering of theta values
+  othetavec <- c(model.list$a, model.list$thetavec)
+  othetavec <- sort(othetavec)
+  othetavec <- c(0,othetavec,2.*othetavec[length(othetavec)])
+  # integrated hazard at these values
+  ivec <- chzf(othetavec,model.list,use.Cpp)
+  # location of -log(uvec) in the integrated hazards
+  kvec <- findInterval(-log(uvec),ivec)
+  # quadratic interpolation
+  tvec <- solveptlinear(-log(uvec),
+                        othetavec[kvec],othetavec[kvec+1],
+                        ivec[kvec],ivec[kvec+1])
   return(tvec)
 }
 

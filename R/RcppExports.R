@@ -555,6 +555,66 @@ chzf_cdr_c <- function(tvec, lambda0, thetavec, wvec) {
     .Call(`_gamrel_chzf_cdr_c`, tvec, lambda0, thetavec, wvec)
 }
 
+#' Hazard rate function - LWB
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param a Change point
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Hazard rate function for LWB hazard
+#' 
+#' @export
+hazf_lwb_c <- function(tvec, lambda0, a, thetavec, wvec) {
+    .Call(`_gamrel_hazf_lwb_c`, tvec, lambda0, a, thetavec, wvec)
+}
+
+#' Integrated Hazard rate function - LWB
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param a Change point
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Integrated hazard rate function for LWB hazard
+#' 
+#' @export
+chzf_lwb_c <- function(tvec, lambda0, a, thetavec, wvec) {
+    .Call(`_gamrel_chzf_lwb_c`, tvec, lambda0, a, thetavec, wvec)
+}
+
+#' Hazard rate function - HBT
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param a Change point
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Hazard rate function for HBT hazard
+#' 
+#' @export
+hazf_hbt_c <- function(tvec, lambda0, a, thetavec, wvec) {
+    .Call(`_gamrel_hazf_hbt_c`, tvec, lambda0, a, thetavec, wvec)
+}
+
+#' Integrated Hazard rate function - HBT
+#' 
+#' @param tvec Locations at which to evaluate the function
+#' @param lambda0 Offset to be added to the hazard rate
+#' @param a Change point
+#' @param thetavec Locations
+#' @param wvec Weights
+#' 
+#' @description Integrated hazard rate function for HBT hazard
+#' 
+#' @export
+chzf_hbt_c <- function(tvec, lambda0, a, thetavec, wvec) {
+    .Call(`_gamrel_chzf_hbt_c`, tvec, lambda0, a, thetavec, wvec)
+}
+
 #' Hazard rate function - MEW
 #' 
 #' @param tvec Locations at which to evaluate the function

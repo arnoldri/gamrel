@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <algorithm>
 using namespace Rcpp;
 
 //--// [[Rcpp::depends(fntl)]]
@@ -347,6 +348,173 @@ NumericVector chzf_cdr_c(NumericVector tvec,
    for(k=0; k<kmax; k++) {
      clambdavec[i] += 0.5*wvec[k]*pow(thetavec[k],2);
      if(thetavec[k]>tvec[i]) clambdavec[i] += -0.5*wvec[k]*pow(thetavec[k]-tvec[i],2);
+   }
+ }
+ 
+ return clambdavec;
+}
+
+
+//**********************************************************************
+//* LWB - Decreasing hazard rate
+//**********************************************************************
+//' Hazard rate function - LWB
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param a Change point
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Hazard rate function for LWB hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector hazf_lwb_c(NumericVector tvec,
+                         double lambda0, 
+                         double a, 
+                         NumericVector thetavec, 
+                         NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector lambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   lambdavec[i] = lambda0;
+   for(k=0; k<kmax; k++) {
+     if(  (tvec[i]<a && tvec[i]<a-thetavec[k])
+        ||(tvec[i]>a && tvec[i]>a+thetavec[k]) ) lambdavec[i] += wvec[k];
+   }
+ }
+ 
+ return lambdavec;
+}
+
+//**********************************************************************
+//' Integrated Hazard rate function - LWB
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param a Change point
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Integrated hazard rate function for LWB hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector chzf_lwb_c(NumericVector tvec,
+                         double lambda0,
+                         double a,
+                         NumericVector thetavec, 
+                         NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector clambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   clambdavec[i] = lambda0*tvec[i];
+   for(k=0; k<kmax; k++) {
+     if(tvec[i]<a) {
+       if(thetavec[k]<a) {
+          clambdavec[i] += wvec[k]*std::min(tvec[i],a-thetavec[k]);
+       }
+     } else {
+       if(thetavec[k]<a) {
+         clambdavec[i] += wvec[k]*(a-thetavec[k]);
+       }
+       if(thetavec[k]<tvec[i]-a) {
+         clambdavec[i] += wvec[k]*(tvec[i]-a-thetavec[k]);
+       }
+     }
+   }
+ }
+ 
+ return clambdavec;
+}
+
+
+//**********************************************************************
+//* HBT - Ho Bathtub
+//**********************************************************************
+//' Hazard rate function - HBT
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param a Change point
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Hazard rate function for HBT hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector hazf_hbt_c(NumericVector tvec,
+                         double lambda0, 
+                         double a, 
+                         NumericVector thetavec, 
+                         NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector lambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   lambdavec[i] = lambda0;
+   for(k=0; k<kmax; k++) {
+     if(   (tvec[i]<a && tvec[i]<thetavec[k] && thetavec[k]<a)
+        || (tvec[i]>a && a<thetavec[k] && thetavec[k]<tvec[i]) ) {
+       lambdavec[i] += wvec[k]; 
+     }
+   }
+ }
+ 
+ return lambdavec;
+}
+
+//**********************************************************************
+//' Integrated Hazard rate function - HBT
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to be added to the hazard rate
+//' @param a Change point
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Integrated hazard rate function for HBT hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector chzf_hbt_c(NumericVector tvec,
+                         double lambda0,
+                         double a,
+                         NumericVector thetavec, 
+                         NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector clambdavec(n);
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   clambdavec[i] = lambda0*tvec[i];
+   for(k=0; k<kmax; k++) {
+     if(tvec[i]<a) {
+       if(thetavec[k]<a) {
+          clambdavec[i] += wvec[k]*std::min(tvec[i],thetavec[k]);
+       }
+     } else {
+       if(thetavec[k]<a) {
+         clambdavec[i] += wvec[k]*thetavec[k]; 
+       } else {
+         clambdavec[i] += wvec[k]*std::max(tvec[i]-thetavec[k],0.0);
+       }
+     }
    }
  }
  
