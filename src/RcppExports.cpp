@@ -560,6 +560,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// hazf_chzf_con_c
+NumericMatrix hazf_chzf_con_c(NumericVector tvec, double lambda0);
+RcppExport SEXP _gamrel_hazf_chzf_con_c(SEXP tvecSEXP, SEXP lambda0SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_con_c(tvec, lambda0));
+    return rcpp_result_gen;
+END_RCPP
+}
 // invsurvf_con_c
 NumericVector invsurvf_con_c(NumericVector uvec, double lambda0);
 RcppExport SEXP _gamrel_invsurvf_con_c(SEXP uvecSEXP, SEXP lambda0SEXP) {
@@ -600,6 +612,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// hazf_chzf_ifr_c
+NumericMatrix hazf_chzf_ifr_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_hazf_chzf_ifr_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_ifr_c(tvec, lambda0, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
 // hazf_dfr_c
 NumericVector hazf_dfr_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
 RcppExport SEXP _gamrel_hazf_dfr_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
@@ -625,6 +651,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
     rcpp_result_gen = Rcpp::wrap(chzf_dfr_c(tvec, lambda0, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_chzf_dfr_c
+NumericMatrix hazf_chzf_dfr_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_hazf_chzf_dfr_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_dfr_c(tvec, lambda0, thetavec, wvec));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -656,6 +696,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// hazf_chzf_cir_c
+NumericMatrix hazf_chzf_cir_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_hazf_chzf_cir_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_cir_c(tvec, lambda0, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
 // hazf_cdr_c
 NumericVector hazf_cdr_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
 RcppExport SEXP _gamrel_hazf_cdr_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
@@ -681,6 +735,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
     rcpp_result_gen = Rcpp::wrap(chzf_cdr_c(tvec, lambda0, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_chzf_cdr_c
+NumericMatrix hazf_chzf_cdr_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_hazf_chzf_cdr_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_cdr_c(tvec, lambda0, thetavec, wvec));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -714,6 +782,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// hazf_chzf_lwb_c
+NumericMatrix hazf_chzf_lwb_c(NumericVector tvec, double lambda0, double a, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_hazf_chzf_lwb_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP aSEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_lwb_c(tvec, lambda0, a, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
 // hazf_hbt_c
 NumericVector hazf_hbt_c(NumericVector tvec, double lambda0, double a, NumericVector thetavec, NumericVector wvec);
 RcppExport SEXP _gamrel_hazf_hbt_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP aSEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
@@ -744,6 +827,213 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// hazf_chzf_hbt_c
+NumericMatrix hazf_chzf_hbt_c(NumericVector tvec, double lambda0, double a, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_hazf_chzf_hbt_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP aSEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_hbt_c(tvec, lambda0, a, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_hcv_c
+NumericVector hazf_hcv_c(NumericVector tvec, double lambda0, double a, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_hazf_hcv_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP aSEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_hcv_c(tvec, lambda0, a, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// chzf_hcv_c
+NumericVector chzf_hcv_c(NumericVector tvec, double lambda0, double a, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_chzf_hcv_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP aSEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(chzf_hcv_c(tvec, lambda0, a, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_chzf_hcv_c
+NumericMatrix hazf_chzf_hcv_c(NumericVector tvec, double lambda0, double a, NumericVector thetavec, NumericVector wvec);
+RcppExport SEXP _gamrel_hazf_chzf_hcv_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP aSEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec(wvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_hcv_c(tvec, lambda0, a, thetavec, wvec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_sbt_c
+NumericVector hazf_sbt_c(NumericVector tvec, double lambda0, NumericVector thetavec1, NumericVector wvec1, NumericVector thetavec2, NumericVector wvec2);
+RcppExport SEXP _gamrel_hazf_sbt_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavec1SEXP, SEXP wvec1SEXP, SEXP thetavec2SEXP, SEXP wvec2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec1(thetavec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec1(wvec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec2(thetavec2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec2(wvec2SEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_sbt_c(tvec, lambda0, thetavec1, wvec1, thetavec2, wvec2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// chzf_sbt_c
+NumericVector chzf_sbt_c(NumericVector tvec, double lambda0, NumericVector thetavec1, NumericVector wvec1, NumericVector thetavec2, NumericVector wvec2);
+RcppExport SEXP _gamrel_chzf_sbt_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavec1SEXP, SEXP wvec1SEXP, SEXP thetavec2SEXP, SEXP wvec2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec1(thetavec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec1(wvec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec2(thetavec2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec2(wvec2SEXP);
+    rcpp_result_gen = Rcpp::wrap(chzf_sbt_c(tvec, lambda0, thetavec1, wvec1, thetavec2, wvec2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_chzf_sbt_c
+NumericMatrix hazf_chzf_sbt_c(NumericVector tvec, double lambda0, NumericVector thetavec1, NumericVector wvec1, NumericVector thetavec2, NumericVector wvec2);
+RcppExport SEXP _gamrel_hazf_chzf_sbt_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavec1SEXP, SEXP wvec1SEXP, SEXP thetavec2SEXP, SEXP wvec2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec1(thetavec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec1(wvec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec2(thetavec2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec2(wvec2SEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_sbt_c(tvec, lambda0, thetavec1, wvec1, thetavec2, wvec2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_scv_c
+NumericVector hazf_scv_c(NumericVector tvec, double lambda0, NumericVector thetavec1, NumericVector wvec1, NumericVector thetavec2, NumericVector wvec2);
+RcppExport SEXP _gamrel_hazf_scv_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavec1SEXP, SEXP wvec1SEXP, SEXP thetavec2SEXP, SEXP wvec2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec1(thetavec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec1(wvec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec2(thetavec2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec2(wvec2SEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_scv_c(tvec, lambda0, thetavec1, wvec1, thetavec2, wvec2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// chzf_scv_c
+NumericVector chzf_scv_c(NumericVector tvec, double lambda0, NumericVector thetavec1, NumericVector wvec1, NumericVector thetavec2, NumericVector wvec2);
+RcppExport SEXP _gamrel_chzf_scv_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavec1SEXP, SEXP wvec1SEXP, SEXP thetavec2SEXP, SEXP wvec2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec1(thetavec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec1(wvec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec2(thetavec2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec2(wvec2SEXP);
+    rcpp_result_gen = Rcpp::wrap(chzf_scv_c(tvec, lambda0, thetavec1, wvec1, thetavec2, wvec2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_chzf_scv_c
+NumericMatrix hazf_chzf_scv_c(NumericVector tvec, double lambda0, NumericVector thetavec1, NumericVector wvec1, NumericVector thetavec2, NumericVector wvec2);
+RcppExport SEXP _gamrel_hazf_chzf_scv_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavec1SEXP, SEXP wvec1SEXP, SEXP thetavec2SEXP, SEXP wvec2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec1(thetavec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec1(wvec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec2(thetavec2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec2(wvec2SEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_scv_c(tvec, lambda0, thetavec1, wvec1, thetavec2, wvec2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_mbt_c
+NumericVector hazf_mbt_c(NumericVector tvec, double pival, double lambda0, NumericVector thetavec1, NumericVector wvec1, NumericVector thetavec2, NumericVector wvec2);
+RcppExport SEXP _gamrel_hazf_mbt_c(SEXP tvecSEXP, SEXP pivalSEXP, SEXP lambda0SEXP, SEXP thetavec1SEXP, SEXP wvec1SEXP, SEXP thetavec2SEXP, SEXP wvec2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type pival(pivalSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec1(thetavec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec1(wvec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec2(thetavec2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec2(wvec2SEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_mbt_c(tvec, pival, lambda0, thetavec1, wvec1, thetavec2, wvec2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// chzf_mbt_c
+NumericVector chzf_mbt_c(NumericVector tvec, double pival, double lambda0, NumericVector thetavec1, NumericVector wvec1, NumericVector thetavec2, NumericVector wvec2);
+RcppExport SEXP _gamrel_chzf_mbt_c(SEXP tvecSEXP, SEXP pivalSEXP, SEXP lambda0SEXP, SEXP thetavec1SEXP, SEXP wvec1SEXP, SEXP thetavec2SEXP, SEXP wvec2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type pival(pivalSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec1(thetavec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec1(wvec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec2(thetavec2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec2(wvec2SEXP);
+    rcpp_result_gen = Rcpp::wrap(chzf_mbt_c(tvec, pival, lambda0, thetavec1, wvec1, thetavec2, wvec2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_chzf_mbt_c
+NumericMatrix hazf_chzf_mbt_c(NumericVector tvec, double pival, double lambda0, NumericVector thetavec1, NumericVector wvec1, NumericVector thetavec2, NumericVector wvec2);
+RcppExport SEXP _gamrel_hazf_chzf_mbt_c(SEXP tvecSEXP, SEXP pivalSEXP, SEXP lambda0SEXP, SEXP thetavec1SEXP, SEXP wvec1SEXP, SEXP thetavec2SEXP, SEXP wvec2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type pival(pivalSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec1(thetavec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec1(wvec1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec2(thetavec2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wvec2(wvec2SEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_mbt_c(tvec, pival, lambda0, thetavec1, wvec1, thetavec2, wvec2));
+    return rcpp_result_gen;
+END_RCPP
+}
 // hazf_mew_c
 NumericVector hazf_mew_c(NumericVector tvec, double alpha, double beta, double mu, double nu);
 RcppExport SEXP _gamrel_hazf_mew_c(SEXP tvecSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP muSEXP, SEXP nuSEXP) {
@@ -771,6 +1061,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type mu(muSEXP);
     Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
     rcpp_result_gen = Rcpp::wrap(chzf_mew_c(tvec, alpha, beta, mu, nu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hazf_chzf_mew_c
+NumericMatrix hazf_chzf_mew_c(NumericVector tvec, double alpha, double beta, double mu, double nu);
+RcppExport SEXP _gamrel_hazf_chzf_mew_c(SEXP tvecSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP muSEXP, SEXP nuSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type tvec(tvecSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    rcpp_result_gen = Rcpp::wrap(hazf_chzf_mew_c(tvec, alpha, beta, mu, nu));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -840,21 +1145,41 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_both_lambda_func_cdr_c", (DL_FUNC) &_gamrel_both_lambda_func_cdr_c, 4},
     {"_gamrel_hazf_con_c", (DL_FUNC) &_gamrel_hazf_con_c, 2},
     {"_gamrel_chzf_con_c", (DL_FUNC) &_gamrel_chzf_con_c, 2},
+    {"_gamrel_hazf_chzf_con_c", (DL_FUNC) &_gamrel_hazf_chzf_con_c, 2},
     {"_gamrel_invsurvf_con_c", (DL_FUNC) &_gamrel_invsurvf_con_c, 2},
     {"_gamrel_hazf_ifr_c", (DL_FUNC) &_gamrel_hazf_ifr_c, 4},
     {"_gamrel_chzf_ifr_c", (DL_FUNC) &_gamrel_chzf_ifr_c, 4},
+    {"_gamrel_hazf_chzf_ifr_c", (DL_FUNC) &_gamrel_hazf_chzf_ifr_c, 4},
     {"_gamrel_hazf_dfr_c", (DL_FUNC) &_gamrel_hazf_dfr_c, 4},
     {"_gamrel_chzf_dfr_c", (DL_FUNC) &_gamrel_chzf_dfr_c, 4},
+    {"_gamrel_hazf_chzf_dfr_c", (DL_FUNC) &_gamrel_hazf_chzf_dfr_c, 4},
     {"_gamrel_hazf_cir_c", (DL_FUNC) &_gamrel_hazf_cir_c, 4},
     {"_gamrel_chzf_cir_c", (DL_FUNC) &_gamrel_chzf_cir_c, 4},
+    {"_gamrel_hazf_chzf_cir_c", (DL_FUNC) &_gamrel_hazf_chzf_cir_c, 4},
     {"_gamrel_hazf_cdr_c", (DL_FUNC) &_gamrel_hazf_cdr_c, 4},
     {"_gamrel_chzf_cdr_c", (DL_FUNC) &_gamrel_chzf_cdr_c, 4},
+    {"_gamrel_hazf_chzf_cdr_c", (DL_FUNC) &_gamrel_hazf_chzf_cdr_c, 4},
     {"_gamrel_hazf_lwb_c", (DL_FUNC) &_gamrel_hazf_lwb_c, 5},
     {"_gamrel_chzf_lwb_c", (DL_FUNC) &_gamrel_chzf_lwb_c, 5},
+    {"_gamrel_hazf_chzf_lwb_c", (DL_FUNC) &_gamrel_hazf_chzf_lwb_c, 5},
     {"_gamrel_hazf_hbt_c", (DL_FUNC) &_gamrel_hazf_hbt_c, 5},
     {"_gamrel_chzf_hbt_c", (DL_FUNC) &_gamrel_chzf_hbt_c, 5},
+    {"_gamrel_hazf_chzf_hbt_c", (DL_FUNC) &_gamrel_hazf_chzf_hbt_c, 5},
+    {"_gamrel_hazf_hcv_c", (DL_FUNC) &_gamrel_hazf_hcv_c, 5},
+    {"_gamrel_chzf_hcv_c", (DL_FUNC) &_gamrel_chzf_hcv_c, 5},
+    {"_gamrel_hazf_chzf_hcv_c", (DL_FUNC) &_gamrel_hazf_chzf_hcv_c, 5},
+    {"_gamrel_hazf_sbt_c", (DL_FUNC) &_gamrel_hazf_sbt_c, 6},
+    {"_gamrel_chzf_sbt_c", (DL_FUNC) &_gamrel_chzf_sbt_c, 6},
+    {"_gamrel_hazf_chzf_sbt_c", (DL_FUNC) &_gamrel_hazf_chzf_sbt_c, 6},
+    {"_gamrel_hazf_scv_c", (DL_FUNC) &_gamrel_hazf_scv_c, 6},
+    {"_gamrel_chzf_scv_c", (DL_FUNC) &_gamrel_chzf_scv_c, 6},
+    {"_gamrel_hazf_chzf_scv_c", (DL_FUNC) &_gamrel_hazf_chzf_scv_c, 6},
+    {"_gamrel_hazf_mbt_c", (DL_FUNC) &_gamrel_hazf_mbt_c, 7},
+    {"_gamrel_chzf_mbt_c", (DL_FUNC) &_gamrel_chzf_mbt_c, 7},
+    {"_gamrel_hazf_chzf_mbt_c", (DL_FUNC) &_gamrel_hazf_chzf_mbt_c, 7},
     {"_gamrel_hazf_mew_c", (DL_FUNC) &_gamrel_hazf_mew_c, 5},
     {"_gamrel_chzf_mew_c", (DL_FUNC) &_gamrel_chzf_mew_c, 5},
+    {"_gamrel_hazf_chzf_mew_c", (DL_FUNC) &_gamrel_hazf_chzf_mew_c, 5},
     {"_gamrel_shellSort_c", (DL_FUNC) &_gamrel_shellSort_c, 1},
     {"_gamrel_order_c", (DL_FUNC) &_gamrel_order_c, 1},
     {"_gamrel_rcpp_hello_world", (DL_FUNC) &_gamrel_rcpp_hello_world, 0},
