@@ -675,8 +675,12 @@ hazf.MBT <- function(tvec, model.list, use.Cpp=FALSE) {
     ivec2 <- chzf(tvec, model.list2)
     fbar1 <- exp(-ivec1)
     fbar2 <- exp(-ivec2)
-    lambdavec <- ( model.list$pival*hvec1*fbar1 + (1-model.list$pival)*hvec2*fbar2 )/(
-                   model.list$pival*fbar1       + (1-model.list$pival)*fbar2 )
+    ivec1inf <- sum(model.list1$wvec*model.list1$thetavec)
+    fbar1inf <- exp(-ivec1inf)
+    lambdavec <- ( model.list$pival*hvec1*(fbar1-fbar1inf)/(1-fbar1inf) 
+                      + (1-model.list$pival)*hvec2*fbar2 )/(
+                   model.list$pival*(fbar1-fbar1inf)/(1-fbar1inf)       
+                      + (1-model.list$pival)*fbar2 )
   }
   return(lambdavec)
 }
@@ -696,7 +700,9 @@ chzf.MBT <- function(tvec, model.list, use.Cpp=FALSE) {
     ivec2 <- chzf(tvec, model.list2)
     fbar1 <- exp(-ivec1)
     fbar2 <- exp(-ivec2)
-    clambdavec <- -log( model.list$pival*fbar1 + (1-model.list$pival)*fbar2 )
+    ivec1inf <- sum(model.list1$wvec*model.list1$thetavec)
+    fbar1inf <- exp(-ivec1inf)
+    clambdavec <- -log( model.list$pival*(fbar1-fbar1inf)/(fbar1inf) + (1-model.list$pival)*fbar2 )
   }
   return(clambdavec)
 }
@@ -716,6 +722,11 @@ invsurvf.MBT <- function(uvec, model.list, use.Cpp=FALSE) {
   ff <- function(tt,f0) {
     chzf(tt,model.list,use.Cpp)-f0
   }
+  #print(cbind(uvec,-log(uvec),
+  #            kvec,
+  #            ivec[kvec],ivec[kvec+1],
+  #            ff(othetavec[kvec],-log(uvec)),
+  #            ff(othetavec[kvec+1],-log(uvec)))) ##!!==
   tvec <- sapply(1:n,
                  function(i) {
                    if(kvec[i]==ntt) {

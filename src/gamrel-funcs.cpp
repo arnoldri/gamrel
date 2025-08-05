@@ -13,8 +13,6 @@ IntegerVector order1_c(NumericVector x) {
   return match(sorted, x);
 }
 
-
-
 //' C version of mean()
 //' 
 //' @export
