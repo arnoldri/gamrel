@@ -232,13 +232,37 @@ NumericVector hazf_dfr_c(NumericVector tvec,
  int kmax = thetavec.size();
  NumericVector lambdavec(n);
  int i, k;
- 
+ double clambda1;
+ double clambda1inf; 
+ double fbar1;
+ double fbar1inf;
+
  for(i=0; i<n; i++) {
    lambdavec[i] = lambda0;
    for(k=0; k<kmax; k++) {
      if(thetavec[k]>tvec[i]) lambdavec[i] += wvec[k];
    }
  }
+ 
+ if(lambda0==0) { /* modify in this special case */
+   for(k=0; k<kmax; k++) {
+     clambda1inf += wvec[k]*thetavec[k];
+   }
+   fbar1inf = exp(-clambda1inf);
+
+   for(i=0; i<n; i++) {
+     clambda1 = 0;
+     for(k=0; k<kmax; k++) {
+       if(thetavec[k]<tvec[i]) {
+         clambda1 += wvec[k]*thetavec[k]; 
+       } else {
+         clambda1 += wvec[k]*tvec[i]; 
+       }
+     }
+     fbar1 = exp(-clambda1);
+     lambdavec[i] *= fbar1/(fbar1-fbar1inf);
+   }
+ } /* end of modification */
  
  return lambdavec;
 }
@@ -264,6 +288,9 @@ NumericVector chzf_dfr_c(NumericVector tvec,
  int kmax = thetavec.size();
  NumericVector clambdavec(n);
  int i, k;
+ double clambda1inf;
+ double fbar1;
+ double fbar1inf;
  
  for(i=0; i<n; i++) {
    clambdavec[i] = lambda0*tvec[i];
@@ -275,6 +302,18 @@ NumericVector chzf_dfr_c(NumericVector tvec,
      }
    }
  }
+
+ if(lambda0==0) { /* modify in this special case */
+   for(k=0; k<kmax; k++) {
+      clambda1inf += wvec[k]*thetavec[k];
+   }
+   fbar1inf = exp(-clambda1inf);
+   
+   for(i=0; i<n; i++) {
+     fbar1 = exp(-clambdavec[i]);
+     clambdavec[i] = -log( (fbar1-fbar1inf)/(1-fbar1inf) );
+   }
+ } /* end of modification */
  
  return clambdavec;
 }
@@ -300,6 +339,9 @@ NumericMatrix hazf_chzf_dfr_c(NumericVector tvec,
  int kmax = thetavec.size();
  NumericMatrix haz_chz_mat(n,2);
  int i, k;
+ double clambda1inf;
+ double fbar1;
+ double fbar1inf;
  
  for(i=0; i<n; i++) {
    haz_chz_mat(i,0) = lambda0;
@@ -313,7 +355,20 @@ NumericMatrix hazf_chzf_dfr_c(NumericVector tvec,
      }
    }
  }
-  
+
+ if(lambda0==0) { /* modify in this special case */
+   for(k=0; k<kmax; k++) {
+     clambda1inf += wvec[k]*thetavec[k];
+   }
+   fbar1inf = exp(-clambda1inf);
+   
+   for(i=0; i<n; i++) {
+     fbar1 = exp(-haz_chz_mat(i,1));
+     haz_chz_mat(i,0) *= fbar1/(fbar1-fbar1inf);
+     haz_chz_mat(i,1) = -log( (fbar1-fbar1inf)/(1-fbar1inf) );
+   }
+ } /* end of modification */
+   
  return haz_chz_mat;
 }
 
@@ -1139,29 +1194,21 @@ NumericVector hazf_mbt_c(NumericVector tvec,
                          NumericVector thetavec2, 
                          NumericVector wvec2) {
  int n = tvec.size();
- int kmax1 = thetavec1.size();
  NumericVector lambdavec(n);
  NumericMatrix haz_chz_mat1(n,2);
  NumericMatrix haz_chz_mat2(n,2);
- int i, k;
- double ivec1inf, fbar1inf;
+ int i;
  double fbar1, fbar2;
  double num, den;
  
  haz_chz_mat1 = hazf_chzf_dfr_c(tvec, (double) 0.0, thetavec1, wvec1);
  haz_chz_mat2 = hazf_chzf_ifr_c(tvec, lambda0, thetavec2, wvec2);
 
- ivec1inf = 0.0;
- for(k=0; k<kmax1; k++) {
-   ivec1inf += wvec1[k]*thetavec1[k];
- }
- fbar1inf = exp(-ivec1inf);
-  
  for(i=0; i<n; i++) {
    fbar1 = exp(-haz_chz_mat1(i,1));
    fbar2 = exp(-haz_chz_mat2(i,1));
-   num = pival*haz_chz_mat1(i,0)*(fbar1-fbar1inf)/(1-fbar1inf) + (1-pival)*haz_chz_mat2(i,0)*fbar2;
-   den = pival*(fbar1-fbar1inf)/(1-fbar1inf) + (1-pival)*fbar2;
+   num = pival*haz_chz_mat1(i,0)*fbar1 + (1-pival)*haz_chz_mat2(i,0)*fbar2;
+   den = pival*fbar1 + (1-pival)*fbar2;
    lambdavec[i] = num/den;
  }
  
@@ -1192,23 +1239,14 @@ NumericVector chzf_mbt_c(NumericVector tvec,
                          NumericVector thetavec2, 
                          NumericVector wvec2) {
  int n = tvec.size();
- int kmax1 = thetavec1.size();
  NumericVector fbar1(n);
  NumericVector fbar2(n);
  NumericVector clambdavec(n);
- double ivec1inf, fbar1inf;
- int k;
 
- ivec1inf = 0.0;
- for(k=0; k<kmax1; k++) {
-   ivec1inf += wvec1[k]*thetavec1[k];
- }
- fbar1inf = exp(-ivec1inf);
- 
  fbar1 = exp(-chzf_dfr_c(tvec, (double) 0.0, thetavec1, wvec1));
  fbar2 = exp(-chzf_ifr_c(tvec, lambda0, thetavec2, wvec2));
  
- clambdavec = -log(pival*(fbar1-fbar1inf)/(1-fbar1inf) + (1-pival)*fbar2);
+ clambdavec = -log(pival*fbar1 + (1-pival)*fbar2);
  
  return clambdavec;
 }
@@ -1238,29 +1276,21 @@ NumericMatrix hazf_chzf_mbt_c(NumericVector tvec,
                               NumericVector wvec2) {
  
  int n = tvec.size();
- int kmax1 = thetavec1.size();
  NumericMatrix haz_chz_mat1(n,2);
  NumericMatrix haz_chz_mat2(n,2);
  NumericMatrix haz_chz_mat(n,2);
- int i, k;
- double ivec1inf, fbar1inf;
+ int i;
  double fbar1, fbar2;
  double num, den;
 
- ivec1inf = 0.0;
- for(k=0; k<kmax1; k++) {
-   ivec1inf += wvec1[k]*thetavec1[k];
- }
- fbar1inf = exp(-ivec1inf);
- 
  haz_chz_mat1 = hazf_chzf_dfr_c(tvec, (double) 0.0, thetavec1, wvec1);
  haz_chz_mat2 = hazf_chzf_ifr_c(tvec, lambda0, thetavec2, wvec2);
 
  for(i=0; i<n; i++) {
    fbar1 = exp(-haz_chz_mat1(i,1));
    fbar2 = exp(-haz_chz_mat2(i,1));
-   num = pival*haz_chz_mat1(i,0)*(fbar1-fbar1inf)/(1-fbar1inf) + (1-pival)*haz_chz_mat2(i,0)*fbar2;
-   den = pival*(fbar1-fbar1inf)/(1-fbar1inf) + (1-pival)*fbar2;
+   num = pival*haz_chz_mat1(i,0)*fbar1 + (1-pival)*haz_chz_mat2(i,0)*fbar2;
+   den = pival*fbar1 + (1-pival)*fbar2;
    haz_chz_mat(i,0) = num/den;
    haz_chz_mat(i,1) = -log(den);
  }

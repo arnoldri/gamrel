@@ -297,7 +297,16 @@ hazf.DFR <- function(tvec, model.list, use.Cpp=FALSE) {
   if(use.Cpp) {
     lambdavec <- hazf_dfr_c(tvec, model.list$lambda0, model.list$thetavec, model.list$wvec)
   } else {
-    lambdavec <- model.list$lambda0 + as.vector(outer(tvec,model.list$thetavec,"<")%*%model.list$wvec)
+    if(model.list$lambda==0) {
+      lambdavec1 <- as.vector(outer(tvec,model.list$thetavec,"<")%*%model.list$wvec)
+      clambdavec1 <- as.vector(outer(tvec,model.list$thetavec,pmin)%*%model.list$wvec)
+      clambda1inf <- sum(model.list$wvec*model.list$thetavec)
+      fbar1 <- exp(-clambdavec1)
+      fbar1inf <- exp(-clambda1inf)
+      lambdavec <- (lambdavec1*fbar1)/(fbar1-fbar1inf)
+    } else {
+      lambdavec <- model.list$lambda0 + as.vector(outer(tvec,model.list$thetavec,"<")%*%model.list$wvec)
+    }
   }
   return(lambdavec)
 }
@@ -305,9 +314,15 @@ chzf.DFR <- function(tvec, model.list, use.Cpp=FALSE) {
   if(use.Cpp) {
     clambdavec <- chzf_dfr_c(tvec, model.list$lambda0, model.list$thetavec, model.list$wvec)
   } else {
-    clambdavec <- ( model.list$lambda0*tvec
-                    + as.vector(outer(tvec,model.list$thetavec,pmin)%*%model.list$wvec)
-    )
+    if(model.list$lambda0==0) {
+      clambdavec1 <- as.vector(outer(tvec,model.list$thetavec,pmin)%*%model.list$wvec)
+      clambda1inf <- sum(model.list$wvec*model.list$thetavec)
+      fbar1 <- exp(-clambdavec1)
+      fbar1inf <- exp(-clambda1inf)
+      clambdavec <- -log(pmax(0,fbar1-fbar1inf)/(1-fbar1inf))
+    } else {
+      clambdavec <- model.list$lambda0*tvec + as.vector(outer(tvec,model.list$thetavec,pmin)%*%model.list$wvec)
+    }
   }
   return(clambdavec)
 }
@@ -315,15 +330,30 @@ invsurvf.DFR <- function(uvec, model.list, use.Cpp=FALSE) {
   # ordering of theta values
   othetavec <- sort(model.list$thetavec)
   othetavec <- c(0,othetavec,1.2*othetavec[length(othetavec)])
-  # integrated hazard at these values
-  ivec <- chzf(othetavec,model.list,use.Cpp)
-  # location of -log(uvec) in the integrated hazards
-  kvec <- findInterval(-log(uvec),ivec)
-  kvecp1 <- kvec+1
-  # linear interpolation
-  tvec <- ( othetavec[kvec]
-            + (othetavec[kvecp1]-othetavec[kvec])/(ivec[kvecp1]-ivec[kvec])*(-log(uvec)-ivec[kvec])
-          )
+  if(model.list$lambda0==0) {
+    # unshifted integrated hazard at these values
+    ivec1 <- as.vector(outer(othetavec,model.list$thetavec,pmin)%*%model.list$wvec)
+    clambda1inf <- sum(model.list$wvec*model.list$thetavec)
+    fbar1inf <- exp(-clambda1inf)
+    uvec1 <- fbar1inf + uvec*(1-fbar1inf)
+    # location of -log(uvec1) in the integrated hazards
+    kvec <- findInterval(-log(uvec1),ivec1)
+    kvecp1 <- kvec+1
+    # linear interpolation
+    tvec <- ( othetavec[kvec]
+              + (othetavec[kvecp1]-othetavec[kvec])/(ivec1[kvecp1]-ivec1[kvec])*(-log(uvec1)-ivec1[kvec])
+    )
+  } else {
+    # integrated hazard at these values
+    ivec <- chzf(othetavec,model.list,use.Cpp)
+    # location of -log(uvec) in the integrated hazards
+    kvec <- findInterval(-log(uvec),ivec)
+    kvecp1 <- kvec+1
+    # linear interpolation
+    tvec <- ( othetavec[kvec]
+              + (othetavec[kvecp1]-othetavec[kvec])/(ivec[kvecp1]-ivec[kvec])*(-log(uvec)-ivec[kvec])
+    )
+  }
   return(tvec)
 }
 
@@ -675,12 +705,8 @@ hazf.MBT <- function(tvec, model.list, use.Cpp=FALSE) {
     ivec2 <- chzf(tvec, model.list2)
     fbar1 <- exp(-ivec1)
     fbar2 <- exp(-ivec2)
-    ivec1inf <- sum(model.list1$wvec*model.list1$thetavec)
-    fbar1inf <- exp(-ivec1inf)
-    lambdavec <- ( model.list$pival*hvec1*(fbar1-fbar1inf)/(1-fbar1inf) 
-                      + (1-model.list$pival)*hvec2*fbar2 )/(
-                   model.list$pival*(fbar1-fbar1inf)/(1-fbar1inf)       
-                      + (1-model.list$pival)*fbar2 )
+    lambdavec <- ( model.list$pival*hvec1*fbar1 + (1-model.list$pival)*hvec2*fbar2 )/(
+                   model.list$pival*fbar1       + (1-model.list$pival)*fbar2 )
   }
   return(lambdavec)
 }
@@ -700,9 +726,7 @@ chzf.MBT <- function(tvec, model.list, use.Cpp=FALSE) {
     ivec2 <- chzf(tvec, model.list2)
     fbar1 <- exp(-ivec1)
     fbar2 <- exp(-ivec2)
-    ivec1inf <- sum(model.list1$wvec*model.list1$thetavec)
-    fbar1inf <- exp(-ivec1inf)
-    clambdavec <- -log( model.list$pival*(fbar1-fbar1inf)/(fbar1inf) + (1-model.list$pival)*fbar2 )
+    clambdavec <- -log( model.list$pival*fbar1 + (1-model.list$pival)*fbar2 )
   }
   return(clambdavec)
 }
