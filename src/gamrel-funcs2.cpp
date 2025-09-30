@@ -5,6 +5,34 @@ using namespace Rcpp;
 //--// [[Rcpp::depends(fntl)]]
 //--#include "fntl.h"
 
+//' C version of order() - bad performance with duplicates
+//' 
+//' @export
+// [[Rcpp::export]]
+IntegerVector orderfunc_c(NumericVector x) {
+ if (is_true(any(duplicated(x)))) {
+   Rf_warning("There are duplicates in 'x'; order not guaranteed to match that of R's base::order");
+ }
+ NumericVector sorted = clone(x).sort();
+ return match(sorted, x);
+}
+
+//' C version of mean()
+//' 
+//' @export
+// [[Rcpp::export]]
+double meanfunc_c(NumericVector x) {
+ int n = x.size();
+ double total = 0;
+ 
+ for(int i = 0; i < n; ++i) {
+   total += x[i];
+ }
+ return total / n;
+}
+
+ 
+
 //**********************************************************************
 //* CON - Constant Hazard Rate
 //**********************************************************************
@@ -244,26 +272,6 @@ NumericVector hazf_dfr_c(NumericVector tvec,
    }
  }
  
- if(lambda0==0) { /* modify in this special case */
-   for(k=0; k<kmax; k++) {
-     clambda1inf += wvec[k]*thetavec[k];
-   }
-   fbar1inf = exp(-clambda1inf);
-
-   for(i=0; i<n; i++) {
-     clambda1 = 0;
-     for(k=0; k<kmax; k++) {
-       if(thetavec[k]<tvec[i]) {
-         clambda1 += wvec[k]*thetavec[k]; 
-       } else {
-         clambda1 += wvec[k]*tvec[i]; 
-       }
-     }
-     fbar1 = exp(-clambda1);
-     lambdavec[i] *= fbar1/(fbar1-fbar1inf);
-   }
- } /* end of modification */
- 
  return lambdavec;
 }
 
@@ -303,18 +311,6 @@ NumericVector chzf_dfr_c(NumericVector tvec,
    }
  }
 
- if(lambda0==0) { /* modify in this special case */
-   for(k=0; k<kmax; k++) {
-      clambda1inf += wvec[k]*thetavec[k];
-   }
-   fbar1inf = exp(-clambda1inf);
-   
-   for(i=0; i<n; i++) {
-     fbar1 = exp(-clambdavec[i]);
-     clambdavec[i] = -log( (fbar1-fbar1inf)/(1-fbar1inf) );
-   }
- } /* end of modification */
- 
  return clambdavec;
 }
 
@@ -356,19 +352,6 @@ NumericMatrix hazf_chzf_dfr_c(NumericVector tvec,
    }
  }
 
- if(lambda0==0) { /* modify in this special case */
-   for(k=0; k<kmax; k++) {
-     clambda1inf += wvec[k]*thetavec[k];
-   }
-   fbar1inf = exp(-clambda1inf);
-   
-   for(i=0; i<n; i++) {
-     fbar1 = exp(-haz_chz_mat(i,1));
-     haz_chz_mat(i,0) *= fbar1/(fbar1-fbar1inf);
-     haz_chz_mat(i,1) = -log( (fbar1-fbar1inf)/(1-fbar1inf) );
-   }
- } /* end of modification */
-   
  return haz_chz_mat;
 }
 
@@ -1008,8 +991,8 @@ NumericVector hazf_sbt_c(NumericVector tvec,
  int n = tvec.size();
  NumericVector lambdavec(n);
 
- lambdavec = hazf_dfr_c(tvec, (double) 0.0, thetavec1, wvec1);
- lambdavec += hazf_ifr_c(tvec, lambda0, thetavec2, wvec2);
+ lambdavec = hazf_dfr_c(tvec, lambda0, thetavec1, wvec1);
+ lambdavec += hazf_ifr_c(tvec, (double) 0.0, thetavec2, wvec2);
 
  return lambdavec;
 }
@@ -1038,8 +1021,8 @@ NumericVector chzf_sbt_c(NumericVector tvec,
  int n = tvec.size();
  NumericVector clambdavec(n);
  
- clambdavec = chzf_dfr_c(tvec, (double) 0.0, thetavec1, wvec1);
- clambdavec += chzf_ifr_c(tvec, lambda0, thetavec2, wvec2);
+ clambdavec = chzf_dfr_c(tvec, lambda0, thetavec1, wvec1);
+ clambdavec += chzf_ifr_c(tvec, (double) 0.0, thetavec2, wvec2);
 
  return clambdavec;
 }
@@ -1069,8 +1052,8 @@ NumericMatrix hazf_chzf_sbt_c(NumericVector tvec,
  int n = tvec.size();
  NumericMatrix haz_chz_mat(n,2);
 
- haz_chz_mat = hazf_chzf_dfr_c(tvec, (double) 0.0, thetavec1, wvec1);
- haz_chz_mat += hazf_chzf_ifr_c(tvec, lambda0, thetavec2, wvec2);
+ haz_chz_mat = hazf_chzf_dfr_c(tvec, lambda0, thetavec1, wvec1);
+ haz_chz_mat += hazf_chzf_ifr_c(tvec, (double) 0.0, thetavec2, wvec2);
  
  return haz_chz_mat;
 }
@@ -1101,8 +1084,8 @@ NumericVector hazf_scv_c(NumericVector tvec,
  int n = tvec.size();
  NumericVector lambdavec(n);
  
- lambdavec = hazf_cdr_c(tvec, (double) 0.0, thetavec1, wvec1);
- lambdavec += hazf_cir_c(tvec, lambda0, thetavec2, wvec2);
+ lambdavec = hazf_cdr_c(tvec, lambda0, thetavec1, wvec1);
+ lambdavec += hazf_cir_c(tvec, (double) 0.0, thetavec2, wvec2);
  
  return lambdavec;
 }
@@ -1131,8 +1114,8 @@ NumericVector chzf_scv_c(NumericVector tvec,
  int n = tvec.size();
  NumericVector clambdavec(n);
  
- clambdavec = chzf_cdr_c(tvec, (double) 0.0, thetavec1, wvec1);
- clambdavec += chzf_cir_c(tvec, lambda0, thetavec2, wvec2);
+ clambdavec = chzf_cdr_c(tvec, lambda0, thetavec1, wvec1);
+ clambdavec += chzf_cir_c(tvec, (double) 0.0, thetavec2, wvec2);
  
  return clambdavec;
 }
@@ -1162,8 +1145,8 @@ NumericMatrix hazf_chzf_scv_c(NumericVector tvec,
  int n = tvec.size();
  NumericMatrix haz_chz_mat(n,2);
  
- haz_chz_mat = hazf_chzf_cdr_c(tvec, (double) 0.0, thetavec1, wvec1);
- haz_chz_mat += hazf_chzf_cir_c(tvec, lambda0, thetavec2, wvec2);
+ haz_chz_mat = hazf_chzf_cdr_c(tvec, lambda0, thetavec1, wvec1);
+ haz_chz_mat += hazf_chzf_cir_c(tvec, (double) 0.0, thetavec2, wvec2);
  
  return haz_chz_mat;
 }
@@ -1201,8 +1184,8 @@ NumericVector hazf_mbt_c(NumericVector tvec,
  double fbar1, fbar2;
  double num, den;
  
- haz_chz_mat1 = hazf_chzf_dfr_c(tvec, (double) 0.0, thetavec1, wvec1);
- haz_chz_mat2 = hazf_chzf_ifr_c(tvec, lambda0, thetavec2, wvec2);
+ haz_chz_mat1 = hazf_chzf_dfr_c(tvec, lambda0, thetavec1, wvec1);
+ haz_chz_mat2 = hazf_chzf_ifr_c(tvec, (double) 0.0, thetavec2, wvec2);
 
  for(i=0; i<n; i++) {
    fbar1 = exp(-haz_chz_mat1(i,1));
@@ -1243,8 +1226,8 @@ NumericVector chzf_mbt_c(NumericVector tvec,
  NumericVector fbar2(n);
  NumericVector clambdavec(n);
 
- fbar1 = exp(-chzf_dfr_c(tvec, (double) 0.0, thetavec1, wvec1));
- fbar2 = exp(-chzf_ifr_c(tvec, lambda0, thetavec2, wvec2));
+ fbar1 = exp(-chzf_dfr_c(tvec, lambda0, thetavec1, wvec1));
+ fbar2 = exp(-chzf_ifr_c(tvec, (double) 0.0, thetavec2, wvec2));
  
  clambdavec = -log(pival*fbar1 + (1-pival)*fbar2);
  
@@ -1283,8 +1266,8 @@ NumericMatrix hazf_chzf_mbt_c(NumericVector tvec,
  double fbar1, fbar2;
  double num, den;
 
- haz_chz_mat1 = hazf_chzf_dfr_c(tvec, (double) 0.0, thetavec1, wvec1);
- haz_chz_mat2 = hazf_chzf_ifr_c(tvec, lambda0, thetavec2, wvec2);
+ haz_chz_mat1 = hazf_chzf_dfr_c(tvec, lambda0, thetavec1, wvec1);
+ haz_chz_mat2 = hazf_chzf_ifr_c(tvec, (double) 0.0, thetavec2, wvec2);
 
  for(i=0; i<n; i++) {
    fbar1 = exp(-haz_chz_mat1(i,1));
@@ -1298,7 +1281,233 @@ NumericMatrix hazf_chzf_mbt_c(NumericVector tvec,
  return haz_chz_mat;
 }
 
+//**********************************************************************
+//* LCV - log convex
+//**********************************************************************
+//' Hazard rate function - LCV
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to scale the hazard rate
+//' @param w0 Offset to be added to the slope of the log hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' 
+//' @description Hazard rate function for LCV hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector hazf_lcv_c(NumericVector tvec,
+                         double lambda0, 
+                         double w0, 
+                         NumericVector thetavec, 
+                         NumericVector wvec
+) {
+ int n = tvec.size();
+ int kmax = thetavec.size();
+ NumericVector lambdavec(n);
+ double loglambda;
+ int i, k;
+ 
+ for(i=0; i<n; i++) {
+   loglambda = w0*tvec[i];
+   for(k=0; k<kmax; k++) {
+     if(thetavec[k]<tvec[i]) loglambda += wvec[k]*(tvec[i]-thetavec[k]);
+   }
+   lambdavec[i] = lambda0*exp(loglambda);
+ }
+ 
+ return lambdavec;
+}
 
+//**********************************************************************
+//' Integrated Hazard rate function - LCV
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to scale the hazard rate
+//' @param w0 Offset to be added to the slope of the log hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' @param epsilon Size of value close to zero
+//' 
+//' @description Integrated hazard rate function for LCV hazard
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector chzf_lcv_c(NumericVector tvec,
+                         double lambda0,
+                         double w0,
+                         NumericVector thetavec, 
+                         NumericVector wvec,
+                         double epsilon // needs 100*.Machine$double.neg.eps
+) {
+  int n = tvec.size();
+  int kmax = thetavec.size();
+  int kmaxp2 = kmax+2;
+  NumericVector clambdavec(n);
+  IntegerVector odx(kmax);
+  NumericVector othetavec(kmaxp2);
+  NumericVector owvec(kmaxp2);
+  NumericVector s01vec(kmaxp2); 
+  NumericVector s2vec(kmaxp2);
+  NumericVector ccvec(kmaxp2);
+  double cs;
+  NumericVector ssvec(kmaxp2);
+  int i,k,k1;
+  
+  odx = orderfunc_c(thetavec);
+  othetavec[0] = 0;
+  owvec[0] = 0;
+  for(k=0; k<kmax; k++) {
+    othetavec[k+1] = thetavec[odx[k]-1];
+    owvec[k+1] = wvec[odx[k]-1];
+  }
+  othetavec[kmaxp2-1] = 1.1*othetavec[kmaxp2-2];
+  owvec[kmaxp2-1] = 0;
+  
+  s01vec[0] = w0;
+  s2vec[0] = 0;
+  for(k=1; k<kmaxp2; k++) {
+    s01vec[k] = s01vec[k-1] + owvec[k];   // w0+C
+    s2vec[k] = s2vec[k-1] + owvec[k]*othetavec[k];  // D
+  }
+  
+  ssvec[0] = 0;
+  for(k=0; k<kmaxp2-1; k++) {
+    ccvec[k] = lambda0*exp(-s2vec[k]);
+    if(s01vec[k]==0) {
+      cs = ccvec[k]*(othetavec[k+1]-othetavec[k]);
+    } else {
+      cs = (ccvec[k]/s01vec[k])*(exp(s01vec[k]*othetavec[k+1])-exp(s01vec[k]*othetavec[k]));
+    }
+    ssvec[k+1] = ssvec[k] + cs;
+  }
+  ccvec[kmaxp2-1] = ccvec[kmaxp2-2];
+  
+  // NumericVector excess(9);
+  
+  for(i=0; i<n; i++) {
+    k1 = 0;
+    while( (k1<kmaxp2-1) && (othetavec[k1+1]<=tvec[i]) ) {   // try < rather than <=?
+      k1++;
+    }
+    clambdavec[i] = ssvec[k1];
+    if(std::abs(s01vec[k1])<epsilon) {
+      //excess[0] = -i;
+      //excess[1] = k1;
+      //excess[2] = othetavec[k1];
+      //excess[3] = tvec[i];
+      //excess[4] = othetavec[k1+1];
+      //excess[5] = int_lambdavec[i];
+      //excess[6] = ccvec[k1]*(tvec[i]-othetavec[k1]);
+      //excess[7] = s01vec[k1];
+      //excess[8] = ccvec[k1];
+      clambdavec[i] += ccvec[k1]*(tvec[i]-othetavec[k1]);
+    } else {
+      //excess[0] = i;
+      //excess[1] = k1;
+      //excess[2] = othetavec[k1];
+      //excess[3] = tvec[i];
+      //excess[4] = othetavec[k1+1];
+      //excess[5] = int_lambdavec[i];
+      //excess[6] = (ccvec[k1]/s01vec[k1])*(exp(s01vec[k1]*tvec[i])-exp(s01vec[k1]*othetavec[k1]));
+      //excess[7] = s01vec[k1];
+      //excess[8] = ccvec[k1];
+      clambdavec[i] += (ccvec[k1]/s01vec[k1])*(exp(s01vec[k1]*tvec[i])-exp(s01vec[k1]*othetavec[k1]));
+    }
+    //Rcpp::Rcout << excess << std::endl; // !!==
+  }
+  
+  //Rcpp::Rcout << "s01vec" << std::endl; // !!==
+  //Rcpp::Rcout << s01vec << std::endl; // **!!==
+  //NumericVector excess(n);
+  //Rcpp::Rcout << std::numeric_limits::epsilon( ) << std::endl;
+  
+  return clambdavec;
+}
+
+
+//*************************************************************************
+//' Hazard and Integrated Hazard rate functions - LCV
+//' 
+//' @param tvec Locations at which to evaluate the function
+//' @param lambda0 Offset to scale the hazard rate
+//' @param w0 Offset to be added to the slope of the log hazard rate
+//' @param thetavec Locations
+//' @param wvec Weights
+//' @param epsilon Size of value close to zero
+//' 
+//' @description Hazard rate and integrated hazard rate functions generated by 
+//' a set of discrete locations and weights and integrated
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericMatrix hazf_chzf_lcv_c(NumericVector tvec,
+                              double lambda0,
+                              double w0,
+                              NumericVector thetavec, 
+                              NumericVector wvec,
+                              double epsilon  // needs 100*.Machine$double.neg.eps
+) {
+  int n = tvec.size();
+  int kmax = thetavec.size();
+  int kmaxp2 = kmax+2;
+  NumericMatrix haz_chz_mat(n,2);
+  IntegerVector odx(kmax);
+  NumericVector othetavec(kmaxp2);
+  NumericVector owvec(kmaxp2);
+  NumericVector s01vec(kmaxp2); 
+  NumericVector s2vec(kmaxp2);
+  NumericVector ccvec(kmaxp2);
+  double cs;
+  NumericVector ssvec(kmaxp2);
+  int i,k,k1;
+  
+  odx = orderfunc_c(thetavec);
+  othetavec[0] = 0;
+  owvec[0] = 0;
+  for(k=0; k<kmax; k++) {
+    othetavec[k+1] = thetavec[odx[k]-1];
+    owvec[k+1] = wvec[odx[k]-1];
+  }
+  othetavec[kmaxp2-1] = 1.1*othetavec[kmaxp2-2];
+  owvec[kmaxp2-1] = 0;
+  
+  s01vec[0] = w0;
+  s2vec[0] = 0;
+  for(k=1; k<kmaxp2; k++) {
+    s01vec[k] = s01vec[k-1] + owvec[k];   // w0+C
+    s2vec[k] = s2vec[k-1] + owvec[k]*othetavec[k];  // D
+  }
+  
+  ssvec[0] = 0;
+  for(k=0; k<kmaxp2-1; k++) {
+    ccvec[k] = lambda0*exp(-s2vec[k]);
+    if(s01vec[k]==0) {
+      cs = ccvec[k]*(othetavec[k+1]-othetavec[k]);
+    } else {
+      cs = (ccvec[k]/s01vec[k])*(exp(s01vec[k]*othetavec[k+1])-exp(s01vec[k]*othetavec[k]));
+    }
+    ssvec[k+1] = ssvec[k] + cs;
+  }
+  ccvec[kmaxp2-1] = ccvec[kmaxp2-2];
+  
+  
+  for(i=0; i<n; i++) {
+    k1 = 0;
+    while( (k1<kmaxp2-1) && (othetavec[k1+1]<=tvec[i]) ) {   // try < rather than <=?
+      k1++;
+    }
+    haz_chz_mat(i,0) = lambda0*exp(s01vec[k1]*tvec[i]-s2vec[k1]);
+    haz_chz_mat(i,1) = ssvec[k1];
+    if(std::abs(s01vec[k1])<epsilon) {
+      haz_chz_mat(i,1) += ccvec[k1]*(tvec[i]-othetavec[k1]);
+    } else {
+      haz_chz_mat(i,1) += (ccvec[k1]/s01vec[k1])*(exp(s01vec[k1]*tvec[i])-exp(s01vec[k1]*othetavec[k1]));
+    }
+  }
+  
+  return haz_chz_mat;
+}
 
 
 //**********************************************************************

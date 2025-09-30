@@ -42,7 +42,7 @@ solveptlinear <- function(f,t1,t2,f1,f2) {
 
 ####################################################
 # Generic
-# Models are CON/IFR/DFR/CIR/CDR/HBT/HCV/SBT/SCV/MBT/LCV/MEW
+# Models are CON/ IFR/DFR/ CIR/CDR/ LWB/ HBT/HCV/ SBT/SCV/ MBT/LCV/ MEW
 hazf <- function(tvec, model.list, use.Cpp=FALSE) {
   switch(model.list$model, 
          CON=hazf.CON(tvec, model.list, use.Cpp),
@@ -97,7 +97,8 @@ invsurvf <- function(uvec, model.list, use.Cpp=FALSE) {
          MEW=invsurvf.MEW(uvec, model.list, use.Cpp)
   )
 }
-hazf_chzf <- function(tvec, model.list, use.Cpp) {
+hazf_chzf <- function(tvec, model.list, use.Cpp, 
+                      epsilon=100*.Machine$double.neg.eps) {
   if(use.Cpp) {
     retval <- switch(model.list$model,
          CON=hazf_chzf_con_c(tvec, model.list$lambda0),
@@ -124,7 +125,9 @@ hazf_chzf <- function(tvec, model.list, use.Cpp) {
          MBT=hazf_chzf_mbt_c(tvec, model.list$pival, model.list$lambda0,
                              model.list$thetavec1, model.list$wvec1,
                              model.list$thetavec2, model.list$wvec2),
-         LCV=hazf_chzf_lcv_c(tvec),
+         LCV=hazf_chzf_lcv_c(tvec, model.list$lambda0, model.list$w0,
+                             model.list$thetavec, model.list$wvec,
+                             epsilon),
          MEW=hazf_chzf_mew_c(tvec, model.list$alpha, model.list$beta,
                              model.list$mu, model.list$nu))
   } else {
@@ -169,7 +172,7 @@ as.parvec <- function(model.list) {
     stop(paste("Model",model.list$model,"not recognised"))
   }
 }
-as.model.list <- function(parvec,model) {
+as.model.list <- function(parvec,model) {  ##!!== incomplete
   if(model=="CON") {
     model.list <- list(model=model, lambda0=exp(parvec))
   } else if(model=="MEW") {
@@ -182,9 +185,9 @@ as.model.list <- function(parvec,model) {
 }
 
 plot.hazf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
-                      xlab="t", ylab=expression(lambda(t)), ...) {
+                      xlab="t", ylab=expression(lambda(t)), scale=1, ...) {
   tvec <- seq(from=xlim[1], to=xlim[2], length=n)
-  fvec <- hazf(tvec,model.list,use.Cpp) 
+  fvec <- scale*hazf(tvec,model.list,use.Cpp) 
   ylim <- c(0,1.1*max(fvec))
   if(!add) {
     plot(tvec, fvec, ylim=ylim, xlab=xlab, ylab=ylab, type="l", ...)
@@ -195,29 +198,29 @@ plot.hazf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE,
 }
 
 plot.chzf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
-                      xlab="t", ylab=expression(Lambda(t)), ...) {
-  curve(chzf(x,model.list,use.Cpp), xlim=xlim, 
+                      xlab="t", ylab=expression(Lambda(t)), scale=1, ...) {
+  curve(scale*chzf(x,model.list,use.Cpp), xlim=xlim, 
         n=101, add=add, xlab=xlab, ylab=ylab, ...)
   if(!add) mtext(model.list$model, side=3, line=0, adj=1, cex=0.5)
 }
 
 plot.survf <- function(model.list, xlim, ylim=c(0,1), use.Cpp=FALSE, n=101, add=FALSE, 
-                       xlab="t", ylab=expression(bar(F)(t)), ...) {
-  curve(survf(x,model.list,use.Cpp), xlim=xlim, ylim=ylim, 
+                       xlab="t", ylab=expression(bar(F)(t)), scale=1, ...) {
+  curve(scale*survf(x,model.list,use.Cpp), xlim=xlim, ylim=ylim, 
         n=101, add=add, xlab=xlab, ylab=ylab, ...)
   if(!add) mtext(model.list$model, side=3, line=0, adj=1, cex=0.5)
 }
 
 plot.densf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
-                       xlab="t", ylab=expression(f(t)), ...) {
-  curve(densf(x,model.list,use.Cpp), xlim=xlim, 
+                       xlab="t", ylab=expression(f(t)), scale=1, ...) {
+  curve(scale*densf(x,model.list,use.Cpp), xlim=xlim, 
         n=101, add=add, xlab=xlab, ylab=ylab, ...)
   if(!add) mtext(model.list$model, side=3, line=0, adj=1, cex=0.5)
 }
 
 plot.invsurvf <- function(model.list, xlim=c(0,1)+0.0001*c(1,-1), use.Cpp=FALSE, n=101, add=FALSE, 
-                          xlab=expression(bar(F)(t)), ylab="t", ...) {
-  curve(invsurvf(x,model.list,use.Cpp), xlim=xlim, 
+                          xlab=expression(bar(F)(t)), ylab="t", scale=1, ...) {
+  curve(scale*invsurvf(x,model.list,use.Cpp), xlim=xlim, 
         n=101, add=add, xlab=xlab, ylab=ylab, ...)
   if(!add) mtext(model.list$model, side=3, line=0, adj=1, cex=0.5)
 }
@@ -297,16 +300,7 @@ hazf.DFR <- function(tvec, model.list, use.Cpp=FALSE) {
   if(use.Cpp) {
     lambdavec <- hazf_dfr_c(tvec, model.list$lambda0, model.list$thetavec, model.list$wvec)
   } else {
-    if(model.list$lambda==0) {
-      lambdavec1 <- as.vector(outer(tvec,model.list$thetavec,"<")%*%model.list$wvec)
-      clambdavec1 <- as.vector(outer(tvec,model.list$thetavec,pmin)%*%model.list$wvec)
-      clambda1inf <- sum(model.list$wvec*model.list$thetavec)
-      fbar1 <- exp(-clambdavec1)
-      fbar1inf <- exp(-clambda1inf)
-      lambdavec <- (lambdavec1*fbar1)/(fbar1-fbar1inf)
-    } else {
-      lambdavec <- model.list$lambda0 + as.vector(outer(tvec,model.list$thetavec,"<")%*%model.list$wvec)
-    }
+    lambdavec <- model.list$lambda0 + as.vector(outer(tvec,model.list$thetavec,"<")%*%model.list$wvec)
   }
   return(lambdavec)
 }
@@ -314,15 +308,7 @@ chzf.DFR <- function(tvec, model.list, use.Cpp=FALSE) {
   if(use.Cpp) {
     clambdavec <- chzf_dfr_c(tvec, model.list$lambda0, model.list$thetavec, model.list$wvec)
   } else {
-    if(model.list$lambda0==0) {
-      clambdavec1 <- as.vector(outer(tvec,model.list$thetavec,pmin)%*%model.list$wvec)
-      clambda1inf <- sum(model.list$wvec*model.list$thetavec)
-      fbar1 <- exp(-clambdavec1)
-      fbar1inf <- exp(-clambda1inf)
-      clambdavec <- -log(pmax(0,fbar1-fbar1inf)/(1-fbar1inf))
-    } else {
-      clambdavec <- model.list$lambda0*tvec + as.vector(outer(tvec,model.list$thetavec,pmin)%*%model.list$wvec)
-    }
+    clambdavec <- model.list$lambda0*tvec + as.vector(outer(tvec,model.list$thetavec,pmin)%*%model.list$wvec)
   }
   return(clambdavec)
 }
@@ -330,30 +316,15 @@ invsurvf.DFR <- function(uvec, model.list, use.Cpp=FALSE) {
   # ordering of theta values
   othetavec <- sort(model.list$thetavec)
   othetavec <- c(0,othetavec,1.2*othetavec[length(othetavec)])
-  if(model.list$lambda0==0) {
-    # unshifted integrated hazard at these values
-    ivec1 <- as.vector(outer(othetavec,model.list$thetavec,pmin)%*%model.list$wvec)
-    clambda1inf <- sum(model.list$wvec*model.list$thetavec)
-    fbar1inf <- exp(-clambda1inf)
-    uvec1 <- fbar1inf + uvec*(1-fbar1inf)
-    # location of -log(uvec1) in the integrated hazards
-    kvec <- findInterval(-log(uvec1),ivec1)
-    kvecp1 <- kvec+1
-    # linear interpolation
-    tvec <- ( othetavec[kvec]
-              + (othetavec[kvecp1]-othetavec[kvec])/(ivec1[kvecp1]-ivec1[kvec])*(-log(uvec1)-ivec1[kvec])
-    )
-  } else {
-    # integrated hazard at these values
-    ivec <- chzf(othetavec,model.list,use.Cpp)
-    # location of -log(uvec) in the integrated hazards
-    kvec <- findInterval(-log(uvec),ivec)
-    kvecp1 <- kvec+1
-    # linear interpolation
-    tvec <- ( othetavec[kvec]
-              + (othetavec[kvecp1]-othetavec[kvec])/(ivec[kvecp1]-ivec[kvec])*(-log(uvec)-ivec[kvec])
-    )
-  }
+  # integrated hazard at these values
+  ivec <- chzf(othetavec,model.list,use.Cpp)
+  # location of -log(uvec) in the integrated hazards
+  kvec <- findInterval(-log(uvec),ivec)
+  kvecp1 <- kvec+1
+  # linear interpolation
+  tvec <- ( othetavec[kvec]
+            + (othetavec[kvecp1]-othetavec[kvec])/(ivec[kvecp1]-ivec[kvec])*(-log(uvec)-ivec[kvec])
+  )
   return(tvec)
 }
 
@@ -694,10 +665,10 @@ hazf.MBT <- function(tvec, model.list, use.Cpp=FALSE) {
                             model.list$thetavec2, model.list$wvec2)
   } else {
     model.list1 <- list(model="DFR", kmax=model.list$kmax1,
-                        lambda0=0, 
+                        lambda0=model.list$lambda0, 
                         thetavec=model.list$thetavec1, wvec=model.list$wvec1)
     model.list2 <- list(model="IFR", kmax=model.list$kmax2,
-                        lambda0=model.list$lambda0, 
+                        lambda0=0.0, 
                         thetavec=model.list$thetavec2, wvec=model.list$wvec2)
     hvec1 <- hazf(tvec, model.list1)
     hvec2 <- hazf(tvec, model.list2)
@@ -717,10 +688,10 @@ chzf.MBT <- function(tvec, model.list, use.Cpp=FALSE) {
                              model.list$thetavec2, model.list$wvec2)
   } else {
     model.list1 <- list(model="DFR", kmax=model.list$kmax1,
-                        lambda0=0, 
+                        lambda0=model.list$lambda0, 
                         thetavec=model.list$thetavec1, wvec=model.list$wvec1)
     model.list2 <- list(model="IFR", kmax=model.list$kmax2,
-                        lambda0=model.list$lambda0, 
+                        lambda0=0.0, 
                         thetavec=model.list$thetavec2, wvec=model.list$wvec2)
     ivec1 <- chzf(tvec, model.list1)
     ivec2 <- chzf(tvec, model.list2)
@@ -738,10 +709,14 @@ invsurvf.MBT <- function(uvec, model.list, use.Cpp=FALSE) {
   ntt <- length(othetavec)
   ttmax <- 1e6*othetavec[ntt]
   othetavec <- c(0,othetavec,ttmax)
+  ntt <- ntt+2
   # integrated hazard at these values
   ivec <- chzf(othetavec,model.list,use.Cpp)
+  # largest non-infinite value
+  imax <- min(c(ntt,which(ivec==Inf)-1))
   # location of -log(uvec) in the integrated hazards
-  kvec <- findInterval(-log(uvec),ivec)
+  nloguvec <- -log(uvec)
+  kvec <- findInterval(nloguvec,ivec)
   # root finding
   ff <- function(tt,f0) {
     chzf(tt,model.list,use.Cpp)-f0
@@ -753,12 +728,14 @@ invsurvf.MBT <- function(uvec, model.list, use.Cpp=FALSE) {
   #            ff(othetavec[kvec+1],-log(uvec)))) ##!!==
   tvec <- sapply(1:n,
                  function(i) {
-                   if(kvec[i]==ntt) {
+                   if(kvec[i]>=imax) {
                      ttmax 
+                   } else if(ivec[kvec[i]]==nloguvec[i]) {
+                     ivec[kvec[i]]
                    } else {
                      uniroot(ff, 
                              interval=othetavec[kvec[i]+c(0,1)],
-                             f0=-log(uvec[i]))$root
+                             f0=nloguvec[i])$root
                    }
                  })
   return(tvec)
@@ -766,18 +743,105 @@ invsurvf.MBT <- function(uvec, model.list, use.Cpp=FALSE) {
 rgen.MBT <- function(n, model.list, use.Cpp=FALSE, seed=NULL) {
   if(!is.null(seed)) set.seed(seed)
   model.list1 <- list(model="DFR", kmax=model.list$kmax1,
-                      lambda0=0, 
+                      lambda0=model.list$lambda0, 
                       thetavec=model.list$thetavec1, wvec=model.list$wvec1)
   model.list2 <- list(model="IFR", kmax=model.list$kmax1,
-                      lambda0=model.list$lambda0, 
+                      lambda0=0.0, 
                       thetavec=model.list$thetavec2, wvec=model.list$wvec2)
   n1 <- rbinom(1,n,model.list$pival)
   n2 <- n-n1
-  t1vec <- rgen(n1, model.list1, use.Cpp=use.CPP)
-  t2vec <- rgen(n2, model.list2, use.Cpp=use.CPP)
+  t1vec <- rgen(n1, model.list1, use.Cpp=use.Cpp)
+  t2vec <- rgen(n2, model.list2, use.Cpp=use.Cpp)
   tvec <- sample(c(t1vec,t2vec))
   return(tvec)
 }
+
+
+####################################################
+# LCV
+# lambda(t) = lambda0 * exp( w0*t + int_0^t G(du) )
+# model.list = list(model="LCV", lambda0, w0, thetavec, wvec)
+hazf.LCV <- function(tvec, model.list, use.Cpp=FALSE) {
+  if(use.Cpp) {
+    lambdavec <- hazf_lcv_c(tvec, model.list$lambda0, model.list$w0, model.list$thetavec, model.list$wvec)
+  } else {
+    loglambdavec <- log(model.list$lambda0) + model.list$w0*tvec
+    loglambdavec <- loglambdavec + as.vector(outer(tvec,model.list$thetavec,function(t,theta) pmax(0,t-theta))%*%model.list$wvec)
+    lambdavec <- exp(loglambdavec)
+  }
+  return(lambdavec)
+}
+chzf.LCV <- function(tvec, model.list, use.Cpp=FALSE, epsilon=100*.Machine$double.neg.eps) {
+  if(use.Cpp) {
+    clambdavec <- chzf_lcv_c(tvec, model.list$lambda0, model.list$w0, model.list$thetavec, model.list$wvec, epsilon)
+  } else {
+    odx <- order(model.list$thetavec) 
+    othetavec <- model.list$thetavec[odx]  # theta*_k (1...K)
+    owvec <- model.list$wvec[odx]          # w*_k     (1...K)
+    kmax <- length(othetavec)   # K
+    othetavec <- c(0,othetavec,1.1*othetavec[kmax]) # 0, thetavec, 1.1*last
+    owvec <- c(0,owvec,0)                           # 0, wvec,     0
+    kmaxp2 <- kmax+2            # K+2
+    k1vec <- apply(outer(tvec, othetavec, function(t,theta) theta<=t),1,sum)
+    k1vec <- pmin(pmax(1,k1vec),kmaxp2-1)
+    
+    s1vec <- cumsum(owvec)  # C
+    s01vec <- model.list$w0 + s1vec    # C0
+    s2vec <- cumsum(owvec*othetavec)    # D
+    ccvec <- model.list$lambda0*exp(-s2vec)/s01vec # lambda0.exp(-D)/C0
+    ccvec1 <- ccvec[-kmaxp2]
+    s01vec1 <- s01vec[-kmaxp2]
+    csvec1 <- ccvec1*(exp(s01vec1*othetavec[-1])-exp(s01vec1*othetavec[-kmaxp2]))
+    csvec1 <- ifelse(s01vec1==0, 
+                     model.list$lambda0*exp(-s2vec[-kmaxp2])*(othetavec[-1]-othetavec[-kmaxp2]), 
+                     csvec1)
+    ssvec <- c(0,cumsum(csvec1))
+    
+    ctvec <- ifelse(s01vec1[k1vec]==0,
+                    model.list$lambda0*exp(-s2vec[k1vec])*(tvec-othetavec[k1vec]),
+                    ccvec[k1vec]*( exp(s01vec[k1vec]*tvec)
+                                   -exp(s01vec[k1vec]*othetavec[k1vec])))
+    
+    clambdavec <- ( ssvec[k1vec] + ctvec )
+  }
+  return(clambdavec)
+}
+invsurvf.LCV <- function(uvec, model.list, use.Cpp=FALSE) {
+  n <- length(uvec)
+  nloguvec <- -log(uvec)
+  
+  odx <- order(model.list$thetavec) 
+  othetavec <- model.list$thetavec[odx]  # theta*_k (1...K)
+  owvec <- model.list$wvec[odx]          # w*_k     (1...K)
+  kmax <- length(othetavec)   # K
+  othetavec <- c(0,othetavec,1.1*othetavec[kmax]) # 0, thetavec, 1.1*last
+  owvec <- c(0,owvec,0)                           # 0, wvec,     0
+  kmaxp2 <- kmax+2            # K+2
+  
+  s1vec <- cumsum(owvec)
+  s01vec <- model.list$w0 + s1vec
+  s2vec <- cumsum(owvec*othetavec)
+  ccvec <- model.list$lambda0*exp(-s2vec)/s01vec
+  ccvec1 <- ccvec[-kmaxp2]
+  s01vec1 <- s01vec[-kmaxp2]
+  csvec1 <- ccvec1*(exp(s01vec1*othetavec[-1])-exp(s01vec1*othetavec[-kmaxp2]))
+  csvec1 <- ifelse(s01vec1==0, 
+                   model.list$lambda0*exp(-s2vec[-kmaxp2])*(othetavec[-1]-othetavec[-kmaxp2]), 
+                   csvec1)
+  ssvec <- c(0,cumsum(csvec1))
+  
+  k1vec <- apply(outer(nloguvec, ssvec, function(nlu,ilamval) ilamval<=nlu),1,sum)
+  k1vec <- pmax(1,k1vec)
+  
+  tvec <- ifelse(s01vec[k1vec]==0,
+                 othetavec[k1vec] + (nloguvec-ssvec[k1vec])/(model.list$lambda0*exp(-s2vec[k1vec])),
+                 (1/s01vec[k1vec])*log(
+                   exp(s01vec[k1vec]*othetavec[k1vec])
+                   + (nloguvec-ssvec[k1vec])/ccvec[k1vec]) 
+                )
+  
+  return(tvec)
+}  
 
 
 ####################################################
