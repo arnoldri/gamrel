@@ -41,8 +41,36 @@ solveptlinear <- function(f,t1,t2,f1,f2) {
 }
 
 ####################################################
+#' Make data list object
+#' 
+#' @param tvec Vector of failure times
+#' @param obs Vector of TRUE (observed) or FALSE (right censored) indicators
+#' 
+#' @export
+make.datlist <- function(tvec, obs=NULL) {
+  n <- length(tvec)
+  if(is.null(obs)) {
+    obs <- rep(TRUE,n)
+  } else if(length(obs==1)) {
+    obs <- rep(obs,n)
+  } else if(length(obs)!=n) {
+    stop("obs must be the same length as tvec")
+  }
+  datlist <- list(n=n, nobs=sum(obs), tvec=tvec, obs=obs)
+  return(datlist)
+}
+
+####################################################
 # Generic
 # Models are CON/ IFR/DFR/ CIR/CDR/ LWB/ HBT/HCV/ SBT/SCV/ MBT/LCV/ MEW
+
+#' Hazard function
+#' 
+#' @param tvec Vector of failure times
+#' @param model.list Model specification
+#' @param use.Cpp Use C++ functions?  TRUE or FALSE
+#' 
+#' @export
 hazf <- function(tvec, model.list, use.Cpp=FALSE) {
   switch(model.list$model, 
          CON=hazf.CON(tvec, model.list, use.Cpp),
@@ -60,6 +88,14 @@ hazf <- function(tvec, model.list, use.Cpp=FALSE) {
          MEW=hazf.MEW(tvec, model.list, use.Cpp)
   )
 }
+
+#' Cumulative hazard function
+#' 
+#' @param tvec Vector of failure times
+#' @param model.list Model specification
+#' @param use.Cpp Use C++ functions?  TRUE or FALSE
+#' 
+#' @export
 chzf <- function(tvec, model.list, use.Cpp=FALSE) {
   switch(model.list$model, 
          CON=chzf.CON(tvec, model.list, use.Cpp),
@@ -77,9 +113,28 @@ chzf <- function(tvec, model.list, use.Cpp=FALSE) {
          MEW=chzf.MEW(tvec, model.list, use.Cpp)
   )
 }
-survf <- function(tvec, model.list, use.Cpp=FALSE) {
-  exp(-chzf(tvec, model.list, use.Cpp))
+
+#' Survival function
+#' 
+#' @param tvec Vector of failure times
+#' @param model.list Model specification
+#' @param use.Cpp Use C++ functions?  TRUE or FALSE
+#' @param log Return log of survival function?
+#' 
+#' @export
+survf <- function(tvec, model.list, use.Cpp=FALSE, log=FALSE) {
+  survf <- -chzf(tvec, model.list, use.Cpp)
+  if(!log) survf <- exp(survf)
+  return(survf)
 }
+
+#' Inverse Survival function
+#' 
+#' @param uvec Vector of survival function values
+#' @param model.list Model specification
+#' @param use.Cpp Use C++ functions?  TRUE or FALSE
+#' 
+#' @export
 invsurvf <- function(uvec, model.list, use.Cpp=FALSE) {
   switch(model.list$model, 
          CON=invsurvf.CON(uvec, model.list, use.Cpp),
@@ -97,6 +152,16 @@ invsurvf <- function(uvec, model.list, use.Cpp=FALSE) {
          MEW=invsurvf.MEW(uvec, model.list, use.Cpp)
   )
 }
+
+
+#' Hazard and cumulative hazard function values
+#' 
+#' @param tvec Vector of failure times
+#' @param model.list Model specification
+#' @param use.Cpp Use C++ functions?  TRUE or FALSE
+#' @param epsilon Small nonzero value
+#' 
+#' @export
 hazf_chzf <- function(tvec, model.list, use.Cpp, 
                       epsilon=100*.Machine$double.neg.eps) {
   if(use.Cpp) {
@@ -136,6 +201,14 @@ hazf_chzf <- function(tvec, model.list, use.Cpp,
   } 
   return(retval)
 }
+
+#' Probability density function
+#' 
+#' @param tvec Vector of failure times
+#' @param model.list Model specification
+#' @param use.Cpp Use C++ functions?  TRUE or FALSE
+#' 
+#' @export
 densf <- function(tvec, model.list, use.Cpp=FALSE, log=FALSE) {
   if(log) {
      retval <- log(hazf(tvec, model.list, use.Cpp)) - chzf(tvec, model.list, use.Cpp)
@@ -145,6 +218,14 @@ densf <- function(tvec, model.list, use.Cpp=FALSE, log=FALSE) {
   return(retval)
 }
 
+#' Generate failure times from a model
+#' 
+#' @param n Number of failure times to simulate
+#' @param model.list Model specification
+#' @param use.Cpp Use C++ functions?  TRUE or FALSE
+#' @param seed Random number seed
+#' 
+#' @export
 rgen <- function(n, model.list, use.Cpp=FALSE, seed=NULL) {
   if(model.list$model=="MBT") { # special case of the Mixture Bathtub
     tvec <- rgen.MBT(n, model.list, use.Cpp=use.Cpp, seed=seed)
@@ -156,25 +237,77 @@ rgen <- function(n, model.list, use.Cpp=FALSE, seed=NULL) {
   return(tvec)
 }
 
-llfunc <- function(tvec, parvec, model, verbose=FALSE) {
-  model.list <- as.model.list(parvec, model)
-  retval <- sum(densf(tvec, model.list, use.Cpp=TRUE, log=TRUE))
-  if(verbose) print(c(parvec,retval))
+#' Log likelihood function
+#' 
+#' @param tvec Vector of failure times
+#' @param parvec Parameter vector
+#' @param model Model code (three letters)
+#' @param verbose Display output in iterative evaluations?  TRUE or FALSE
+#' 
+#' @export
+llfunc <- function(datlist, model.list, verbose=FALSE) {
+  retval <- sum(densf(datlist$tvec[datlist$obs], model.list, use.Cpp=TRUE, log=TRUE))
+  retval <- retval + sum(densf(datlist$tvec[!datlist$obs], model.list, use.Cpp=TRUE, log=TRUE))
   return(retval)
 }
 
-as.parvec <- function(model.list) {
+#' Log prior function - scalar valued
+#' 
+#' @param model.list Model specification
+#' @param use.Cpp Use C++ functions?
+#' 
+#' @export
+lpriorfunc <- function(state, fpar, use.Cpp=TRUE) {
+  sum(lpriorfunc.vector(state, fpar, use.Cpp=use.Cpp))
+}
+
+#' Log prior function - vector valued
+#' 
+#' @param model.list Model specification
+#' @param use.Cpp Use C++ functions?
+#' 
+#' @export
+lpriorfunc.vector <- function(state, fpar, use.Cpp=TRUE) {
+    retval <- switch(state$model, 
+         CON=logprior.CON(state, fpar, use.Cpp),
+         IFR=logprior.IFR(state, fpar, use.Cpp),
+         DFR=logprior.DFR(state, fpar, use.Cpp),
+         CIR=logprior.CIR(state, fpar, use.Cpp),
+         CDR=logprior.CDR(state, fpar, use.Cpp),
+         LWB=logprior.LWB(state, fpar, use.Cpp),
+         HBT=logprior.HBT(state, fpar, use.Cpp),
+         HCV=logprior.HCV(state, fpar, use.Cpp),
+         SBT=logprior.SBT(state, fpar, use.Cpp),
+         SCV=logprior.SCV(state, fpar, use.Cpp),
+         MBT=logprior.MBT(state, fpar, use.Cpp),
+         LCV=logprior.LCV(state, fpar, use.Cpp),
+         MEW=logprior.MEW(state, fpar, use.Cpp)
+  )
+  return(retval)
+}
+
+#' Convert model list object to parameter vector (incomplete)
+#' 
+#' @param model.list Model specification
+#' 
+#' @export
+as.parvec <- function(model.list) { ##!!!== incomplete
   if(model.list$model=="CON") {
     parvec <- log(model.list$lambda0)
   } else if(model.list$model=="MEW") {
-    parvec <- log(c(model.list$alpha,model.list$beta,model.list$mu,model.list$nu))
+    parvec <- log(c(model.list$alpha, model.list$beta, model.list$mu, model.list$nu))
   } else {
     stop(paste("Model",model.list$model,"not recognised"))
   }
 }
+#' Convert parameter vector to model list object (incomplete)
+#' 
+#' @param model.list Model specification
+#' 
+#' @export
 as.model.list <- function(parvec,model) {  ##!!== incomplete
   if(model=="CON") {
-    model.list <- list(model=model, lambda0=exp(parvec))
+    model.list <- list(model=model, lambda0=exp(parvec[1]))
   } else if(model=="MEW") {
     model.list <- list(model=model, 
                        alpha=exp(parvec[1]), beta=exp(parvec[2]), 
@@ -184,6 +317,9 @@ as.model.list <- function(parvec,model) {  ##!!== incomplete
   }
 }
 
+#' Plot a hazard function
+#' 
+#' @export
 plot.hazf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
                       xlab="t", ylab=expression(lambda(t)), scale=1, ...) {
   tvec <- seq(from=xlim[1], to=xlim[2], length=n)
@@ -197,6 +333,9 @@ plot.hazf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE,
   if(!add) mtext(model.list$model, side=3, line=0, adj=1, cex=0.5)
 }
 
+#' Plot a cumulative hazard function
+#' 
+#' @export
 plot.chzf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
                       xlab="t", ylab=expression(Lambda(t)), scale=1, ...) {
   curve(scale*chzf(x,model.list,use.Cpp), xlim=xlim, 
@@ -204,6 +343,9 @@ plot.chzf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE,
   if(!add) mtext(model.list$model, side=3, line=0, adj=1, cex=0.5)
 }
 
+#' Plot a survival function
+#' 
+#' @export
 plot.survf <- function(model.list, xlim, ylim=c(0,1), use.Cpp=FALSE, n=101, add=FALSE, 
                        xlab="t", ylab=expression(bar(F)(t)), scale=1, ...) {
   curve(scale*survf(x,model.list,use.Cpp), xlim=xlim, ylim=ylim, 
@@ -211,6 +353,9 @@ plot.survf <- function(model.list, xlim, ylim=c(0,1), use.Cpp=FALSE, n=101, add=
   if(!add) mtext(model.list$model, side=3, line=0, adj=1, cex=0.5)
 }
 
+#' Plot a density function
+#' 
+#' @export
 plot.densf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
                        xlab="t", ylab=expression(f(t)), scale=1, ...) {
   curve(scale*densf(x,model.list,use.Cpp), xlim=xlim, 
@@ -218,6 +363,9 @@ plot.densf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE,
   if(!add) mtext(model.list$model, side=3, line=0, adj=1, cex=0.5)
 }
 
+#' Plot an inverse survival function
+#' 
+#' @export
 plot.invsurvf <- function(model.list, xlim=c(0,1)+0.0001*c(1,-1), use.Cpp=FALSE, n=101, add=FALSE, 
                           xlab=expression(bar(F)(t)), ylab="t", scale=1, ...) {
   curve(scale*invsurvf(x,model.list,use.Cpp), xlim=xlim, 
@@ -252,6 +400,33 @@ invsurvf.CON <- function(uvec, model.list, use.Cpp=FALSE) {
     tvec <- -log(uvec)/model.list$lambda0
   }
   return(tvec)
+}
+logprior.CON <- function(state, fpar, use.Cpp) {
+  if(use.Cpp) {
+    retval <- logprior_con_c(state$lambda0, 
+                             fpar$a, fpar$b)
+  } else {
+    retval <- dgamma(fpar$a,fpar$b)
+  }
+  return(retval)
+}
+mlfit.CON <- function(tvec) {
+  ff <- function(par, tvec, verbose=FALSE) {
+    lambda0 <- exp(par)
+    n <- length(tvec)
+    retval <- n*par - sum(lambda0*tvec)
+  }
+  lambda0 <- 3./mean(tvec)
+  par0 <- log(lambda0)
+  opt <- optim(par, ff, 
+               lower=log(1/max(tvec)), upper=log(1/min(tvec)),
+               hessian=TRUE, method="Brent",
+               control=list(fnscale=-1),
+               tvec=tvec)
+  lambda0 <- exp(opt$par)
+  model.list <- list(model="CON", lambda0=lambda0)
+  se.lambda0 <- lambda0/sqrt(-opt$hessian)
+  return(c(model.list,list(se.lambda0=se.lambda0)))
 }
 
 ####################################################

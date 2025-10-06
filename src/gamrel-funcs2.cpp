@@ -31,6 +31,30 @@ double meanfunc_c(NumericVector x) {
  return total / n;
 }
 
+//' Make DPP beta draws given a set of unscaled stick breaking weights
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector makev_c(NumericVector uvec) {
+ 
+ int kmax = uvec.size();
+ NumericVector vvec(kmax);
+ int k;
+ double cp;
+ 
+ vvec[0] = uvec[0];
+ if(kmax>1) {
+   cp = 1.0;
+   for(k=1; k<kmax-1; k++) {
+     vvec[k] = uvec[k]/(cp-uvec[k-1]);
+     cp = cp*(1-vvec[k-1]);
+   }
+   vvec[kmax-1] = 0.5;
+ }
+ 
+ return vvec;
+}
+
  
 
 //**********************************************************************
@@ -132,6 +156,29 @@ NumericVector invsurvf_con_c(NumericVector uvec,
   
   return tvec;
 }
+
+
+//**********************************************************************
+//' Log prior - CON
+//' 
+//' 
+//' @param lambda0 lambda0: constant hazard rate
+//' @param a gamma prior shape
+//' 
+//' @description log(prior) for the IFR and DFR models - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector logprior_con_c(double lambda0, 
+                             double a, double b) {
+ 
+ NumericVector lpriorvec(1);
+
+ // lambda0
+ lpriorvec[0] = R::dgamma(lambda0, a, b, true);
+
+ return lpriorvec;
+}   
 
 
 //**********************************************************************
@@ -252,9 +299,9 @@ NumericMatrix hazf_chzf_ifr_c(NumericVector tvec,
 //' @export
 // [[Rcpp::export]]
 NumericVector hazf_dfr_c(NumericVector tvec,
-                        double lambda0, 
-                        NumericVector thetavec, 
-                        NumericVector wvec
+                         double lambda0, 
+                         NumericVector thetavec, 
+                         NumericVector wvec
 ) {
  int n = tvec.size();
  int kmax = thetavec.size();
@@ -288,9 +335,9 @@ NumericVector hazf_dfr_c(NumericVector tvec,
 //' @export
 // [[Rcpp::export]]
 NumericVector chzf_dfr_c(NumericVector tvec,
-                        double lambda0,
-                        NumericVector thetavec, 
-                        NumericVector wvec
+                         double lambda0,
+                         NumericVector thetavec, 
+                         NumericVector wvec
 ) {
  int n = tvec.size();
  int kmax = thetavec.size();
@@ -371,9 +418,9 @@ NumericMatrix hazf_chzf_dfr_c(NumericVector tvec,
 //' @export
 // [[Rcpp::export]]
 NumericVector hazf_cir_c(NumericVector tvec,
-                        double lambda0, 
-                        NumericVector thetavec, 
-                        NumericVector wvec
+                         double lambda0, 
+                         NumericVector thetavec, 
+                         NumericVector wvec
 ) {
  int n = tvec.size();
  int kmax = thetavec.size();
@@ -403,9 +450,9 @@ NumericVector hazf_cir_c(NumericVector tvec,
 //' @export
 // [[Rcpp::export]]
 NumericVector chzf_cir_c(NumericVector tvec,
-                        double lambda0,
-                        NumericVector thetavec, 
-                        NumericVector wvec
+                         double lambda0,
+                         NumericVector thetavec, 
+                         NumericVector wvec
 ) {
  int n = tvec.size();
  int kmax = thetavec.size();
@@ -509,9 +556,9 @@ NumericVector hazf_cdr_c(NumericVector tvec,
 //' @export
 // [[Rcpp::export]]
 NumericVector chzf_cdr_c(NumericVector tvec,
-                        double lambda0,
-                        NumericVector thetavec, 
-                        NumericVector wvec
+                         double lambda0,
+                         NumericVector thetavec, 
+                         NumericVector wvec
 ) {
  int n = tvec.size();
  int kmax = thetavec.size();
@@ -665,10 +712,10 @@ NumericVector chzf_lwb_c(NumericVector tvec,
 //' @export
 // [[Rcpp::export]]
 NumericMatrix hazf_chzf_lwb_c(NumericVector tvec,
-                             double lambda0,
-                             double a,
-                             NumericVector thetavec, 
-                             NumericVector wvec) {
+                              double lambda0,
+                              double a,
+                              NumericVector thetavec, 
+                              NumericVector wvec) {
  int n = tvec.size();
  int kmax = thetavec.size();
  NumericMatrix haz_chz_mat(n,2);
@@ -798,10 +845,10 @@ NumericVector chzf_hbt_c(NumericVector tvec,
 //' @export
 // [[Rcpp::export]]
 NumericMatrix hazf_chzf_hbt_c(NumericVector tvec,
-                             double lambda0,
-                             double a,
-                             NumericVector thetavec, 
-                             NumericVector wvec) {
+                              double lambda0,
+                              double a,
+                              NumericVector thetavec, 
+                              NumericVector wvec) {
  int n = tvec.size();
  int kmax = thetavec.size();
  NumericMatrix haz_chz_mat(n,2);
@@ -1106,11 +1153,11 @@ NumericVector hazf_scv_c(NumericVector tvec,
 //' @export
 // [[Rcpp::export]]
 NumericVector chzf_scv_c(NumericVector tvec,
-                        double lambda0,
-                        NumericVector thetavec1, 
-                        NumericVector wvec1,
-                        NumericVector thetavec2, 
-                        NumericVector wvec2) {
+                         double lambda0,
+                         NumericVector thetavec1, 
+                         NumericVector wvec1,
+                         NumericVector thetavec2, 
+                         NumericVector wvec2) {
  int n = tvec.size();
  NumericVector clambdavec(n);
  

@@ -24,13 +24,6 @@ mean_c <- function(x) {
     .Call(`_gamrel_mean_c`, x)
 }
 
-#' Make DPP beta draws given a set of unscaled stick breaking weights
-#' 
-#' @export
-makev_c <- function(uvec) {
-    .Call(`_gamrel_makev_c`, uvec)
-}
-
 #' Log prior - IFR/DFR
 #' 
 #' 
@@ -421,6 +414,13 @@ meanfunc_c <- function(x) {
     .Call(`_gamrel_meanfunc_c`, x)
 }
 
+#' Make DPP beta draws given a set of unscaled stick breaking weights
+#' 
+#' @export
+makev_c <- function(uvec) {
+    .Call(`_gamrel_makev_c`, uvec)
+}
+
 #' Hazard rate function - CON
 #' 
 #' @param tvec Locations at which to evaluate the function
@@ -468,6 +468,19 @@ hazf_chzf_con_c <- function(tvec, lambda0) {
 #' @export
 invsurvf_con_c <- function(uvec, lambda0) {
     .Call(`_gamrel_invsurvf_con_c`, uvec, lambda0)
+}
+
+#' Log prior - CON
+#' 
+#' 
+#' @param lambda0 lambda0: constant hazard rate
+#' @param a gamma prior shape
+#' 
+#' @description log(prior) for the IFR and DFR models - in vector form
+#' 
+#' @export
+logprior_con_c <- function(lambda0, a, b) {
+    .Call(`_gamrel_logprior_con_c`, lambda0, a, b)
 }
 
 #' Hazard rate function - IFR
