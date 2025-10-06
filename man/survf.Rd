@@ -4,7 +4,7 @@
 \alias{survf}
 \title{Survival function}
 \usage{
-survf(tvec, model.list, use.Cpp = FALSE)
+survf(tvec, model.list, use.Cpp = FALSE, log = FALSE)
 }
 \arguments{
 \item{tvec}{Vector of failure times}
@@ -12,6 +12,8 @@ survf(tvec, model.list, use.Cpp = FALSE)
 \item{model.list}{Model specification}
 
 \item{use.Cpp}{Use C++ functions?  TRUE or FALSE}
+
+\item{log}{Return log of survival function?}
 }
 \description{
 Survival function

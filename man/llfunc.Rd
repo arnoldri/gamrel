@@ -4,16 +4,16 @@
 \alias{llfunc}
 \title{Log likelihood function}
 \usage{
-llfunc(tvec, parvec, model, verbose = FALSE)
+llfunc(datlist, model.list, verbose = FALSE)
 }
 \arguments{
+\item{verbose}{Display output in iterative evaluations?  TRUE or FALSE}
+
 \item{tvec}{Vector of failure times}
 
 \item{parvec}{Parameter vector}
 
 \item{model}{Model code (three letters)}
-
-\item{verbose}{Display output in iterative evaluations?  TRUE or FALSE}
 }
 \description{
 Log likelihood function
