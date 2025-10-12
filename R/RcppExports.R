@@ -474,13 +474,13 @@ invsurvf_con_c <- function(uvec, lambda0) {
 #' 
 #' 
 #' @param lambda0 lambda0: constant hazard rate
-#' @param a gamma prior shape
+#' @param nu exponential prior
 #' 
 #' @description log(prior) for the IFR and DFR models - in vector form
 #' 
 #' @export
-logprior_con_c <- function(lambda0, a, b) {
-    .Call(`_gamrel_logprior_con_c`, lambda0, a, b)
+logprior_con_c <- function(lambda0, nu) {
+    .Call(`_gamrel_logprior_con_c`, lambda0, nu)
 }
 
 #' Hazard rate function - IFR

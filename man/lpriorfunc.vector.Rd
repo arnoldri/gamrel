@@ -4,7 +4,7 @@
 \alias{lpriorfunc.vector}
 \title{Log prior function - vector valued}
 \usage{
-lpriorfunc.vector(state, fpar, use.Cpp = TRUE)
+lpriorfunc.vector(state, fpar, model, use.Cpp = TRUE)
 }
 \arguments{
 \item{use.Cpp}{Use C++ functions?}

@@ -122,7 +122,7 @@ NumericMatrix hazf_chzf_con_c(NumericVector tvec,
                               double lambda0) {
  int n = tvec.size();
  NumericMatrix haz_chz_mat(n,2);
- int i, k;
+ int i;
  
  for(i=0; i<n; i++) {
    haz_chz_mat(i,0) = lambda0;
@@ -163,19 +163,18 @@ NumericVector invsurvf_con_c(NumericVector uvec,
 //' 
 //' 
 //' @param lambda0 lambda0: constant hazard rate
-//' @param a gamma prior shape
+//' @param nu exponential prior
 //' 
 //' @description log(prior) for the IFR and DFR models - in vector form
 //' 
 //' @export
 // [[Rcpp::export]]
-NumericVector logprior_con_c(double lambda0, 
-                             double a, double b) {
- 
+NumericVector logprior_con_c(double lambda0, double nu) {
+
  NumericVector lpriorvec(1);
 
- // lambda0
- lpriorvec[0] = R::dgamma(lambda0, a, b, true);
+ // log_lambda0
+ lpriorvec[0] = R::dexp(lambda0, nu, true);
 
  return lpriorvec;
 }   
@@ -307,10 +306,6 @@ NumericVector hazf_dfr_c(NumericVector tvec,
  int kmax = thetavec.size();
  NumericVector lambdavec(n);
  int i, k;
- double clambda1;
- double clambda1inf; 
- double fbar1;
- double fbar1inf;
 
  for(i=0; i<n; i++) {
    lambdavec[i] = lambda0;
@@ -343,10 +338,7 @@ NumericVector chzf_dfr_c(NumericVector tvec,
  int kmax = thetavec.size();
  NumericVector clambdavec(n);
  int i, k;
- double clambda1inf;
- double fbar1;
- double fbar1inf;
- 
+
  for(i=0; i<n; i++) {
    clambdavec[i] = lambda0*tvec[i];
    for(k=0; k<kmax; k++) {
@@ -382,10 +374,7 @@ NumericMatrix hazf_chzf_dfr_c(NumericVector tvec,
  int kmax = thetavec.size();
  NumericMatrix haz_chz_mat(n,2);
  int i, k;
- double clambda1inf;
- double fbar1;
- double fbar1inf;
- 
+
  for(i=0; i<n; i++) {
    haz_chz_mat(i,0) = lambda0;
    haz_chz_mat(i,1) = lambda0*tvec[i];

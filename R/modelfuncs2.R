@@ -250,15 +250,38 @@ llfunc <- function(datlist, model.list, verbose=FALSE) {
   retval <- retval + sum(densf(datlist$tvec[!datlist$obs], model.list, use.Cpp=TRUE, log=TRUE))
   return(retval)
 }
-
-#' Log prior function - scalar valued
-#' 
-#' @param model.list Model specification
-#' @param use.Cpp Use C++ functions?
-#' 
+#' Log likelihood of the current state
+#'
 #' @export
-lpriorfunc <- function(state, fpar, use.Cpp=TRUE) {
-  sum(lpriorfunc.vector(state, fpar, use.Cpp=use.Cpp))
+llikef <- function(state, datlist, fpar, model) {
+  # log likelihood of observations datlist
+  #hazfuncs <- both.lambda.funcs(datlist$tvec,
+  #                              model.list=c(list(model=model,kmax=fpar$kmax),
+  #                                           state),
+  #                              use.Cpp=fpar$use.Cpp, epsilon=fpar$epsilon)
+  hazfuncs <- hazf_chzf(datlist$tvec, 
+                        model.list=c(list(model=model,kmax=fpar$kmax),
+                                          state), 
+                        use.Cpp=fpar$use.Cpp, 
+                        epsilon=100*.Machine$double.neg.eps) 
+  if(model=="LCV" && all(!is.nan(hazfuncs[,1])) 
+     && any(is.nan(hazfuncs[,2]))) {
+    # Catch the case where the LCV integrated hazard function overflows
+    cat("*")
+    retval <- -Inf
+  } else {
+    retval <- sum(log(hazfuncs[datlist$obs,1]) - hazfuncs[,2])
+  }
+  return(retval)
+}
+
+#' Log prior of the current state - scalar valued
+#'
+#' @export
+lpriorf <- function(state, fpar, model, use.Cpp=TRUE) {
+  # log prior of the state
+  retval <- sum(lpriorfunc.vector(state, fpar, model, use.Cpp=use.Cpp))
+  return(retval)
 }
 
 #' Log prior function - vector valued
@@ -267,8 +290,8 @@ lpriorfunc <- function(state, fpar, use.Cpp=TRUE) {
 #' @param use.Cpp Use C++ functions?
 #' 
 #' @export
-lpriorfunc.vector <- function(state, fpar, use.Cpp=TRUE) {
-    retval <- switch(state$model, 
+lpriorfunc.vector <- function(state, fpar, model, use.Cpp=TRUE) {
+    retval <- switch(model, 
          CON=logprior.CON(state, fpar, use.Cpp),
          IFR=logprior.IFR(state, fpar, use.Cpp),
          DFR=logprior.DFR(state, fpar, use.Cpp),
@@ -419,10 +442,9 @@ invsurvf.CON <- function(uvec, model.list, use.Cpp=FALSE) {
 }
 logprior.CON <- function(state, fpar, use.Cpp) {
   if(use.Cpp) {
-    retval <- logprior_con_c(state$lambda0, 
-                             fpar$a, fpar$b)
+    retval <- logprior_con_c(state$lambda0, fpar$nu)
   } else {
-    retval <- dgamma(fpar$a,fpar$b)
+    retval <- dexp(state$lambda0, fpar$nu, log=TRUE)
   }
   return(retval)
 }
@@ -465,6 +487,7 @@ chzf.IFR <- function(tvec, model.list, use.Cpp=FALSE) {
     clambdavec <- ( (model.list$lambda0 + sum(model.list$wvec))*tvec 
                     - as.vector(outer(tvec,model.list$thetavec,pmin)%*%model.list$wvec)
                   )
+    clambdavec <- pmax(0,clambdavec)
   }
   return(clambdavec)
 }
