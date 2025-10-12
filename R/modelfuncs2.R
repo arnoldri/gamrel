@@ -373,6 +373,22 @@ plot.invsurvf <- function(model.list, xlim=c(0,1)+0.0001*c(1,-1), use.Cpp=FALSE,
   if(!add) mtext(model.list$model, side=3, line=0, adj=1, cex=0.5)
 }
 
+#' Maximum likelihood fitting for a restricted set of models
+#' 
+#' @param model Chosen model
+#' @param tvec Vector of failure times
+#' @param obs Vector of logical values indicating observation or right-censoring
+#' 
+#' @export
+mlfit <- function(model, tvec, obs=TRUE) {
+   if(model=="CON") {
+     retval <- mlfit.CON(tvec, obs)
+   } else {
+     stop("Model not recognised")
+   }
+  return(retval)
+}
+
 ####################################################
 # CON
 # lambda(t) = lambda0
@@ -410,22 +426,23 @@ logprior.CON <- function(state, fpar, use.Cpp) {
   }
   return(retval)
 }
-mlfit.CON <- function(tvec) {
-  ff <- function(par, tvec, verbose=FALSE) {
+mlfit.CON <- function(tvec, obs=TRUE) {
+  datlist <- make.datlist(tvec, obs)
+  ff <- function(par, tvec, obs, verbose=FALSE) {
     lambda0 <- exp(par)
-    n <- length(tvec)
-    retval <- n*par - sum(lambda0*tvec)
+    n0 <- sum(obs)
+    retval <- n0*par - sum(lambda0*tvec)
   }
-  lambda0 <- 3./mean(tvec)
+  lambda0 <- 3./mean(tvec[datlist$obs])
   par0 <- log(lambda0)
   opt <- optim(par, ff, 
                lower=log(1/max(tvec)), upper=log(1/min(tvec)),
                hessian=TRUE, method="Brent",
                control=list(fnscale=-1),
-               tvec=tvec)
+               tvec=datlist$tvec, obs=datlist$obs)
   lambda0 <- exp(opt$par)
   model.list <- list(model="CON", lambda0=lambda0)
-  se.lambda0 <- lambda0/sqrt(-opt$hessian)
+  se.lambda0 <- as.vector(lambda0/sqrt(-opt$hessian))
   return(c(model.list,list(se.lambda0=se.lambda0)))
 }
 

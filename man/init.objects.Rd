@@ -6,7 +6,7 @@
 \usage{
 init.objects(
   tvec,
-  obs,
+  obs = TRUE,
   kmax = 100,
   prior.par = NULL,
   update.par = NULL,

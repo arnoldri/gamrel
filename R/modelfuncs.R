@@ -4,7 +4,7 @@
 #' Initialise objects for an MCMC chain
 #'
 #' @export
-init.objects <- function(tvec, obs,
+init.objects <- function(tvec, obs=TRUE,
                          kmax=100,
                          prior.par=NULL,
                          update.par=NULL,
@@ -15,8 +15,40 @@ init.objects <- function(tvec, obs,
                          seed=NULL,
                          generate="fixed") {  # generate can be "fixed" or "random"
   if(!is.null(seed)) set.seed(seed)
-  if(model%in%c("IFR","DFR")) {
-    
+  if(model%in%c("CON")) {
+
+    if(is.null(prior.par)) {
+      prior.par <- list(nu=1)
+    }
+    if(is.null(update.par)) {
+      update.par <- list(sd.log.lambda=0.3)
+    }
+    # fixed parameters
+    parnames <- c("log.lambda0")
+    fpar <- list(model=model,                      # model name
+                 parnames=parnames,                # parameters
+                 nu=prior.par$nu,                  # prior for log lambda0
+                 epsilon=epsilon,
+                 use.Cpp=use.Cpp)
+    # parameters to update
+    update_parnames <- c(parnames)
+    update <- rep(TRUE, length(update_parnames))
+    names(update) <- update_parnames
+    # proposal parameters for updates
+    ppar <- list(update_parnames=update_parnames,
+                 sd.log.lambda0=update.par$sd.log.lambda0,
+                 update=update,
+                 verbose=FALSE,
+                 interactive=FALSE)
+    # parameters to estimate
+    if(generate=="fixed") {
+      epar <- list(log.lambda0=1/prior.par$nu)
+    } else {
+      epar <- list(log.lambda0=rexp(1,prior.par$nu))
+    }
+
+  } else if(model%in%c("IFR","DFR")) {
+      
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
                         a1=4, a2=1,
@@ -630,10 +662,7 @@ init.objects <- function(tvec, obs,
     stop("Specified model has not been implemented")
   }
   # data
-  datlist <- list(n=length(tvec),      # size of data
-                  n0=sum(obs),         # number of uncensored observations
-                  tvec=tvec,           # failure/censoring times
-                  obs=obs)             # vector of indicators: TRUE=observed, FALSE=censored
+  datlist <- make.datlist(tvec,obs)
   # make the state
   state <- make.state(epar, datlist, fpar, ppar, model)
   # augment fpar
@@ -651,18 +680,24 @@ init.objects <- function(tvec, obs,
 #'
 #' @export
 make.state <- function(epar, datlist, fpar, ppar, model) {
-  if(model%in%c("IFR","DFR","CIR","CDR")) {
-    state <- epar
-    # complete state with useful quantities
-    # derive the unscaled weights uvec
-    cp <- cumprod(1-state$vvec[-fpar$kmax])
-    state$uvec <- state$vvec*c(1,cp)
-    state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
-    # compute the scaled weights wvec
-    state$wvec <- state$gamma * state$uvec
-    # compute lambda0
-    state$lambda0 <- state$gamma*state$eta
-
+  if(model%in%c("CON")) {
+      state <- epar
+      # complete state with useful quantities
+      # compute lambda0
+      state$lambda0 <- exp(state$log.lambda0)
+    
+  } else if(model%in%c("IFR","DFR","CIR","CDR")) {
+      state <- epar
+      # complete state with useful quantities
+      # derive the unscaled weights uvec
+      cp <- cumprod(1-state$vvec[-fpar$kmax])
+      state$uvec <- state$vvec*c(1,cp)
+      state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
+      # compute the scaled weights wvec
+      state$wvec <- state$gamma * state$uvec
+      # compute lambda0
+      state$lambda0 <- state$gamma*state$eta
+      
   } else if(model%in%c("LWB")) {
     state <- epar
     # complete state with useful quantities
