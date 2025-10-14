@@ -607,14 +607,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // logprior_con_c
-NumericVector logprior_con_c(double lambda0, double nu);
-RcppExport SEXP _gamrel_logprior_con_c(SEXP lambda0SEXP, SEXP nuSEXP) {
+NumericVector logprior_con_c(double lambda0, double s1, double s2);
+RcppExport SEXP _gamrel_logprior_con_c(SEXP lambda0SEXP, SEXP s1SEXP, SEXP s2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type lambda0(lambda0SEXP);
-    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
-    rcpp_result_gen = Rcpp::wrap(logprior_con_c(lambda0, nu));
+    Rcpp::traits::input_parameter< double >::type s1(s1SEXP);
+    Rcpp::traits::input_parameter< double >::type s2(s2SEXP);
+    rcpp_result_gen = Rcpp::wrap(logprior_con_c(lambda0, s1, s2));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1160,6 +1161,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// logprior_mew_c
+NumericVector logprior_mew_c(double alpha, double beta, double mu, double nu, double a1, double a2, double b1, double b2, double s1, double s2, double t1, double t2);
+RcppExport SEXP _gamrel_logprior_mew_c(SEXP alphaSEXP, SEXP betaSEXP, SEXP muSEXP, SEXP nuSEXP, SEXP a1SEXP, SEXP a2SEXP, SEXP b1SEXP, SEXP b2SEXP, SEXP s1SEXP, SEXP s2SEXP, SEXP t1SEXP, SEXP t2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< double >::type a1(a1SEXP);
+    Rcpp::traits::input_parameter< double >::type a2(a2SEXP);
+    Rcpp::traits::input_parameter< double >::type b1(b1SEXP);
+    Rcpp::traits::input_parameter< double >::type b2(b2SEXP);
+    Rcpp::traits::input_parameter< double >::type s1(s1SEXP);
+    Rcpp::traits::input_parameter< double >::type s2(s2SEXP);
+    Rcpp::traits::input_parameter< double >::type t1(t1SEXP);
+    Rcpp::traits::input_parameter< double >::type t2(t2SEXP);
+    rcpp_result_gen = Rcpp::wrap(logprior_mew_c(alpha, beta, mu, nu, a1, a2, b1, b2, s1, s2, t1, t2));
+    return rcpp_result_gen;
+END_RCPP
+}
 // shellSort_c
 NumericVector shellSort_c(NumericVector x);
 RcppExport SEXP _gamrel_shellSort_c(SEXP xSEXP) {
@@ -1230,7 +1253,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_chzf_con_c", (DL_FUNC) &_gamrel_chzf_con_c, 2},
     {"_gamrel_hazf_chzf_con_c", (DL_FUNC) &_gamrel_hazf_chzf_con_c, 2},
     {"_gamrel_invsurvf_con_c", (DL_FUNC) &_gamrel_invsurvf_con_c, 2},
-    {"_gamrel_logprior_con_c", (DL_FUNC) &_gamrel_logprior_con_c, 2},
+    {"_gamrel_logprior_con_c", (DL_FUNC) &_gamrel_logprior_con_c, 3},
     {"_gamrel_hazf_ifr_c", (DL_FUNC) &_gamrel_hazf_ifr_c, 4},
     {"_gamrel_chzf_ifr_c", (DL_FUNC) &_gamrel_chzf_ifr_c, 4},
     {"_gamrel_hazf_chzf_ifr_c", (DL_FUNC) &_gamrel_hazf_chzf_ifr_c, 4},
@@ -1267,6 +1290,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_hazf_mew_c", (DL_FUNC) &_gamrel_hazf_mew_c, 5},
     {"_gamrel_chzf_mew_c", (DL_FUNC) &_gamrel_chzf_mew_c, 5},
     {"_gamrel_hazf_chzf_mew_c", (DL_FUNC) &_gamrel_hazf_chzf_mew_c, 5},
+    {"_gamrel_logprior_mew_c", (DL_FUNC) &_gamrel_logprior_mew_c, 12},
     {"_gamrel_shellSort_c", (DL_FUNC) &_gamrel_shellSort_c, 1},
     {"_gamrel_order_c", (DL_FUNC) &_gamrel_order_c, 1},
     {"_gamrel_rcpp_hello_world", (DL_FUNC) &_gamrel_rcpp_hello_world, 0},

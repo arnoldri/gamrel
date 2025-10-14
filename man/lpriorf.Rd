@@ -4,7 +4,7 @@
 \alias{lpriorf}
 \title{Log prior of the current state - scalar valued}
 \usage{
-lpriorf(state, fpar, model, use.Cpp = TRUE)
+lpriorf(state, fpar, model)
 }
 \description{
 Log prior of the current state - scalar valued

@@ -15,11 +15,11 @@ init.objects <- function(tvec, obs=TRUE,
                          seed=NULL,
                          generate="fixed") {  # generate can be "fixed" or "random"
   if(!is.null(seed)) set.seed(seed)
-  
+
   if(model%in%c("CON")) {
 
     if(is.null(prior.par)) {
-      prior.par <- list(nu=1)
+      prior.par <- list(s1=1,s2=datscale)
     }
     if(is.null(update.par)) {
       update.par <- list(sd.log.lambda0=0.3)
@@ -28,24 +28,28 @@ init.objects <- function(tvec, obs=TRUE,
     parnames <- c("lambda0")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
-                 nu=prior.par$nu,                  # prior for log lambda0
+                 s1=prior.par$s1,                  # prior for lambda0
+                 s2=prior.par$s2,                    
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
     update_parnames <- c(parnames)
+    # model parameter names 
+    model_parnames <- parnames
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
+                 model_parnames=model_parnames,
                  sd.log.lambda0=update.par$sd.log.lambda0,
                  update=update,
                  verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
-      epar <- list(lambda0=1/prior.par$nu)
+      epar <- list(lambda0=prior.par$s1/prior.par$s2)
     } else {
-      epar <- list(lambda0=rexp(1,prior.par$nu))
+      epar <- list(lambda0=rgamma(1,prior.par$s1,prior.par$s2))
     }
 
   } else if(model%in%c("IFR","DFR")) {
@@ -79,8 +83,11 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec","thetaswap")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    # model parameter names
+    model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
+                 model_parnames=model_parnames,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
@@ -150,8 +157,11 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec","thetaswap")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    # model parameter names
+    model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
+                 model_parnames=model_parnames,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
@@ -226,8 +236,11 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    # model parameter names
+    model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
+                 model_parnames=model_parnames,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
@@ -318,8 +331,11 @@ init.objects <- function(tvec, obs=TRUE,
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     update["eta1"] <- FALSE # eta1 is not a real parameter - it is always zero
+    # model parameter names
+    model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
+                 model_parnames=model_parnames,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
@@ -412,8 +428,11 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec","thetaswap")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    # model parameter names
+    model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
+                 model_parnames=model_parnames,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
@@ -483,8 +502,11 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec","thetaswap")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    # model parameter names
+    model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
+                 model_parnames=model_parnames,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
@@ -555,8 +577,11 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    # model parameter names
+    model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
+                 model_parnames=model_parnames,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
@@ -612,51 +637,54 @@ init.objects <- function(tvec, obs=TRUE,
   } else if(model%in%c("MEW")) {
     
     if(is.null(prior.par)) {
-      prior.par <- list(s1=1, s2=1,    # lambda
-                        a1=2, a2=0.05, # alpha
-                        t1=1, t2=2/datscale, # theta
-                        g1=1, g2=1)    # gamma
+      prior.par <- list(a1=2, a2=0.05,     # alpha
+                        b1=1, b2=1,        # beta
+                        s1=1, s2=datscale, # mu
+                        t1=1, t2=1) # nu
     }
     if(is.null(update.par)) {
-      update.par <- list(sd.log.lambda=0.3,
-                         sd.log.alpha=0.3,
-                         sd.log.theta=0.3,
-                         sd.log.gamma=0.3)
+      update.par <- list(sd.log.alpha=0.3,
+                         sd.log.beta=0.3,
+                         sd.log.mu=0.3,
+                         sd.log.nu=0.3)
     }
     # fixed parameters
-    parnames <- c("lambda","alpha","theta","gamma")
+    parnames <- c("alpha","beta","mu","nu")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
-                 s1=prior.par$s1, s2=prior.par$s2, # prior for lambda
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
-                 t1=prior.par$t1, t2=prior.par$t2, # prior for theta
-                 g1=prior.par$g1, g2=prior.par$g2, # prior for gamma
+                 b1=prior.par$b1, b2=prior.par$b2, # prior for beta
+                 s1=prior.par$s1, s2=prior.par$s2, # prior for mu
+                 t1=prior.par$t1, t2=prior.par$t2, # prior for nu
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
     update_parnames <- c(parnames)
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    # model parameter names
+    model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
-                 sd.log.lambda=update.par$sd.log.lambda,
+                 model_parnames=model_parnames,
                  sd.log.alpha=update.par$sd.log.alpha,
-                 sd.log.theta=update.par$sd.log.theta,
-                 sd.log.gamma=update.par$sd.log.gamma,
+                 sd.log.beta=update.par$sd.log.beta,
+                 sd.log.mu=update.par$sd.log.mu,
+                 sd.log.nu=update.par$sd.log.nu,
                  update=update,
                  verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
-      epar <- list(lambda=prior.par$s1/prior.par$s2,
-                   alpha=prior.par$a1/prior.par$a2,
-                   theta=prior.par$t1/prior.par$t2,
-                   gamma=prior.par$g1/prior.par$g2)
+      epar <- list(alpha=prior.par$a1/prior.par$a2,
+                   beta=prior.par$b1/prior.par$b2,
+                   mu=prior.par$s1/prior.par$s2,
+                   nu=prior.par$t1/prior.par$t2)
     } else {
-      epar <- list(lambda=rgamma(1,prior.par$s1,prior.par$s2),
-                   alpha=rgamma(1,prior.par$a1,prior.par$a2),
-                   theta=rgamma(1,prior.par$t1,prior.par$t2),
-                   gamma=rgamma(1,prior.par$g1,prior.par$g2))
+      epar <- list(alpha=rgamma(1,prior.par$a1,prior.par$a2),
+                   beta=rgamma(1,prior.par$b1,prior.par$b2),
+                   mu=rgamma(1,prior.par$s1,prior.par$s2),
+                   nu=rgamma(1,prior.par$t1,prior.par$t2))
     }
 
   } else {
@@ -827,7 +855,15 @@ plot_state <- function(state, datlist, fpar, ppar, model,
     main <- sprintf("LP=%.3f; LL=%.3f; LPost=%.3f",
                     state$lprior,state$llike,state$llike+state$lprior)
   }
-  if(model=="IFR") {
+  if(model=="CON") {
+    if(!add) {
+      # start a new plot
+      plot(NA,NA, xlim=c(-1,1), ylim=c(0,3/mean(datlist$tvec[datlist$obs])),
+           xlab="", ylab=bquote(lambda[0]), main=main, ...)
+    } 
+    points(0, state$lambda0, ...)
+    
+  } else if(model=="IFR") {
     if(!add) {
       # start a new plot
       plot(NA,NA, xlim=range(state$thetavec),
@@ -918,11 +954,13 @@ plot_state <- function(state, datlist, fpar, ppar, model,
   } else if(model=="MEW") {
     if(!add) {
       # start a new plot
-      plot(NA,NA, xlim=range(c(state$lambda,state$alpha,state$theta,state$gamma)),
+      plot(NA,NA, xlim=range(c(state$alpha,state$beta,state$mu,state$nu)),
            ylim=c(0,1),
            xlab="parameters", ylab="", main=main, ...)
     }
-    points(c(state$lambda,state$alpha,state$theta,state$gamma), c(0,0,0,0), ...)
+    points(c(state$alpha,state$beta,state$mu,state$nu), c(0,0,0,0), 
+           pch=c("a","b","m","n"),
+           ...)
     
   } else {
     stop(paste0("Model ",model," not recognised"))

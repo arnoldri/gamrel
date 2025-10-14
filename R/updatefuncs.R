@@ -7,7 +7,9 @@
 update_state <- function(state, datlist, fpar, ppar, model) {
   # update the state
   old.state <- state
-  if(model%in%c("IFR","DFR")) {
+  if(model%in%c("CON")) {
+    state <- update_state.con(state, datlist, fpar, ppar, model)    
+  } else if(model%in%c("IFR","DFR")) {
     state <- update_state.ifrdfr(state, datlist, fpar, ppar, model)    
   } else if(model=="LWB") {
     state <- update_state.lwb(state, datlist, fpar, ppar, model)    
@@ -26,6 +28,23 @@ update_state <- function(state, datlist, fpar, ppar, model) {
   } else {
     stop("Specified model has not been implemented")
   }
+  return(state)
+}
+
+update_state.con <- function(state, datlist, fpar, ppar, model) { 
+  # Update a CON state
+  state$count <- state$count + 1
+  
+  parnm <- unique(c(names(state),names(ppar$update)))
+  names(parnm) <- parnm
+
+  # update lambda0 ##!!== OK 
+  if(ppar$update["lambda0"]) {
+    if(ppar$verbose) cat("lambda0:")
+    state <- update.lambda0.v0(state, datlist, fpar, ppar, model, nm=parnm)
+    if(ppar$verbose) cat("\n")
+  }
+  
   return(state)
 }
 
@@ -655,13 +674,6 @@ update_state.mew <- function(state, datlist, fpar, ppar, model) {
   names(parnm) <- parnm
   parnm <- c(parnm,c(f1="f1",f2="f2"))
   
-  # update lambda ##!!== 
-  if(ppar$update["lambda"]) {
-    if(ppar$verbose) cat("lambda:")
-    state <- update.lambda.mew(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
   # update alpha ##!!== 
   if(ppar$update["alpha"]) {
     if(ppar$verbose) cat("alpha:")
@@ -669,17 +681,24 @@ update_state.mew <- function(state, datlist, fpar, ppar, model) {
     if(ppar$verbose) cat("\n")
   }
   
-  # update theta ##!!== 
-  if(ppar$update["theta"]) {
-    if(ppar$verbose) cat("theta:")
-    state <- update.theta.mew(state, datlist, fpar, ppar, model, nm=parnm)
+  # update beta ##!!== 
+  if(ppar$update["beta"]) {
+    if(ppar$verbose) cat("beta:")
+    state <- update.beta.mew(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
-  # update gamma ##!!== 
-  if(ppar$update["gamma"]) {
-    if(ppar$verbose) cat("gamma:")
-    state <- update.gamma.mew(state, datlist, fpar, ppar, model, nm=parnm)
+  # update mu ##!!== 
+  if(ppar$update["mu"]) {
+    if(ppar$verbose) cat("mu:")
+    state <- update.mu.mew(state, datlist, fpar, ppar, model, nm=parnm)
+    if(ppar$verbose) cat("\n")
+  }
+  
+  # update nu ##!!== 
+  if(ppar$update["nu"]) {
+    if(ppar$verbose) cat("nu:")
+    state <- update.nu.mew(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   

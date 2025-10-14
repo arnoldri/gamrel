@@ -10,5 +10,5 @@ as.parvec(model.list)
 \item{model.list}{Model specification}
 }
 \description{
-Convert model list object to parameter vector (incomplete)
+Suitable for calls to optim, and only for models CON and MEW
 }

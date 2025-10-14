@@ -165,16 +165,16 @@ NumericVector invsurvf_con_c(NumericVector uvec,
 //' @param lambda0 lambda0: constant hazard rate
 //' @param nu exponential prior
 //' 
-//' @description log(prior) for the IFR and DFR models - in vector form
+//' @description log(prior) for the CON model - in vector form
 //' 
 //' @export
 // [[Rcpp::export]]
-NumericVector logprior_con_c(double lambda0, double nu) {
+NumericVector logprior_con_c(double lambda0, double s1, double s2) {
 
  NumericVector lpriorvec(1);
 
- // log_lambda0
- lpriorvec[0] = R::dexp(lambda0, nu, true);
+ // lambda0
+ lpriorvec[0] = R::dgamma(lambda0, s1, s2, true);
 
  return lpriorvec;
 }   
@@ -1624,8 +1624,8 @@ NumericVector chzf_mew_c(NumericVector tvec,
 //' @export
 // [[Rcpp::export]]
 NumericMatrix hazf_chzf_mew_c(NumericVector tvec,
-                             double alpha, double beta,
-                             double mu, double nu) {
+                              double alpha, double beta,
+                              double mu, double nu) {
  int n = tvec.size();
  NumericMatrix haz_chz_mat(n,2);
  double z, zd;
@@ -1641,5 +1641,48 @@ NumericMatrix hazf_chzf_mew_c(NumericVector tvec,
  return haz_chz_mat;
 }
 
+//**********************************************************************
+//' Log prior - MEW
+//' 
+//' 
+//' @param alpha alpha
+//' @param beta beta
+//' @param mu mu
+//' @param nu nu
+//' @param a1 a1 Prior for alpha
+//' @param a2 a2 Prior for alpha
+//' @param b1 b1 Prior for beta
+//' @param b2 b2 Prior for beta
+//' @param s1 s1 Prior for mu
+//' @param s2 s2 Prior for mu
+//' @param t1 t1 Prior for nu
+//' @param t2 t2 Prior for nu
+//' 
+//' @description log(prior) for the MEW model - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector logprior_mew_c(double alpha,
+                             double beta,
+                             double mu,
+                             double nu,
+                             double a1, double a2,
+                             double b1, double b2,
+                             double s1, double s2,
+                             double t1, double t2) {
  
+ NumericVector lpriorvec(4);
+ 
+ // alpha
+ lpriorvec[0] = R::dgamma(alpha, a1, a2, true);
+ // beta
+ lpriorvec[1] = R::dgamma(beta, b1, b2, true);
+ // mu
+ lpriorvec[2] = R::dgamma(mu, s1, s2, true);
+ // nu
+ lpriorvec[3] = R::dgamma(nu, t1, t2, true);
+ 
+ return lpriorvec;
+}   
+
  

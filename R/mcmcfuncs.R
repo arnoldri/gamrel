@@ -87,6 +87,11 @@ state.as.vector <- function(state, fpar, model) {
 #' @export
 vector.as.state <- function(statevec, datlist, fpar, ppar, model) {
   state <- unstack(data.frame(values=statevec,ind=fpar$stackind))
+  if(is.data.frame(state)) {
+    nn <- row.names(state)
+    state <- as.list(t(state))
+    names(state) <- nn
+  } 
   names(state$accepted) <- names(ppar$update)
   return(state)
 }

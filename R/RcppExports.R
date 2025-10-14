@@ -476,11 +476,11 @@ invsurvf_con_c <- function(uvec, lambda0) {
 #' @param lambda0 lambda0: constant hazard rate
 #' @param nu exponential prior
 #' 
-#' @description log(prior) for the IFR and DFR models - in vector form
+#' @description log(prior) for the CON model - in vector form
 #' 
 #' @export
-logprior_con_c <- function(lambda0, nu) {
-    .Call(`_gamrel_logprior_con_c`, lambda0, nu)
+logprior_con_c <- function(lambda0, s1, s2) {
+    .Call(`_gamrel_logprior_con_c`, lambda0, s1, s2)
 }
 
 #' Hazard rate function - IFR
@@ -1038,6 +1038,29 @@ chzf_mew_c <- function(tvec, alpha, beta, mu, nu) {
 #' @export
 hazf_chzf_mew_c <- function(tvec, alpha, beta, mu, nu) {
     .Call(`_gamrel_hazf_chzf_mew_c`, tvec, alpha, beta, mu, nu)
+}
+
+#' Log prior - MEW
+#' 
+#' 
+#' @param alpha alpha
+#' @param beta beta
+#' @param mu mu
+#' @param nu nu
+#' @param a1 a1 Prior for alpha
+#' @param a2 a2 Prior for alpha
+#' @param b1 b1 Prior for beta
+#' @param b2 b2 Prior for beta
+#' @param s1 s1 Prior for mu
+#' @param s2 s2 Prior for mu
+#' @param t1 t1 Prior for nu
+#' @param t2 t2 Prior for nu
+#' 
+#' @description log(prior) for the MEW model - in vector form
+#' 
+#' @export
+logprior_mew_c <- function(alpha, beta, mu, nu, a1, a2, b1, b2, s1, s2, t1, t2) {
+    .Call(`_gamrel_logprior_mew_c`, alpha, beta, mu, nu, a1, a2, b1, b2, s1, s2, t1, t2)
 }
 
 #' Function to sort an array using shellSort

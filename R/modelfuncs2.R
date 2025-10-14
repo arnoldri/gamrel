@@ -278,9 +278,9 @@ llikef <- function(state, datlist, fpar, model) {
 #' Log prior of the current state - scalar valued
 #'
 #' @export
-lpriorf <- function(state, fpar, model, use.Cpp=TRUE) {
+lpriorf <- function(state, fpar, model) {
   # log prior of the state
-  retval <- sum(lpriorfunc.vector(state, fpar, model, use.Cpp=use.Cpp))
+  retval <- sum(lpriorfunc.vector(state, fpar, model))
   return(retval)
 }
 
@@ -290,21 +290,21 @@ lpriorf <- function(state, fpar, model, use.Cpp=TRUE) {
 #' @param use.Cpp Use C++ functions?
 #' 
 #' @export
-lpriorfunc.vector <- function(state, fpar, model, use.Cpp=TRUE) {
+lpriorfunc.vector <- function(state, fpar, model) {
     retval <- switch(model, 
-         CON=logprior.CON(state, fpar, use.Cpp),
-         IFR=logprior.IFR(state, fpar, use.Cpp),
-         DFR=logprior.DFR(state, fpar, use.Cpp),
-         CIR=logprior.CIR(state, fpar, use.Cpp),
-         CDR=logprior.CDR(state, fpar, use.Cpp),
-         LWB=logprior.LWB(state, fpar, use.Cpp),
-         HBT=logprior.HBT(state, fpar, use.Cpp),
-         HCV=logprior.HCV(state, fpar, use.Cpp),
-         SBT=logprior.SBT(state, fpar, use.Cpp),
-         SCV=logprior.SCV(state, fpar, use.Cpp),
-         MBT=logprior.MBT(state, fpar, use.Cpp),
-         LCV=logprior.LCV(state, fpar, use.Cpp),
-         MEW=logprior.MEW(state, fpar, use.Cpp)
+         CON=logprior.CON(state, fpar, use.Cpp=fpar$use.Cpp),
+         IFR=logprior.IFR(state, fpar, use.Cpp=fpar$use.Cpp),
+         DFR=logprior.DFR(state, fpar, use.Cpp=fpar$use.Cpp),
+         CIR=logprior.CIR(state, fpar, use.Cpp=fpar$use.Cpp),
+         CDR=logprior.CDR(state, fpar, use.Cpp=fpar$use.Cpp),
+         LWB=logprior.LWB(state, fpar, use.Cpp=fpar$use.Cpp),
+         HBT=logprior.HBT(state, fpar, use.Cpp=fpar$use.Cpp),
+         HCV=logprior.HCV(state, fpar, use.Cpp=fpar$use.Cpp),
+         SBT=logprior.SBT(state, fpar, use.Cpp=fpar$use.Cpp),
+         SCV=logprior.SCV(state, fpar, use.Cpp=fpar$use.Cpp),
+         MBT=logprior.MBT(state, fpar, use.Cpp=fpar$use.Cpp),
+         LCV=logprior.LCV(state, fpar, use.Cpp=fpar$use.Cpp),
+         MEW=logprior.MEW(state, fpar, use.Cpp=fpar$use.Cpp)
   )
   return(retval)
 }
@@ -312,6 +312,8 @@ lpriorfunc.vector <- function(state, fpar, model, use.Cpp=TRUE) {
 #' Convert model list object to parameter vector (incomplete)
 #' 
 #' @param model.list Model specification
+#' 
+#' @description Suitable for calls to optim, and only for models CON and MEW
 #' 
 #' @export
 as.parvec <- function(model.list) { ##!!!== incomplete
@@ -327,6 +329,8 @@ as.parvec <- function(model.list) { ##!!!== incomplete
 #' 
 #' @param model.list Model specification
 #' 
+#' @description Suitable for calls to optim, and only for models CON and MEW
+#' 
 #' @export
 as.model.list <- function(parvec,model) {  ##!!== incomplete
   if(model=="CON") {
@@ -341,9 +345,11 @@ as.model.list <- function(parvec,model) {  ##!!== incomplete
 }
 
 #' Plot a hazard function
+#'
+#' @description Plot a hazard rate function
 #' 
 #' @export
-plot.hazf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
+plot_hazf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
                       xlab="t", ylab=expression(lambda(t)), scale=1, ...) {
   tvec <- seq(from=xlim[1], to=xlim[2], length=n)
   fvec <- scale*hazf(tvec,model.list,use.Cpp) 
@@ -358,8 +364,10 @@ plot.hazf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE,
 
 #' Plot a cumulative hazard function
 #' 
+#' @description Plot a cumulative hazard rate function
+#' 
 #' @export
-plot.chzf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
+plot_chzf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
                       xlab="t", ylab=expression(Lambda(t)), scale=1, ...) {
   curve(scale*chzf(x,model.list,use.Cpp), xlim=xlim, 
         n=101, add=add, xlab=xlab, ylab=ylab, ...)
@@ -368,8 +376,10 @@ plot.chzf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE,
 
 #' Plot a survival function
 #' 
+#' @description Plot a survival function
+#' 
 #' @export
-plot.survf <- function(model.list, xlim, ylim=c(0,1), use.Cpp=FALSE, n=101, add=FALSE, 
+plot_survf <- function(model.list, xlim, ylim=c(0,1), use.Cpp=FALSE, n=101, add=FALSE, 
                        xlab="t", ylab=expression(bar(F)(t)), scale=1, ...) {
   curve(scale*survf(x,model.list,use.Cpp), xlim=xlim, ylim=ylim, 
         n=101, add=add, xlab=xlab, ylab=ylab, ...)
@@ -378,8 +388,10 @@ plot.survf <- function(model.list, xlim, ylim=c(0,1), use.Cpp=FALSE, n=101, add=
 
 #' Plot a density function
 #' 
+#' @description Plot a density function
+#' 
 #' @export
-plot.densf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
+plot_densf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE, 
                        xlab="t", ylab=expression(f(t)), scale=1, ...) {
   curve(scale*densf(x,model.list,use.Cpp), xlim=xlim, 
         n=101, add=add, xlab=xlab, ylab=ylab, ...)
@@ -388,8 +400,10 @@ plot.densf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE,
 
 #' Plot an inverse survival function
 #' 
+#' @description Plot an inverse survival function
+#' 
 #' @export
-plot.invsurvf <- function(model.list, xlim=c(0,1)+0.0001*c(1,-1), use.Cpp=FALSE, n=101, add=FALSE, 
+plot_invsurvf <- function(model.list, xlim=c(0,1)+0.0001*c(1,-1), use.Cpp=FALSE, n=101, add=FALSE, 
                           xlab=expression(bar(F)(t)), ylab="t", scale=1, ...) {
   curve(scale*invsurvf(x,model.list,use.Cpp), xlim=xlim, 
         n=101, add=add, xlab=xlab, ylab=ylab, ...)
@@ -404,11 +418,13 @@ plot.invsurvf <- function(model.list, xlim=c(0,1)+0.0001*c(1,-1), use.Cpp=FALSE,
 #' 
 #' @export
 mlfit <- function(model, tvec, obs=TRUE) {
-   if(model=="CON") {
-     retval <- mlfit.CON(tvec, obs)
-   } else {
+  if(model=="CON") {
+    retval <- mlfit.CON(tvec, obs)
+  } else if(model=="MEW") {
+      retval <- mlfit.MEW(tvec, obs)
+  } else {
      stop("Model not recognised")
-   }
+  }
   return(retval)
 }
 
@@ -442,9 +458,9 @@ invsurvf.CON <- function(uvec, model.list, use.Cpp=FALSE) {
 }
 logprior.CON <- function(state, fpar, use.Cpp) {
   if(use.Cpp) {
-    retval <- logprior_con_c(state$lambda0, fpar$nu)
+    retval <- logprior_con_c(state$lambda0, fpar$s1, fpar$s2)
   } else {
-    retval <- dexp(state$lambda0, fpar$nu, log=TRUE)
+    retval <- dgamma(state$lambda0, fpar$s1, fpar$s2, log=TRUE)
   }
   return(retval)
 }
@@ -457,14 +473,15 @@ mlfit.CON <- function(tvec, obs=TRUE) {
   }
   lambda0 <- 3./mean(tvec[datlist$obs])
   par0 <- log(lambda0)
-  opt <- optim(par, ff, 
+  opt <- optim(par0, ff, 
                lower=log(1/max(tvec)), upper=log(1/min(tvec)),
                hessian=TRUE, method="Brent",
                control=list(fnscale=-1),
                tvec=datlist$tvec, obs=datlist$obs)
   lambda0 <- exp(opt$par)
   model.list <- list(model="CON", lambda0=lambda0)
-  se.lambda0 <- as.vector(lambda0/sqrt(-opt$hessian))
+  se.log.lambda0 <- 1/sqrt(-as.vector(opt$hessian))
+  se.lambda0 <- lambda0*se.log.lambda0
   return(c(model.list,list(se.lambda0=se.lambda0)))
 }
 
@@ -1104,6 +1121,46 @@ invsurvf.MEW <- function(uvec, model.list, use.Cpp=FALSE) {
                   })
   tvec <- (1/model.list$mu)*( log(1-log(expnz)) )^(1/model.list$beta)
   return(tvec)
+}
+logprior.MEW <- function(state, fpar, use.Cpp) {
+  if(use.Cpp) {
+    retval <- logprior_mew_c(state$alpha, 
+                             state$beta, 
+                             state$mu, 
+                             state$nu, 
+                             fpar$a1, fpar$a2,
+                             fpar$b1, fpar$b2,
+                             fpar$s1, fpar$s2,
+                             fpar$t1, fpar$t2)
+  } else {
+    retval <- c(alpha=dgamma(state$alpha, fpar$a1, fpar$a2, log=TRUE),
+                beta=dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE),
+                beta=dgamma(state$mu, fpar$s1, fpar$s2, log=TRUE),
+                beta=dgamma(state$nu, fpar$t1, fpar$t2, log=TRUE))
+  }
+  return(retval)
+}
+mlfit.MEW <- function(tvec, obs=TRUE) {  
+  datlist <- make.datlist(tvec, obs)
+  ff <- function(par, tvec, obs, verbose=FALSE) {
+    epar <- exp(par) # epar is now alpha, beta, mu, nu
+    model.list <- list(model="MEW", alpha=epar[1], beta=epar[2], 
+                                    mu=epar[3], nu=epar[4])
+    hazvec <- hazf(tvec, model.list, use.Cpp=TRUE)
+    chzvec <- chzf(tvec, model.list, use.Cpp=TRUE)
+    retval <- sum(log(hazvec[datlist$obs])) - sum(chzvec)
+    return(retval)
+  }
+  par0 <- log(c(1,1,1,1))
+  opt <- optim(par0, ff, 
+               hessian=TRUE, 
+               control=list(fnscale=-1),
+               tvec=datlist$tvec, obs=datlist$obs)
+  epar <- exp(opt$par)
+  model.list <- list(model="MEW", alpha=epar[1], beta=epar[2], mu=epar[3], nu=epar[4])
+  se.epar <- epar*sqrt(-diag(solve(opt$hessian)))
+  names(se.epar) <- c("alpha","beta","mu","nu")
+  return(c(model.list,list(se.epar=se.epar)))
 }
 
 ####################################################

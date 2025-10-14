@@ -4,7 +4,7 @@
 \alias{logprior_con_c}
 \title{Log prior - CON}
 \usage{
-logprior_con_c(lambda0, nu)
+logprior_con_c(lambda0, s1, s2)
 }
 \arguments{
 \item{lambda0}{lambda0: constant hazard rate}
@@ -12,5 +12,5 @@ logprior_con_c(lambda0, nu)
 \item{nu}{exponential prior}
 }
 \description{
-log(prior) for the IFR and DFR models - in vector form
+log(prior) for the CON model - in vector form
 }
