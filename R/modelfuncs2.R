@@ -355,7 +355,7 @@ plot_hazf <- function(model.list, xlim, use.Cpp=FALSE, n=101, add=FALSE,
   fvec <- scale*hazf(tvec,model.list,use.Cpp) 
   ylim <- c(0,1.1*max(fvec))
   if(!add) {
-    plot(tvec, fvec, ylim=ylim, xlab=xlab, ylab=ylab, type="l", ...)
+    plot(tvec, fvec, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, type="l", ...)
   } else {
     lines(tvec, fvec, ...)
   }
