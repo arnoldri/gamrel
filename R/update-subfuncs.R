@@ -64,8 +64,12 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
                 eta.old, eta.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["eta"]
-    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, 
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -171,8 +175,10 @@ update.thetavec.v1 <- function(state, datlist, fpar, ppar, model,
                   k, theta.old, theta.new, log.r))
       if(ppar$interactive) browser()
       update.name <- nm["thetavec"]
-      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
-           file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+      fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+      fname <- gsub(":","-",fname,fixed=TRUE)
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+           file=fname)
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -251,8 +257,10 @@ update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
                   k, v.old, v.new, log.r))
       if(ppar$interactive) browser()
       update.name <- nm["vvec"]
-      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
-           file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+      fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+      fname <- gsub(":","-",fname,fixed=TRUE)
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+           file=fname)
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -309,8 +317,10 @@ update.alpha.v1 <- function(state, datlist, fpar, ppar, model,
                 alpha.old, alpha.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["alpha"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -489,8 +499,10 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
             )); cat("\n")
       if(ppar$interactive) browser()
       update.name <- nm["wvec"]
-      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
-           file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+      fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+      fname <- gsub(":","-",fname,fixed=TRUE)
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+           file=fname)
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -546,8 +558,10 @@ update.thetaswap.v1 <- function(state, datlist, fpar, ppar, model,
                   k1, k2, state.old[[nm["thetavec"]]][k1], state.old[[nm["thetavec"]]][k2], log.r))
       if(ppar$interactive) browser()
       update.name <- nm["thetaswap"]
-      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k1, k2, 
-           file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+      fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+      fname <- gsub(":","-",fname,fixed=TRUE)
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+           file=fname)
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -599,8 +613,10 @@ update.a.v1 <- function(state, datlist, fpar, ppar, model,
                 a.old, a.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["a"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -691,8 +707,10 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
                 w0.old, w0.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["w0"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -749,8 +767,10 @@ update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
                 gamma.old, gamma.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["gamma"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -790,8 +810,10 @@ update.pival.v1 <- function(state, datlist, fpar, ppar, model,
                 pival.old, pival.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["pival"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -837,8 +859,10 @@ update.alpha.mew <- function(state, datlist, fpar, ppar, model,
                 alpha.old, alpha.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["alpha"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -871,7 +895,7 @@ update.beta.mew <- function(state, datlist, fpar, ppar, model,
   state$lprior <- lpriorf(state, fpar, model)
   log.r <- (state$llike - state.old$llike)
   log.r <- ( log.r + fpar$b1*log(beta.new/beta.old) 
-             - fpar$b2*(beta.new-beta.old) )
+                   - fpar$b2*(beta.new-beta.old) )
   if(ppar$verbose) {
     cat(sprintf("beta: (%g;%g) %g->%g: logr=%g\n",
                 state.old$llike, state$llike,
@@ -882,8 +906,10 @@ update.beta.mew <- function(state, datlist, fpar, ppar, model,
                 beta.old, beta.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["beta"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -917,7 +943,7 @@ update.mu.mew <- function(state, datlist, fpar, ppar, model,
   state$lprior <- lpriorf(state, fpar, model)
   log.r <- (state$llike - state.old$llike)
   log.r <- ( log.r + fpar$s1*log(mu.new/mu.old) 
-             - fpar$s2*(mu.new-mu.old) )
+                   - fpar$s2*(mu.new-mu.old) )
   if(ppar$verbose) {
     cat(sprintf("mu: (%g;%g) %g->%g: logr=%g\n",
                 state.old$llike, state$llike,
@@ -928,8 +954,10 @@ update.mu.mew <- function(state, datlist, fpar, ppar, model,
                 mu.old, mu.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["mu"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -963,7 +991,7 @@ update.nu.mew <- function(state, datlist, fpar, ppar, model,
   state$lprior <- lpriorf(state, fpar, model)
   log.r <- (state$llike - state.old$llike)
   log.r <- ( log.r + fpar$t1*log(nu.new/nu.old) 
-             - fpar$t2*(nu.new-nu.old) )
+                   - fpar$t2*(nu.new-nu.old) )
   if(ppar$verbose) {
     cat(sprintf("nu: (%g;%g) %g->%g: logr=%g\n",
                 state.old$llike, state$llike,
@@ -974,8 +1002,10 @@ update.nu.mew <- function(state, datlist, fpar, ppar, model,
                 nu.old, nu.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["nu"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept

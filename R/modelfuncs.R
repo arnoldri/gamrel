@@ -637,13 +637,13 @@ init.objects <- function(tvec, obs=TRUE,
   } else if(model%in%c("MEW")) {
     
     if(is.null(prior.par)) {
-      prior.par <- list(a1=2, a2=0.05,     # alpha
-                        b1=1, b2=1,        # beta
+      prior.par <- list(a1=2, a2=0.5,      # alpha
+                        b1=1, b2=2,        # beta
                         s1=1, s2=datscale, # mu
                         t1=1, t2=1) # nu
     }
     if(is.null(update.par)) {
-      update.par <- list(sd.log.alpha=0.3,
+      update.par <- list(sd.log.alpha=1.0,
                          sd.log.beta=0.3,
                          sd.log.mu=0.3,
                          sd.log.nu=0.3)
