@@ -66,8 +66,6 @@ update.eta.v1 <- function(state, datlist, fpar, ppar, model,
     update.name <- nm["eta"]
     fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
     fname <- gsub(":","-",fname,fixed=TRUE)
-    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
-    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
          file=fname)
   }
