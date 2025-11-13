@@ -10,9 +10,9 @@
   fpar,
   ppar,
   model,
-  nm = c(eta = "eta", gamma = "gamma", thetavec = "thetavec", vvec = "vvec", alpha =
-    "alpha", beta = "beta", phi = "phi", uvec = "uvec", wvec = "wvec", lambda0 =
-    "lambda0", thetaswap = "thetaswap")
+  nm = c(lambda0 = "lambda0", gamma = "gamma", thetavec = "thetavec", vvec = "vvec",
+    alpha = "alpha", beta = "beta", nu = "nu", phi = "phi", uvec = "uvec", wvec = "wvec",
+    lambda0 = "lambda0")
 )
 }
 \description{

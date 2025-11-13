@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.lambda0.v1}
 \alias{update.lambda0.v1}
-\title{lambda0 V1 (Gibbs) (LCV)}
+\title{lambda0 V1 (IFR/DFR)}
 \usage{
 \method{update}{lambda0.v1}(
   state,
@@ -10,11 +10,11 @@
   fpar,
   ppar,
   model,
-  nm = c(lambda0 = "lambda0", w0 = "w0", gamma = "gamma", thetavec = "thetavec", vvec =
-    "vvec", alpha = "alpha", beta = "beta", phi = "phi", uvec = "uvec", wvec = "wvec",
-    thetaswap = "thetaswap")
+  nm = c(lambda0 = "lambda0", gamma = "gamma", thetavec = "thetavec", vvec = "vvec",
+    alpha = "alpha", beta = "beta", nu = "nu", phi = "phi", uvec = "uvec", wvec = "wvec",
+    lambda0 = "lambda0")
 )
 }
 \description{
-lambda0 V1 (Gibbs) (LCV)
+lambda0 V1 (IFR/DFR)
 }

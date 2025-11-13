@@ -56,10 +56,38 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
   names(parnm) <- parnm
   parnm <- c(parnm,c(f1="f1",f2="f2"))
   
-  # update eta ##!!== OK 
-  if(ppar$update["eta"]) {
-    if(ppar$verbose) cat("eta:")
-    state <- update.eta.v1(state, datlist, fpar, ppar, model, nm=parnm)
+  # update alpha ##!!== OK  
+  if(ppar$update["alpha"]) {
+    if(ppar$verbose) cat("alpha:")
+    state <- update.alpha.v1(state, datlist, fpar, ppar, model, nm=parnm)
+    if(ppar$verbose) cat("\n")
+  }
+  
+  # update beta ##!!== OK
+  if(ppar$update["beta"]) {
+    if(ppar$verbose) cat("beta:")
+    state <- update.beta.v1(state, datlist, fpar, ppar, model, nm=parnm)
+    if(ppar$verbose) cat("\n")
+  }
+  
+  # update nu ##!!==  OK
+  if(ppar$update["nu"]) {
+    if(ppar$verbose) cat("nu:")
+    state <- update.nu.v1(state, datlist, fpar, ppar, model, nm=parnm)
+    if(ppar$verbose) cat("\n")
+  }
+  
+  # update phi ##!!==  OK
+  if(ppar$update["phi"]) {
+    if(ppar$verbose) cat("phi:")
+    state <- update.phi.v1(state, datlist, fpar, ppar, model, nm=parnm)
+    if(ppar$verbose) cat("\n")
+  }
+  
+  # update lambda0 ##!!== OK 
+  if(ppar$update["lambda0"]) {
+    if(ppar$verbose) cat("lambda0:")
+    state <- update.lambda0.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
@@ -81,27 +109,6 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
   if(ppar$update["vvec"]) {
     if(ppar$verbose) cat("vvec:")
     state <- update.vvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update alpha ##!!== OK  
-  if(ppar$update["alpha"]) {
-    if(ppar$verbose) cat("alpha:")
-    state <- update.alpha.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update beta ##!!== OK
-  if(ppar$update["beta"]) {
-    if(ppar$verbose) cat("beta:")
-    state <- update.beta.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update phi ##!!==  OK
-  if(ppar$update["phi"]) {
-    if(ppar$verbose) cat("phi:")
-    state <- update.phi.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
@@ -422,7 +429,7 @@ update_state.lcv <- function(state, datlist, fpar, ppar, model) {
   # update lambda0 ##!!== 
   if(ppar$update["lambda0"]) {
     if(ppar$verbose) cat("lambda0:")
-    state <- update.lambda0.v1(state, datlist, fpar, ppar, model, nm=parnm)
+    state <- update.lambda0.v2(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   

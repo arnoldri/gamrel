@@ -60,6 +60,22 @@ make.datlist <- function(tvec, obs=NULL) {
   return(datlist)
 }
 
+#' Subsample within data list
+#' 
+#' @param datlist A datlist object
+#' @param n The number of elements to sample
+#' 
+#' @export
+sample.datlist <- function(n, datlist) {
+  nold <- datlist$n
+  datlist$n <- n
+  idx <- sample(nold, n)
+  datlist$tvec <- datlist$tvec[idx]
+  datlist$obs <- datlist$obs[idx]
+  datlist$nobs <- sum(datlist$obs)
+  return(datlist)
+}
+
 ####################################################
 # Generic
 # Models are CON/ IFR/DFR/ CIR/CDR/ LWB/ HBT/HCV/ SBT/SCV/ MBT/LCV/ MEW

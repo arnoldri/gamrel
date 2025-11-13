@@ -58,29 +58,32 @@ init.objects <- function(tvec, obs=TRUE,
       prior.par <- list(nu=1,
                         a1=4, a2=1,
                         b1=1, b2=1/datscale,
+                        g1=2, g2=2,
                         f1=2, f2=2*datscale)
     }
     if(is.null(update.par)) {
-      update.par <- list(psweep=0.1, # probability of the sweep move
+      update.par <- list(pequal=0.5, # probability we select a support point with equal probability
                          sd.log.eta=0.3,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
                          sd.log.w=0.3,
-                         sd.log.alpha=0.3)
+                         sd.log.alpha=0.3,
+                         sd.log.nu=0.1)
     }
     # fixed parameters
-    parnames <- c("eta","gamma","thetavec","vvec","alpha","beta","phi")
+    parnames <- c("lambda0","gamma","thetavec","vvec","alpha","beta","nu","phi")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
                  nu=prior.par$nu,                  # prior for eta (lambda0/gamma)
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta
+                 g1=prior.par$g1, g2=prior.par$g2, # prior for nu
                  f1=prior.par$f1, f2=prior.par$f2, # prior for phi
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec","thetaswap")
+    update_parnames <- c(parnames,"wvec")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     # model parameter names
@@ -91,23 +94,25 @@ init.objects <- function(tvec, obs=TRUE,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
-                 psweep=update.par$psweep,
+                 pequal=update.par$pequal,
                  sd.log.eta=update.par$sd.log.eta,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
+                 sd.log.nu=update.par$sd.log.nu,
                  update=update,
                  verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
-      epar <- list(eta=1/prior.par$nu,
+      epar <- list(lambda0=prior.par$s1/prior.par$s2,
                    gamma=NA,
                    thetavec=NA,
                    vvec=NA,
                    alpha=prior.par$a1/prior.par$a2,
                    beta=prior.par$b1/prior.par$b2,
+                   nu=prior.par$g1/prior.par$g2,
                    phi=prior.par$f1/prior.par$b2)
       epar$gamma <- epar$alpha/epar$beta
     } else {
@@ -117,6 +122,7 @@ init.objects <- function(tvec, obs=TRUE,
                    vvec=NA,
                    alpha=rgamma(1,prior.par$a1,prior.par$a2),
                    beta=rgamma(1,prior.par$b1,prior.par$b2),
+                   nu=rgamma(1,prior.par$g1,prior.par$g2),
                    phi=rgamma(1,prior.par$f1,prior.par$b2))
       epar$gamma <- rgamma(1,epar$alpha,epar$beta)
     }
@@ -133,7 +139,7 @@ init.objects <- function(tvec, obs=TRUE,
                         f1=2, f2=2*datscale)
     }
     if(is.null(update.par)) {
-      update.par <- list(psweep=0.1, # probability of the sweep move
+      update.par <- list(pequal=0.5, # probability we select a support point with equal probability
                          sd.log.eta=0.3,
                          sd.log.a=0.1,
                          sd.log.theta=0.3,
@@ -165,7 +171,7 @@ init.objects <- function(tvec, obs=TRUE,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
-                 psweep=update.par$psweep,
+                 pequal=update.par$pequal,
                  sd.log.eta=update.par$sd.log.eta,
                  sd.log.a=update.par$sd.log.a,
                  sd.log.theta=update.par$sd.log.theta,
@@ -210,7 +216,7 @@ init.objects <- function(tvec, obs=TRUE,
                         f12=2, f22=2*datscale) # IFR
     }
     if(is.null(update.par)) {
-      update.par <- list(psweep=0.1, # probability of the sweep move
+      update.par <- list(pequal=0.5, # probability we select a support point with equal probability
                          sd.log.eta=0.3,
                          sd.log.gamma=0.1,
                          sd.log.theta=0.3,
@@ -244,7 +250,7 @@ init.objects <- function(tvec, obs=TRUE,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
-                 psweep=update.par$psweep,
+                 pequal=update.par$pequal,
                  sd.log.eta=update.par$sd.log.eta,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,
@@ -303,7 +309,7 @@ init.objects <- function(tvec, obs=TRUE,
                         f12=2, f22=2*datscale)
     }
     if(is.null(update.par)) {
-      update.par <- list(psweep=0.1, # probability of the sweep move
+      update.par <- list(pequal=0.5, # probability we select a support point with equal probability
                          sd.logit.pival=0.1,
                          sd.log.eta=0.3,
                          sd.log.gamma=0.1,
@@ -339,7 +345,7 @@ init.objects <- function(tvec, obs=TRUE,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
-                 psweep=update.par$psweep,
+                 pequal=update.par$pequal,
                  sd.logit.pival=update.par$sd.logit.pival,
                  sd.log.eta=update.par$sd.log.eta,
                  sd.log.gamma=update.par$sd.log.gamma,
@@ -404,7 +410,7 @@ init.objects <- function(tvec, obs=TRUE,
                         f1=1, f2=datscale)
     }
     if(is.null(update.par)) {
-      update.par <- list(psweep=0.1, # probability of the sweep move
+      update.par <- list(pequal=0.5, # probability we select a support point with equal probability
                          sd.w0=1./datscale,
                          sd.log.gamma=0.05,
                          sd.log.theta=0.3,
@@ -436,7 +442,7 @@ init.objects <- function(tvec, obs=TRUE,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
-                 psweep=update.par$psweep,
+                 pequal=update.par$pequal,
                  sd.w0=update.par$sd.w0,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,
@@ -480,7 +486,7 @@ init.objects <- function(tvec, obs=TRUE,
                         f1=2, f2=2*datscale)
     }
     if(is.null(update.par)) {
-      update.par <- list(psweep=0.1, # probability of the sweep move
+      update.par <- list(pequal=0.5, # probability we select a support point with equal probability
                          sd.log.eta=0.3,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
@@ -510,7 +516,7 @@ init.objects <- function(tvec, obs=TRUE,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
-                 psweep=update.par$psweep,
+                 pequal=update.par$pequal,
                  sd.log.eta=update.par$sd.log.eta,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
@@ -551,7 +557,7 @@ init.objects <- function(tvec, obs=TRUE,
                         f12=2, f22=2*datscale) # IFR
     }
     if(is.null(update.par)) {
-      update.par <- list(psweep=0.1, # probability of the sweep move
+      update.par <- list(pequal=0.5, # probability we select a support point with equal probability
                          sd.log.eta=0.3,
                          sd.log.gamma=0.1,
                          sd.log.theta=0.3,
@@ -585,7 +591,7 @@ init.objects <- function(tvec, obs=TRUE,
                  ksweep=FALSE, # = all support points are updated each time
                  ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
                  kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
-                 psweep=update.par$psweep,
+                 pequal=update.par$pequal,
                  sd.log.eta=update.par$sd.log.eta,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,

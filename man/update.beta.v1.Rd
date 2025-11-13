@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.beta.v1}
 \alias{update.beta.v1}
-\title{beta V1 (IFR/DFR/LWB/SBT/MBT/LCV)}
+\title{beta V1 (IFR/DFR)}
 \usage{
 \method{update}{beta.v1}(
   state,
@@ -10,11 +10,11 @@
   fpar,
   ppar,
   model,
-  nm = c(eta = "eta", gamma = "gamma", thetavec = "thetavec", vvec = "vvec", alpha =
-    "alpha", beta = "beta", phi = "phi", uvec = "uvec", wvec = "wvec", lambda0 =
-    "lambda0", thetaswap = "thetaswap")
+  nm = c(lambda0 = "lambda0", gamma = "gamma", thetavec = "thetavec", vvec = "vvec",
+    alpha = "alpha", beta = "beta", nu = "nu", phi = "phi", uvec = "uvec", wvec = "wvec",
+    lambda0 = "lambda0")
 )
 }
 \description{
-beta V1 (IFR/DFR/LWB/SBT/MBT/LCV)
+beta V1 (IFR/DFR)
 }

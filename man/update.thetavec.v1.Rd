@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-subfuncs.R
 \name{update.thetavec.v1}
 \alias{update.thetavec.v1}
-\title{thetavec V1 (IFR/DFR/LWB/SBT/MBT/LCV)}
+\title{thetavec V1 (IFR/DFR)}
 \usage{
 \method{update}{thetavec.v1}(
   state,
@@ -10,11 +10,11 @@
   fpar,
   ppar,
   model,
-  nm = c(eta = "eta", gamma = "gamma", thetavec = "thetavec", vvec = "vvec", alpha =
-    "alpha", beta = "beta", phi = "phi", uvec = "uvec", wvec = "wvec", lambda0 =
-    "lambda0", thetaswap = "thetaswap")
+  nm = c(lambda0 = "lambda0", gamma = "gamma", thetavec = "thetavec", vvec = "vvec",
+    alpha = "alpha", beta = "beta", nu = "nu", phi = "phi", uvec = "uvec", wvec = "wvec",
+    lambda0 = "lambda0")
 )
 }
 \description{
-thetavec V1 (IFR/DFR/LWB/SBT/MBT/LCV)
+thetavec V1 (IFR/DFR)
 }
