@@ -174,7 +174,7 @@ NumericVector logprior_con_c(double lambda0, double s1, double s2) {
  NumericVector lpriorvec(1);
 
  // lambda0
- lpriorvec[0] = R::dgamma(lambda0, s1, s2, true);
+ lpriorvec[0] = R::dgamma(lambda0, s1, 1./s2, true);
 
  return lpriorvec;
 }   
@@ -282,6 +282,49 @@ NumericMatrix hazf_chzf_ifr_c(NumericVector tvec,
  return haz_chz_mat;
 }
 
+//**********************************************************************
+//' Log prior - IFR/DFR
+//' 
+//' 
+//' @param eta eta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the IFR and DFR models - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector logprior_ifrdfr_c(double eta, 
+                               double gamma,
+                               NumericVector thetavec, 
+                               NumericVector vvec,
+                               double alpha, 
+                               double beta,
+                               double phi,
+                               double nu, double a1, double a2, double b1, double b2, double f1, double f2) {
+   
+   int kmax = vvec.size();
+   NumericVector lpriorvec(7);
+   int i;
+ 
+   // eta
+   lpriorvec[0] = -eta*nu;
+   // gamma
+   lpriorvec[1] = R::dgamma(gamma, alpha, 1./beta, true);
+   // thetavec
+   lpriorvec[2] = kmax*log(phi);
+   for(i=0; i<kmax; i++) lpriorvec[2] += (-phi*thetavec[i]);
+   // vvec
+   lpriorvec[3] =  (kmax-1)*log(alpha);
+   for(i=0; i<kmax-1; i++) lpriorvec[3] += (alpha-1)*log(1-vvec[i]);
+   // alpha
+   lpriorvec[4] = (a1-1)*log(alpha) - a2*alpha;
+   // beta
+   lpriorvec[5] = (b1-1)*log(beta) - b2*beta;
+   // phi
+   lpriorvec[6] = (f1-1)*log(phi) - f2*phi;
+ 
+ return lpriorvec;
+}   
 
 //**********************************************************************
 //* DFR - Decreasing hazard rate
@@ -391,6 +434,7 @@ NumericMatrix hazf_chzf_dfr_c(NumericVector tvec,
  return haz_chz_mat;
 }
 
+/* Log Prior for DFR is the same as for IFR - see above */
 
 //**********************************************************************
 //* CIR - Piecewise linear increasing hazard rate
@@ -1674,13 +1718,13 @@ NumericVector logprior_mew_c(double alpha,
  NumericVector lpriorvec(4);
  
  // alpha
- lpriorvec[0] = R::dgamma(alpha, a1, a2, true);
+ lpriorvec[0] = R::dgamma(alpha, a1, 1./a2, true);
  // beta
- lpriorvec[1] = R::dgamma(beta, b1, b2, true);
+ lpriorvec[1] = R::dgamma(beta, b1, 1./b2, true);
  // mu
- lpriorvec[2] = R::dgamma(mu, s1, s2, true);
+ lpriorvec[2] = R::dgamma(mu, s1, 1./s2, true);
  // nu
- lpriorvec[3] = R::dgamma(nu, t1, t2, true);
+ lpriorvec[3] = R::dgamma(nu, t1, 1./t2, true);
  
  return lpriorvec;
 }   

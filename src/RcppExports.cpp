@@ -661,6 +661,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// logprior_ifrdfr_c
+NumericVector logprior_ifrdfr_c(double eta, double gamma, NumericVector thetavec, NumericVector vvec, double alpha, double beta, double phi, double nu, double a1, double a2, double b1, double b2, double f1, double f2);
+RcppExport SEXP _gamrel_logprior_ifrdfr_c(SEXP etaSEXP, SEXP gammaSEXP, SEXP thetavecSEXP, SEXP vvecSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP phiSEXP, SEXP nuSEXP, SEXP a1SEXP, SEXP a2SEXP, SEXP b1SEXP, SEXP b2SEXP, SEXP f1SEXP, SEXP f2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type vvec(vvecSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< double >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< double >::type a1(a1SEXP);
+    Rcpp::traits::input_parameter< double >::type a2(a2SEXP);
+    Rcpp::traits::input_parameter< double >::type b1(b1SEXP);
+    Rcpp::traits::input_parameter< double >::type b2(b2SEXP);
+    Rcpp::traits::input_parameter< double >::type f1(f1SEXP);
+    Rcpp::traits::input_parameter< double >::type f2(f2SEXP);
+    rcpp_result_gen = Rcpp::wrap(logprior_ifrdfr_c(eta, gamma, thetavec, vvec, alpha, beta, phi, nu, a1, a2, b1, b2, f1, f2));
+    return rcpp_result_gen;
+END_RCPP
+}
 // hazf_dfr_c
 NumericVector hazf_dfr_c(NumericVector tvec, double lambda0, NumericVector thetavec, NumericVector wvec);
 RcppExport SEXP _gamrel_hazf_dfr_c(SEXP tvecSEXP, SEXP lambda0SEXP, SEXP thetavecSEXP, SEXP wvecSEXP) {
@@ -1257,6 +1281,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_hazf_ifr_c", (DL_FUNC) &_gamrel_hazf_ifr_c, 4},
     {"_gamrel_chzf_ifr_c", (DL_FUNC) &_gamrel_chzf_ifr_c, 4},
     {"_gamrel_hazf_chzf_ifr_c", (DL_FUNC) &_gamrel_hazf_chzf_ifr_c, 4},
+    {"_gamrel_logprior_ifrdfr_c", (DL_FUNC) &_gamrel_logprior_ifrdfr_c, 14},
     {"_gamrel_hazf_dfr_c", (DL_FUNC) &_gamrel_hazf_dfr_c, 4},
     {"_gamrel_chzf_dfr_c", (DL_FUNC) &_gamrel_chzf_dfr_c, 4},
     {"_gamrel_hazf_chzf_dfr_c", (DL_FUNC) &_gamrel_hazf_chzf_dfr_c, 4},

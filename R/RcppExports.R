@@ -526,6 +526,19 @@ hazf_chzf_ifr_c <- function(tvec, lambda0, thetavec, wvec) {
     .Call(`_gamrel_hazf_chzf_ifr_c`, tvec, lambda0, thetavec, wvec)
 }
 
+#' Log prior - IFR/DFR
+#' 
+#' 
+#' @param eta eta
+#' @param gamma gamma
+#' 
+#' @description log(prior) for the IFR and DFR models - in vector form
+#' 
+#' @export
+logprior_ifrdfr_c <- function(eta, gamma, thetavec, vvec, alpha, beta, phi, nu, a1, a2, b1, b2, f1, f2) {
+    .Call(`_gamrel_logprior_ifrdfr_c`, eta, gamma, thetavec, vvec, alpha, beta, phi, nu, a1, a2, b1, b2, f1, f2)
+}
+
 #' Hazard rate function - DFR
 #' 
 #' @param tvec Locations at which to evaluate the function

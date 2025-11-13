@@ -539,6 +539,39 @@ invsurvf.IFR <- function(uvec, model.list, use.Cpp=FALSE) {
   tvec <- (dvec[kvec]-log(uvec))/(model.list$lambda0+cvec[kvec])
   return(tvec)
 }
+logprior.IFR <- function(state, fpar, use.Cpp) {
+  if(use.Cpp) {
+     lprior.vec <- lprior_ifrdfr_c(state$eta, 
+                                   state$gamma,
+                                   state$thetavec, 
+                                   state$vvec,
+                                   state$alpha, 
+                                   state$beta,
+                                   state$phi,
+                                   fpar$nu, fpar$a1, fpar$a2, fpar$b1, fpar$b2, fpar$f1, fpar$f2)
+     names(lprior.vec) <- fpar$parnames
+  } else {
+    # prior for eta
+    lprior.vec["eta"] <- -state$eta*fpar$nu 
+    # prior for gamma
+    lprior.vec["gamma"] <- dgamma(state$gamma, state$alpha, state$beta, log=TRUE)
+    # prior for thetavec
+    lprior.vec["thetavec"] <- sum( (log(state$phi)-state$phi*state$thetavec) )
+    # prior for vvec
+    lprior.vec["vvec"] <-  sum( (log(state$alpha) + (state$alpha-1)*log(1-state$vvec[-fpar$kmax])) )
+    # prior for alpha
+    #lprior.vec["alpha"] <- dgamma(state$alpha, fpar$a1, fpar$a2, log=TRUE)
+    lprior.vec["alpha"] <- (fpar$a1-1)*log(state$alpha) - fpar$a2*state$alpha
+    # prior for beta
+    #lprior.vec["beta"] <- dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE)
+    lprior.vec["beta"] <- (fpar$b1-1)*log(state$beta) - fpar$b2*state$beta
+    # prior for phi
+    #lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
+    lprior.vec["phi"] <- (fpar$f1-1)*log(state$phi) - fpar$f2*state$phi
+  }  
+  
+  return(lprior.vec)
+}
 
 ####################################################
 # DFR
@@ -574,6 +607,39 @@ invsurvf.DFR <- function(uvec, model.list, use.Cpp=FALSE) {
             + (othetavec[kvecp1]-othetavec[kvec])/(ivec[kvecp1]-ivec[kvec])*(-log(uvec)-ivec[kvec])
   )
   return(tvec)
+}
+logprior.DFR <- function(state, fpar, use.Cpp) {
+  if(use.Cpp) {
+    lprior.vec <- lprior_ifrdfr_c(state$eta, 
+                                  state$gamma,
+                                  state$thetavec, 
+                                  state$vvec,
+                                  state$alpha, 
+                                  state$beta,
+                                  state$phi,
+                                  fpar$nu, fpar$a1, fpar$a2, fpar$b1, fpar$b2, fpar$f1, fpar$f2)
+    names(lprior.vec) <- fpar$parnames
+  } else {
+    # prior for eta
+    lprior.vec["eta"] <- -state$eta*fpar$nu 
+    # prior for gamma
+    lprior.vec["gamma"] <- dgamma(state$gamma, state$alpha, state$beta, log=TRUE)
+    # prior for thetavec
+    lprior.vec["thetavec"] <- sum( (log(state$phi)-state$phi*state$thetavec) )
+    # prior for vvec
+    lprior.vec["vvec"] <-  sum( (log(state$alpha) + (state$alpha-1)*log(1-state$vvec[-fpar$kmax])) )
+    # prior for alpha
+    #lprior.vec["alpha"] <- dgamma(state$alpha, fpar$a1, fpar$a2, log=TRUE)
+    lprior.vec["alpha"] <- (fpar$a1-1)*log(state$alpha) - fpar$a2*state$alpha
+    # prior for beta
+    #lprior.vec["beta"] <- dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE)
+    lprior.vec["beta"] <- (fpar$b1-1)*log(state$beta) - fpar$b2*state$beta
+    # prior for phi
+    #lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
+    lprior.vec["phi"] <- (fpar$f1-1)*log(state$phi) - fpar$f2*state$phi
+  }  
+  
+  return(lprior.vec)
 }
 
 ####################################################

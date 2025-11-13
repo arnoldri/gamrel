@@ -288,7 +288,6 @@ update.thetavec.v1 <- function(state, datlist, fpar, ppar, model,
   } else {
     k <- sample(fpar$kmax, 1, prob=state$uvec)
   }
-  
   state.old <- state
   theta.old <- state[[nm["thetavec"]]][k]
   theta.new <- exp( rnorm(1,log(theta.old),ppar$sd.log.theta) )
@@ -440,8 +439,10 @@ update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
                   k, v.old, v.new, log.r))
       if(ppar$interactive) browser()
       update.name <- nm["vvec"]
-      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
-           file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+      fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+      fname <- gsub(":","-",fname,fixed=TRUE)
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+           file=fname)
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -458,6 +459,139 @@ update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
+<<<<<<< HEAD
+=======
+#' alpha V1 (IFR/DFR/LWB/SBT/MBT/LCV)
+#'
+#' @export
+update.alpha.v1 <- function(state, datlist, fpar, ppar, model,
+                            nm=c(eta="eta",
+                                 gamma="gamma",
+                                 thetavec="thetavec",
+                                 vvec="vvec",
+                                 alpha="alpha",
+                                 beta="beta",
+                                 phi="phi",
+                                 uvec="uvec",
+                                 wvec="wvec",
+                                 lambda0="lambda0",
+                                 thetaswap="thetaswap")) {
+  last.seed <- .Random.seed
+  state.old <- state
+  alpha.old <- state.old[[nm["alpha"]]]
+  alpha.new <- exp( rnorm(1, log(alpha.old), ppar$sd.log.alpha) )
+  state[[nm["alpha"]]] <- alpha.new
+  state$llike <- llikef(state, datlist, fpar, model)
+  state$lprior <- lpriorf(state, fpar, model)
+  log.ukmax <- log(state[[nm["uvec"]]][fpar$kmax]) 
+  #log.ukmax - sum(log(1-state[[nm["vvec"]]][-fpar$kmax])) 
+  a1star <- fpar$a1 + fpar$kmax - 1
+  a2star <- fpar$a2 - log.ukmax - log(state[[nm["beta"]]]*state[[nm["gamma"]]])
+  log.r <- (state$llike - state.old$llike)
+  log.r <- ( log.r + a1star*log(alpha.new/alpha.old) 
+             - a2star*(alpha.new-alpha.old) 
+             + lgamma(alpha.old) - lgamma(alpha.new) )
+  if(ppar$verbose) {
+    cat(sprintf("alpha: (%g;%g) %g->%g: logr=%g\n",
+                state.old$llike, state$llike,
+                alpha.old, alpha.new, log.r))
+  }
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
+    cat(sprintf("alpha: %g->%g: logr=%g\n",
+                alpha.old, alpha.new, log.r))
+    if(ppar$interactive) browser()
+    update.name <- nm["alpha"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=fname)
+  }
+  if(runif(1)<exp(log.r)) {
+    # accept
+    state$accepted[nm["alpha"]] <- 1
+    if(ppar$verbose) cat("+")
+  } else {
+    # reject
+    state <- state.old
+    state$accepted[nm["alpha"]] <- 0
+    if(ppar$verbose) cat("-")
+  }
+  
+  return(state)
+}
+
+#' beta V1 (IFR/DFR/LWB/SBT/MBT/LCV)
+#'
+#' @export
+update.beta.v1 <- function(state, datlist, fpar, ppar, model,
+                           nm=c(eta="eta",
+                                gamma="gamma",
+                                thetavec="thetavec",
+                                vvec="vvec",
+                                alpha="alpha",
+                                beta="beta",
+                                phi="phi",
+                                uvec="uvec",
+                                wvec="wvec",
+                                lambda0="lambda0",
+                                thetaswap="thetaswap")) {
+  last.seed <- .Random.seed
+  beta.old <- state[[nm["beta"]]]
+  llike.old <- state$llike
+  b1star <- fpar$b1 + state[[nm["alpha"]]]
+  b2star <- fpar$b2 + state[[nm["gamma"]]]
+  beta.new <- rgamma(1, b1star, b2star)
+  state[[nm["beta"]]] <- beta.new
+  state$llike <- llikef(state, datlist, fpar, model)
+  state$lprior <- lpriorf(state, fpar, model)
+  state$accepted[nm["beta"]] <- 1
+  if(ppar$verbose) {
+    cat(sprintf("beta: (%g;%g) %g->%g: logr=Gibbs\n",
+                llike.old, state$llike,
+                beta.old, beta.new))
+    cat("+")
+  }
+  
+  return(state)
+}
+
+#' phi V1 (IFR/DFR/LWB/SBT/MBT/LCV)
+#'
+#' @export
+update.phi.v1 <- function(state, datlist, fpar, ppar, model,
+                          nm=c(eta="eta",
+                               gamma="gamma",
+                               thetavec="thetavec",
+                               vvec="vvec",
+                               alpha="alpha",
+                               beta="beta",
+                               phi="phi",
+                               uvec="uvec",
+                               wvec="wvec",
+                               lambda0="lambda0",
+                               thetaswap="thetaswap",
+                               f1="f1", f2="f2")) {
+  last.seed <- .Random.seed
+  phi.old <- state[[nm["phi"]]]
+  llike.old <- state$llike
+  f1star <- fpar[[nm["f1"]]] + fpar$kmax
+  f2star <- fpar[[nm["f2"]]] + sum(state[[nm["thetavec"]]])
+  phi.new <- rgamma(1, f1star, f2star)
+  state[[nm["phi"]]] <- phi.new
+  state$llike <- llikef(state, datlist, fpar, model)
+  state$lprior <- lpriorf(state, fpar, model)
+  state$accepted[nm["phi"]] <- 1
+  if(ppar$verbose) {
+    cat(sprintf("phi: (%g;%g) %g->%g: logr=Gibbs\n",
+                llike.old, state$llike,
+                phi.old, phi.new))
+    cat("+")
+  }
+  
+  return(state)
+}
+
+>>>>>>> 64d170090dc20b09a0472af762c925c55df1618e
 #' wvec V1 (IFR/DFR/LWB/SBT/MBT/LCV)
 #'
 #' @export
@@ -550,8 +684,10 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
             )); cat("\n")
       if(ppar$interactive) browser()
       update.name <- nm["wvec"]
-      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed, k,
-           file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+      fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+      fname <- gsub(":","-",fname,fixed=TRUE)
+      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+           file=fname)
     }
     if(runif(1)<exp(log.r)) {
       # accept
@@ -603,8 +739,10 @@ update.a.v1 <- function(state, datlist, fpar, ppar, model,
                 a.old, a.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["a"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -695,8 +833,10 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
                 w0.old, w0.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["w0"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -753,8 +893,10 @@ update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
                 gamma.old, gamma.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["gamma"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -794,8 +936,10 @@ update.pival.v1 <- function(state, datlist, fpar, ppar, model,
                 pival.old, pival.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["pival"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -841,8 +985,10 @@ update.alpha.mew <- function(state, datlist, fpar, ppar, model,
                 alpha.old, alpha.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["alpha"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -875,7 +1021,7 @@ update.beta.mew <- function(state, datlist, fpar, ppar, model,
   state$lprior <- lpriorf(state, fpar, model)
   log.r <- (state$llike - state.old$llike)
   log.r <- ( log.r + fpar$b1*log(beta.new/beta.old) 
-             - fpar$b2*(beta.new-beta.old) )
+                   - fpar$b2*(beta.new-beta.old) )
   if(ppar$verbose) {
     cat(sprintf("beta: (%g;%g) %g->%g: logr=%g\n",
                 state.old$llike, state$llike,
@@ -886,8 +1032,10 @@ update.beta.mew <- function(state, datlist, fpar, ppar, model,
                 beta.old, beta.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["beta"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -921,7 +1069,7 @@ update.mu.mew <- function(state, datlist, fpar, ppar, model,
   state$lprior <- lpriorf(state, fpar, model)
   log.r <- (state$llike - state.old$llike)
   log.r <- ( log.r + fpar$s1*log(mu.new/mu.old) 
-             - fpar$s2*(mu.new-mu.old) )
+                   - fpar$s2*(mu.new-mu.old) )
   if(ppar$verbose) {
     cat(sprintf("mu: (%g;%g) %g->%g: logr=%g\n",
                 state.old$llike, state$llike,
@@ -932,8 +1080,10 @@ update.mu.mew <- function(state, datlist, fpar, ppar, model,
                 mu.old, mu.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["mu"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
@@ -967,7 +1117,7 @@ update.nu.mew <- function(state, datlist, fpar, ppar, model,
   state$lprior <- lpriorf(state, fpar, model)
   log.r <- (state$llike - state.old$llike)
   log.r <- ( log.r + fpar$t1*log(nu.new/nu.old) 
-             - fpar$t2*(nu.new-nu.old) )
+                   - fpar$t2*(nu.new-nu.old) )
   if(ppar$verbose) {
     cat(sprintf("nu: (%g;%g) %g->%g: logr=%g\n",
                 state.old$llike, state$llike,
@@ -978,8 +1128,10 @@ update.nu.mew <- function(state, datlist, fpar, ppar, model,
                 nu.old, nu.new, log.r))
     if(ppar$interactive) browser()
     update.name <- nm["nu"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
     save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata"))
+         file=fname)
   }
   if(runif(1)<exp(log.r)) {
     # accept
