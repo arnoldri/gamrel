@@ -103,9 +103,20 @@ vector.as.state <- function(statevec, datlist, fpar, ppar, model) {
 #' @param fpar Fixed parameters of the model
 #' @param ppar Parameters used in running the sampler
 #' @param model Model name
+#' @param downsample Sample size (or proportion of data) for subsampling from datlist to speed up calculations
 #' 
 #' @export
-waicfunc <- function(smat, datlist, fpar, ppar, model) {
+waicfunc <- function(smat, datlist, fpar, ppar, model, downsample=NULL) {
+  if(!is.null(downsample)) {
+     if(downsample<1) downsample <- round(datlist$n*downsample    )
+     if(downsample<datlist$n) {
+       idx <- sample(datlist$n,downsample)
+       datlist$n <- downsample
+       datlist$tvec <- datlist$tvec[idx]
+       datlist$obs <- datlist$obs[idx]
+       datlist$nobs <- sum(datlist$obs)
+     }
+  }
   llmat <- t(sapply(1:nrow(smat), 
                     function(j) {
                       state <- vector.as.state(smat[j,], datlist, fpar, ppar, model)

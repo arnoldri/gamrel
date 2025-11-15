@@ -4,7 +4,7 @@
 \alias{waicfunc}
 \title{Evaluate the WAIC value from a chain}
 \usage{
-waicfunc(smat, datlist, fpar, ppar, model)
+waicfunc(smat, datlist, fpar, ppar, model, downsample = NULL)
 }
 \arguments{
 \item{smat}{Matrix output of an MCMC chain}
@@ -16,6 +16,8 @@ waicfunc(smat, datlist, fpar, ppar, model)
 \item{ppar}{Parameters used in running the sampler}
 
 \item{model}{Model name}
+
+\item{downsample}{Sample size (or proportion of data) for subsampling from datlist to speed up calculations}
 }
 \description{
 Evaluate the WAIC value from a chain

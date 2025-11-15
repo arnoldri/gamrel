@@ -293,21 +293,24 @@ NumericMatrix hazf_chzf_ifr_c(NumericVector tvec,
 //' 
 //' @export
 // [[Rcpp::export]]
-NumericVector logprior_ifrdfr_c(double eta, 
-                               double gamma,
-                               NumericVector thetavec, 
-                               NumericVector vvec,
-                               double alpha, 
-                               double beta,
-                               double phi,
-                               double nu, double a1, double a2, double b1, double b2, double f1, double f2) {
+NumericVector logprior_ifr_c(double lambda0, 
+                             double gamma,
+                             NumericVector thetavec, 
+                             NumericVector vvec,
+                             double alpha, 
+                             double beta,
+                             double nu,
+                             double phi,
+                             double s1, double s2, 
+                             double a1, double a2, double b1, double b2, 
+                             double g1, double g2, double f1, double f2) {
    
    int kmax = vvec.size();
-   NumericVector lpriorvec(7);
+   NumericVector lpriorvec(8);
    int i;
  
-   // eta
-   lpriorvec[0] = -eta*nu;
+   // lambda0
+   lpriorvec[0] = (s1-1)*log(lambda0)- s2*lambda0;
    // gamma
    lpriorvec[1] = R::dgamma(gamma, alpha, 1./beta, true);
    // thetavec
@@ -320,9 +323,11 @@ NumericVector logprior_ifrdfr_c(double eta,
    lpriorvec[4] = (a1-1)*log(alpha) - a2*alpha;
    // beta
    lpriorvec[5] = (b1-1)*log(beta) - b2*beta;
+   // nu
+   lpriorvec[6] = (g1-1)*log(nu) - g2*nu;
    // phi
-   lpriorvec[6] = (f1-1)*log(phi) - f2*phi;
- 
+   lpriorvec[7] = (f1-1)*log(phi) - f2*phi;
+   
  return lpriorvec;
 }   
 
@@ -538,6 +543,7 @@ NumericMatrix hazf_chzf_cir_c(NumericVector tvec,
  return haz_chz_mat;
 }
 
+/* Log Prior for CIR is the same as for IFR - see above */
 
 
 
@@ -646,6 +652,9 @@ NumericMatrix hazf_chzf_cdr_c(NumericVector tvec,
  
  return haz_chz_mat;
 }
+
+/* Log Prior for CDR is the same as for IFR - see above */
+
 
 
 //**********************************************************************

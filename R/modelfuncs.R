@@ -9,12 +9,14 @@ init.objects <- function(tvec, obs=TRUE,
                          prior.par=NULL,
                          update.par=NULL,
                          model="IFR",
-                         datscale=1,
+                         datscale=NULL,
                          epsilon=.Machine$double.neg.eps*100, # tiny value if needed
                          use.Cpp=TRUE,
                          seed=NULL,
                          generate="fixed") {  # generate can be "fixed" or "random"
   if(!is.null(seed)) set.seed(seed)
+  
+  if(is.null(datscale)) datscale <- mean(tvec,na.rm=TRUE)
 
   if(model%in%c("CON")) {
 
@@ -52,10 +54,10 @@ init.objects <- function(tvec, obs=TRUE,
       epar <- list(lambda0=rgamma(1,prior.par$s1,prior.par$s2))
     }
 
-  } else if(model%in%c("IFR","DFR")) {
+  } else if(model%in%c("IFR","DFR","CIR","CDR")) {
       
     if(is.null(prior.par)) {
-      prior.par <- list(nu=1,
+      prior.par <- list(s1=1, s2=datscale,
                         a1=4, a2=1,
                         b1=1, b2=1/datscale,
                         g1=2, g2=2,
@@ -63,19 +65,21 @@ init.objects <- function(tvec, obs=TRUE,
     }
     if(is.null(update.par)) {
       update.par <- list(pequal=0.5, # probability we select a support point with equal probability
-                         sd.log.eta=0.3,
+                         pgvw=c(0.2,0.4,0.4), # probability we update gamma/vvec/wvec
+                         sd.log.lambda0=0.3,
+                         sd.log.gamma=0.3,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
                          sd.log.w=0.3,
                          sd.log.alpha=0.3,
-                         sd.log.nu=0.1)
+                         sd.log.nu=0.3)
     }
     # fixed parameters
     parnames <- c("lambda0","gamma","thetavec","vvec","alpha","beta","nu","phi")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
-                 nu=prior.par$nu,                  # prior for eta (lambda0/gamma)
+                 s1=prior.par$s1, s2=prior.par$s2, # prior for lambda0
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta
                  g1=prior.par$g1, g2=prior.par$g2, # prior for nu
@@ -83,19 +87,20 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec")
+    update_parnames <- c(parnames,"wvec","gvw")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    ##!!== update[update_parnames%in%c("gamma","vvec","wvec")] <- FALSE ## reinstate this to prevent the warning
+    if(any(update[c("gamma","vvec","wvec")])) warning("Should not update gamma/vvec/wvec separately")
     # model parameter names
     model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
                  model_parnames=model_parnames,
-                 ksweep=FALSE, # = all support points are updated each time
-                 ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
-                 kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
                  pequal=update.par$pequal,
-                 sd.log.eta=update.par$sd.log.eta,
+                 pgvw=update.par$pgvw,
+                 sd.log.lambda0=update.par$sd.log.lambda0,
+                 sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
                  sd.log.w=update.par$sd.log.w,
@@ -116,7 +121,7 @@ init.objects <- function(tvec, obs=TRUE,
                    phi=prior.par$f1/prior.par$b2)
       epar$gamma <- epar$alpha/epar$beta
     } else {
-      epar <- list(eta=rexp(1,prior.par$nu),
+      epar <- list(lambda0=rgamma(1,prior.par$s1,prior.par$s2),
                    gamma=NA,
                    thetavec=NA,
                    vvec=NA,
@@ -126,7 +131,7 @@ init.objects <- function(tvec, obs=TRUE,
                    phi=rgamma(1,prior.par$f1,prior.par$b2))
       epar$gamma <- rgamma(1,epar$alpha,epar$beta)
     }
-    epar$thetavec <- rexp(kmax, epar$phi)
+    epar$thetavec <- rgamma(kmax, epar$nu, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
 
   } else if(model%in%c("LWB")) {
@@ -160,7 +165,7 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec","thetaswap")
+    update_parnames <- c(parnames,"wvec","gvw")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     # model parameter names
@@ -193,7 +198,7 @@ init.objects <- function(tvec, obs=TRUE,
                    phi=prior.par$f1/prior.par$b2)
       epar$gamma <- epar$alpha/epar$beta
     } else {
-      epar <- list(eta=rexp(1,prior.par$nu),
+      epar <- list(lambda0=rgamma(1,prior.par$s1,prior.par$s2),
                    a=prior.par$c1/prior.par$c2,
                    gamma=NA,
                    thetavec=NA,
@@ -203,7 +208,7 @@ init.objects <- function(tvec, obs=TRUE,
                    phi=rgamma(1,prior.par$f1,prior.par$b2))
       epar$gamma <- rgamma(1,epar$alpha,epar$beta)
     }
-    epar$thetavec <- rexp(kmax, epar$phi)
+    epar$thetavec <- rgamma(kmax, epar$nu, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
 
   } else if(model%in%c("SBT")) {
@@ -239,7 +244,7 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
+    update_parnames <- c(parnames,"wvec1","gvw1","wvec2","gvw2")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     # model parameter names
@@ -278,7 +283,7 @@ init.objects <- function(tvec, obs=TRUE,
       epar$gamma1 <- epar$alpha1/epar$beta1
       epar$gamma2 <- epar$alpha2/epar$beta2
     } else {
-      epar <- list(eta=rexp(1,prior.par$nu),
+      epar <- list(lambda0=rgamma(1,prior.par$s1,prior.par$s2),
                    gamma1=NA,
                    thetavec1=NA,
                    vvec1=NA,
@@ -294,9 +299,9 @@ init.objects <- function(tvec, obs=TRUE,
       epar$gamma1 <- rgamma(1,epar$alpha1,epar$beta1)
       epar$gamma2 <- rgamma(1,epar$alpha2,epar$beta2)
     }
-    epar$thetavec1 <- rexp(kmax, epar$phi1)
+    epar$thetavec1 <- rgamma(kmax, epar$nu1, epar$phi1)
     epar$vvec1 <- rbeta.t(kmax, 1, epar$alpha1)
-    epar$thetavec2 <- rexp(kmax, epar$phi2)
+    epar$thetavec2 <- rgamma(kmax, epar$nu2, epar$phi2)
     epar$vvec2 <- rbeta.t(kmax, 1, epar$alpha2)
 
   } else if(model%in%c("MBT")) {
@@ -305,6 +310,8 @@ init.objects <- function(tvec, obs=TRUE,
       prior.par <- list(nu=1,
                         a1=4, a2=1,
                         b1=1, b2=1/datscale,
+                        g11=2, g21=2,
+                        g12=2, g22=2,
                         f11=1, f21=datscale/2,
                         f12=2, f22=2*datscale)
     }
@@ -333,7 +340,7 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
+    update_parnames <- c(parnames,"wvec1","gvw1","wvec2","gvw2")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     update["eta1"] <- FALSE # eta1 is not a real parameter - it is always zero
@@ -377,26 +384,28 @@ init.objects <- function(tvec, obs=TRUE,
       epar$gamma2 <- epar$alpha2/epar$beta2
     } else {
       epar <- list(pival=runif(1),
-                   eta1=0,
+                   lambda01=rgamma(1,prior.par$s11,prior.par$s21),
                    gamma1=NA,
                    thetavec1=NA,
                    vvec1=NA,
                    alpha1=rgamma(1,prior.par$a1,prior.par$a2),
                    beta1=rgamma(1,prior.par$b1,prior.par$b2),
+                   nu1=rgamma(1,prior.par$g11,prior.par$g21),
                    phi1=rgamma(1,prior.par$f11,prior.par$f21),
-                   eta2=rexp(1,prior.par$nu),
+                   lambda02=0,
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
                    alpha2=rgamma(1,prior.par$a1,prior.par$a2),
                    beta2=rgamma(1,prior.par$b1,prior.par$b2),
+                   nu2=rgamma(1,prior.par$g12,prior.par$g22),
                    phi2=rgamma(1,prior.par$f12,prior.par$f22))
       epar$gamma1 <- rgamma(1,epar$alpha1,epar$beta1)
       epar$gamma2 <- rgamma(1,epar$alpha2,epar$beta2)
     }
-    epar$thetavec1 <- rexp(kmax, epar$phi1)
+    epar$thetavec1 <- rgamma(kmax, epar$nu1, epar$phi1)
     epar$vvec1 <- rbeta.t(kmax, 1, epar$alpha1)
-    epar$thetavec2 <- rexp(kmax, epar$phi2)
+    epar$thetavec2 <- rgamma(kmax, epar$nu2, epar$phi2)
     epar$vvec2 <- rbeta.t(kmax, 1, epar$alpha2)
 
   } else if(model%in%c("LCV")) {
@@ -431,7 +440,7 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec","thetaswap")
+    update_parnames <- c(parnames,"wvec","gvw")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     # model parameter names
@@ -474,7 +483,7 @@ init.objects <- function(tvec, obs=TRUE,
                    phi=rgamma(1,prior.par$f1,prior.par$b2))
       epar$gamma <- rgamma(1,epar$alpha,epar$beta)
     }
-    epar$thetavec <- rexp(kmax, epar$phi)
+    epar$thetavec <- rgamma(kmax, epar$nu, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
 
   } else if(model%in%c("CIR","CDR")) {
@@ -505,7 +514,7 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec","thetaswap")
+    update_parnames <- c(parnames,"wvec","gvw")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     # model parameter names
@@ -536,7 +545,7 @@ init.objects <- function(tvec, obs=TRUE,
                    phi=prior.par$f1/prior.par$b2)
       epar$gamma <- epar$alpha/epar$beta
     } else {
-      epar <- list(eta=rexp(1,prior.par$nu),
+      epar <- list(lambda0=rgamma(1,prior.par$s1,prior.par$s2),
                    gamma=NA,
                    thetavec=NA,
                    vvec=NA,
@@ -545,7 +554,7 @@ init.objects <- function(tvec, obs=TRUE,
                    phi=rgamma(1,prior.par$f1,prior.par$b2))
       epar$gamma <- rgamma(1,epar$alpha,epar$beta)
     }
-    epar$thetavec <- rexp(kmax, epar$phi)
+    epar$thetavec <- rgamma(kmax, epar$nu, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
     
   } else if(model%in%c("CVX")) {
@@ -580,7 +589,7 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec1","thetaswap1","wvec2","thetaswap2")
+    update_parnames <- c(parnames,"wvec1","gvw1","wvec2","gvw2")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     # model parameter names
@@ -619,25 +628,28 @@ init.objects <- function(tvec, obs=TRUE,
       epar$gamma1 <- epar$alpha1/epar$beta1
       epar$gamma2 <- epar$alpha2/epar$beta2
     } else {
-      epar <- list(eta=rexp(1,prior.par$nu),
+      epar <- list(lambda01=0,
                    gamma1=NA,
                    thetavec1=NA,
                    vvec1=NA,
                    alpha1=rgamma(1,prior.par$a1,prior.par$a2),
                    beta1=rgamma(1,prior.par$b1,prior.par$b2),
+                   nu1=rgamma(1,prior.par$g11,prior.par$g21),
                    phi1=rgamma(1,prior.par$f11,prior.par$f21),
+                   lambda02=rgamma(1,prior.par$s1,prior.par$s2),
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
                    alpha2=rgamma(1,prior.par$a1,prior.par$a2),
                    beta2=rgamma(1,prior.par$b1,prior.par$b2),
+                   nu1=rgamma(1,prior.par$g12,prior.par$g22),
                    phi2=rgamma(1,prior.par$f12,prior.par$f22))
       epar$gamma1 <- rgamma(1,epar$alpha1,epar$beta1)
       epar$gamma2 <- rgamma(1,epar$alpha2,epar$beta2)
     }
-    epar$thetavec1 <- rexp(kmax, epar$phi1)
+    epar$thetavec1 <- rgamma(kmax, epar$nu1, epar$phi1)
     epar$vvec1 <- rbeta.t(kmax, 1, epar$alpha1)
-    epar$thetavec2 <- rexp(kmax, epar$phi2)
+    epar$thetavec2 <- rgamma(kmax, epar$nu2, epar$phi2)
     epar$vvec2 <- rbeta.t(kmax, 1, epar$alpha2)
     
   } else if(model%in%c("MEW")) {
@@ -727,9 +739,7 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
       state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
       # compute the scaled weights wvec
       state$wvec <- state$gamma * state$uvec
-      # compute lambda0
-      state$lambda0 <- state$gamma*state$eta
-      
+
   } else if(model%in%c("LWB")) {
     state <- epar
     # complete state with useful quantities
@@ -739,8 +749,6 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
     # compute the scaled weights wvec
     state$wvec <- state$gamma * state$uvec
-    # compute lambda0
-    state$lambda0 <- state$gamma*state$eta
 
   } else if(model%in%c("SBT")) {
     state <- epar
@@ -760,9 +768,6 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     # compute the scaled weights wvec
     state$wvec2 <- state$gamma2 * state$uvec2
 
-    # compute lambda0 - comes from the IFR component
-    state$lambda0 <- state$gamma2*state$eta
-
   } else if(model%in%c("MBT")) {
     state <- epar
     # complete state with useful quantities
@@ -776,8 +781,6 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$uvec1[fpar$kmax] <- cp[fpar$kmax-1]
     # compute the scaled weights wvec
     state$wvec1 <- state$gamma1 * state$uvec1
-    # compute lambda0
-    state$lambda01 <- state$gamma1*state$eta1
 
     # derive the unscaled weights uvec
     cp <- cumprod(1-state$vvec2[-fpar$kmax])
@@ -785,8 +788,6 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$uvec2[fpar$kmax] <- cp[fpar$kmax-1]
     # compute the scaled weights wvec
     state$wvec2 <- state$gamma2 * state$uvec2
-    # compute lambda0
-    state$lambda02 <- state$gamma2*state$eta2
 
   } else if(model%in%c("LCV")) {
     state <- epar
@@ -815,9 +816,6 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$uvec2[fpar$kmax] <- cp[fpar$kmax-1]
     # compute the scaled weights wvec
     state$wvec2 <- state$gamma2 * state$uvec2
-    
-    # compute lambda0 - comes from the CIR component
-    state$lambda0 <- state$gamma2*state$eta
     
   } else if(model%in%c("MEW")) {
     state <- epar

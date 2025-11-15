@@ -11,7 +11,7 @@ init.objects(
   prior.par = NULL,
   update.par = NULL,
   model = "IFR",
-  datscale = 1,
+  datscale = NULL,
   epsilon = .Machine$double.neg.eps * 100,
   use.Cpp = TRUE,
   seed = NULL,

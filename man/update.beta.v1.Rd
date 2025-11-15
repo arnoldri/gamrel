@@ -11,8 +11,7 @@
   ppar,
   model,
   nm = c(lambda0 = "lambda0", gamma = "gamma", thetavec = "thetavec", vvec = "vvec",
-    alpha = "alpha", beta = "beta", nu = "nu", phi = "phi", uvec = "uvec", wvec = "wvec",
-    lambda0 = "lambda0")
+    alpha = "alpha", beta = "beta", nu = "nu", phi = "phi", uvec = "uvec", wvec = "wvec")
 )
 }
 \description{

@@ -9,8 +9,8 @@ update_state <- function(state, datlist, fpar, ppar, model) {
   old.state <- state
   if(model%in%c("CON")) {
     state <- update_state.con(state, datlist, fpar, ppar, model)    
-  } else if(model%in%c("IFR","DFR")) {
-    state <- update_state.ifrdfr(state, datlist, fpar, ppar, model)    
+  } else if(model%in%c("IFR","DFR","CIR","CDR")) {
+    state <- update_state.ifr(state, datlist, fpar, ppar, model)    
   } else if(model=="LWB") {
     state <- update_state.lwb(state, datlist, fpar, ppar, model)    
   } else if(model=="SBT") {
@@ -48,13 +48,13 @@ update_state.con <- function(state, datlist, fpar, ppar, model) {
   return(state)
 }
 
-update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) { 
-  # Update an IFR or DFR state
+update_state.ifr <- function(state, datlist, fpar, ppar, model) { 
+  # Update an IFR/DFR/CIR/CDR state
   state$count <- state$count + 1
   
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-  parnm <- c(parnm,c(f1="f1",f2="f2"))
+  parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
   
   # update alpha ##!!== OK  
   if(ppar$update["alpha"]) {
@@ -119,10 +119,17 @@ update_state.ifrdfr <- function(state, datlist, fpar, ppar, model) {
     if(ppar$verbose) cat("\n")
   }
   
-  # swap elements of thetavec ##!!== OK  
-  if(ppar$update["thetaswap"]) {
-    if(ppar$verbose) cat("thetaswap:")
-    state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=parnm)
+  # update gamma/vvec/wvec ##!!== OK  
+  if(ppar$update["gvw"]) {
+    move <- sample(c("gamma","vvec","wvec"), 1, prob=ppar$pgvw)
+    if(ppar$verbose) cat("gvw:",move,":")
+    if(move=="gamma") {
+      state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=parnm)
+    } else if(move=="vvec") {
+      state <- update.vvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
+    } else if(move=="wvec") {
+      state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
+    }
     if(ppar$verbose) cat("\n")
   }
   
@@ -136,8 +143,8 @@ update_state.lwb <- function(state, datlist, fpar, ppar, model) {
 
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-  parnm <- c(parnm,c(f1="f1",f2="f2"))
-  
+  parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
+
   # update eta ##!!== OK
   if(ppar$update["eta"]) {
     if(ppar$verbose) cat("eta:")
@@ -215,8 +222,8 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
   state$count <- state$count + 1
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-  parnm <- c(parnm,c(f1="f1",f2="f2"))
-  
+  parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
+
   # update eta ##!!== OK 
   if(ppar$update["eta"]) {
     if(ppar$verbose) cat("eta:")
@@ -247,7 +254,7 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
     gamma.name <- paste0("gamma",j)
     if(ppar$update[gamma.name]) {
       if(ppar$verbose) cat(gamma.name)
-      state <- update.gamma.v2(state, datlist, fpar, ppar, model, nm=tparnm)
+      state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=tparnm)
       if(ppar$verbose) cat("\n")
     }
     
@@ -316,8 +323,8 @@ update_state.mbt <- function(state, datlist, fpar, ppar, model) {
   state$count <- state$count + 1
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-  parnm <- c(parnm,c(f1="f1",f2="f2"))
-  
+  parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
+
   # update pival ##!!== OK 
   if(ppar$update["pival"]) {
     if(ppar$verbose) cat("pival:")
@@ -355,7 +362,7 @@ update_state.mbt <- function(state, datlist, fpar, ppar, model) {
     gamma.name <- paste0("gamma",j)
     if(ppar$update[gamma.name]) {
       if(ppar$verbose) cat(gamma.name)
-      state <- update.gamma.v2(state, datlist, fpar, ppar, model, nm=tparnm)
+      state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=tparnm)
       if(ppar$verbose) cat("\n")
     }
     
@@ -424,8 +431,8 @@ update_state.lcv <- function(state, datlist, fpar, ppar, model) {
   state$count <- state$count + 1
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-  parnm <- c(parnm,c(f1="f1",f2="f2"))
-  
+  parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
+
   # update lambda0 ##!!== 
   if(ppar$update["lambda0"]) {
     if(ppar$verbose) cat("lambda0:")
@@ -443,7 +450,7 @@ update_state.lcv <- function(state, datlist, fpar, ppar, model) {
   # update gamma ##!!== 
   if(ppar$update["gamma"]) {
     if(ppar$verbose) cat("gamma:")
-    state <- update.gamma.v2(state, datlist, fpar, ppar, model, nm=parnm)
+    state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=parnm)
     if(ppar$verbose) cat("\n")
   }
   
@@ -505,8 +512,8 @@ update_state.circdr <- function(state, datlist, fpar, ppar, model) {
   
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-  parnm <- c(parnm,c(f1="f1",f2="f2"))
-  
+  parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
+
   # update eta ##!!== OK 
   if(ppar$update["eta"]) {
     if(ppar$verbose) cat("eta:")
@@ -578,8 +585,8 @@ update_state.cvx <- function(state, datlist, fpar, ppar, model) {
   state$count <- state$count + 1
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-  parnm <- c(parnm,c(f1="f1",f2="f2"))
-  
+  parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
+
   # update eta ##!!== OK 
   if(ppar$update["eta"]) {
     if(ppar$verbose) cat("eta:")
@@ -610,7 +617,7 @@ update_state.cvx <- function(state, datlist, fpar, ppar, model) {
     gamma.name <- paste0("gamma",j)
     if(ppar$update[gamma.name]) {
       if(ppar$verbose) cat(gamma.name)
-      state <- update.gamma.v2(state, datlist, fpar, ppar, model, nm=tparnm)
+      state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=tparnm)
       if(ppar$verbose) cat("\n")
     }
     
@@ -679,8 +686,8 @@ update_state.mew <- function(state, datlist, fpar, ppar, model) {
   state$count <- state$count + 1
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
-  parnm <- c(parnm,c(f1="f1",f2="f2"))
-  
+  parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
+
   # update alpha ##!!== 
   if(ppar$update["alpha"]) {
     if(ppar$verbose) cat("alpha:")

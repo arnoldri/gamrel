@@ -51,7 +51,7 @@ make.datlist <- function(tvec, obs=NULL) {
   n <- length(tvec)
   if(is.null(obs)) {
     obs <- rep(TRUE,n)
-  } else if(length(obs==1)) {
+  } else if(length(obs)==1) {
     obs <- rep(obs,n)
   } else if(length(obs)!=n) {
     stop("obs must be the same length as tvec")
@@ -541,18 +541,21 @@ invsurvf.IFR <- function(uvec, model.list, use.Cpp=FALSE) {
 }
 logprior.IFR <- function(state, fpar, use.Cpp) {
   if(use.Cpp) {
-     lprior.vec <- lprior_ifrdfr_c(state$eta, 
-                                   state$gamma,
-                                   state$thetavec, 
-                                   state$vvec,
-                                   state$alpha, 
-                                   state$beta,
-                                   state$phi,
-                                   fpar$nu, fpar$a1, fpar$a2, fpar$b1, fpar$b2, fpar$f1, fpar$f2)
+     lprior.vec <- logprior_ifr_c(state$lambda0, 
+                                  state$gamma,
+                                  state$thetavec, 
+                                  state$vvec,
+                                  state$alpha, 
+                                  state$beta,
+                                  state$nu,
+                                  state$phi,
+                                  fpar$s1, fpar$s2, 
+                                  fpar$a1, fpar$a2, fpar$b1, fpar$b2, 
+                                  fpar$g1, fpar$g2, fpar$f1, fpar$f2)
      names(lprior.vec) <- fpar$parnames
   } else {
-    # prior for eta
-    lprior.vec["eta"] <- -state$eta*fpar$nu 
+    # prior for lambda0
+    lprior.vec["lambda0"] <- (fpar$s1-1)*log(state$lambda0) - fpar$s2*state$lambda0
     # prior for gamma
     lprior.vec["gamma"] <- dgamma(state$gamma, state$alpha, state$beta, log=TRUE)
     # prior for thetavec
@@ -565,6 +568,8 @@ logprior.IFR <- function(state, fpar, use.Cpp) {
     # prior for beta
     #lprior.vec["beta"] <- dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE)
     lprior.vec["beta"] <- (fpar$b1-1)*log(state$beta) - fpar$b2*state$beta
+    # prior for nu
+    lprior.vec["nu"] <- (fpar$g1-1)*log(state$nu) - fpar$g2*state$nu
     # prior for phi
     #lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
     lprior.vec["phi"] <- (fpar$f1-1)*log(state$phi) - fpar$f2*state$phi

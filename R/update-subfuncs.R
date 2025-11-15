@@ -40,8 +40,7 @@ update.alpha.v1 <- function(state, datlist, fpar, ppar, model,
                                  nu="nu",
                                  phi="phi",
                                  uvec="uvec",
-                                 wvec="wvec",
-                                 lambda0="lambda0")) {
+                                 wvec="wvec")) {
   last.seed <- .Random.seed
   state.old <- state
   alpha.old <- state.old[[nm["alpha"]]]
@@ -97,8 +96,7 @@ update.beta.v1 <- function(state, datlist, fpar, ppar, model,
                                 nu="nu",
                                 phi="phi",
                                 uvec="uvec",
-                                wvec="wvec",
-                                lambda0="lambda0")) {
+                                wvec="wvec")) {
   last.seed <- .Random.seed
   beta.old <- state[[nm["beta"]]]
   llike.old <- state$llike
@@ -132,8 +130,7 @@ update.nu.v1 <- function(state, datlist, fpar, ppar, model,
                                  nu="nu",
                                  phi="phi",
                                  uvec="uvec",
-                                 wvec="wvec",
-                                 lambda0="lambda0")) {
+                                 wvec="wvec")) {
   last.seed <- .Random.seed
   state.old <- state
   nu.old <- state.old[[nm["nu"]]]
@@ -189,7 +186,7 @@ update.phi.v1 <- function(state, datlist, fpar, ppar, model,
                                phi="phi",
                                uvec="uvec",
                                wvec="wvec",
-                               lambda0="lambda0",
+                               g1="g1", g2="g2",
                                f1="f1", f2="f2")) {
   last.seed <- .Random.seed
   phi.old <- state[[nm["phi"]]]
@@ -224,8 +221,7 @@ update.lambda0.v1 <- function(state, datlist, fpar, ppar, model,
                                  nu="nu",
                                  phi="phi",
                                  uvec="uvec",
-                                 wvec="wvec",
-                                 lambda0="lambda0")) {
+                                 wvec="wvec")) {
   last.seed <- .Random.seed
   state.old <- state
   lambda0.old <- state.old[[nm["lambda0"]]]
@@ -278,15 +274,14 @@ update.thetavec.v1 <- function(state, datlist, fpar, ppar, model,
                                     nu="nu",
                                     phi="phi",
                                     uvec="uvec",
-                                    wvec="wvec",
-                                    lambda0="lambda0")) {
+                                    wvec="wvec")) {
   last.seed <- .Random.seed
   equal <- as.logical(rbinom(1,1,ppar$pequal))
   if(ppar$verbose && equal) cat("(equal):")
   if(equal) {
     k <- sample(fpar$kmax, 1)
   } else {
-    k <- sample(fpar$kmax, 1, prob=state$uvec)
+    k <- sample(fpar$kmax, 1, prob=state[[nm["uvec"]]])
   }
   state.old <- state
   theta.old <- state[[nm["thetavec"]]][k]
@@ -338,13 +333,13 @@ update.gamma.v1 <- function(state, datlist, fpar, ppar, model,
                                  nu="nu",
                                  phi="phi",
                                  uvec="uvec",
-                                 wvec="wvec",
-                                 lambda0="lambda0")) {
+                                 wvec="wvec")) {
   last.seed <- .Random.seed
   state.old <- state
   gamma.old <- state.old[[nm["gamma"]]]
   gamma.new <- exp( rnorm(1, log(gamma.old), ppar$sd.log.gamma) )
   state[[nm["gamma"]]] <- gamma.new
+  state[[nm["wvec"]]] <- gamma.new*state[[nm["uvec"]]]
   state$llike <- llikef(state, datlist, fpar, model)
   state$lprior <- lpriorf(state, fpar, model)
   log.r <- (state$llike - state.old$llike)
@@ -390,71 +385,67 @@ update.vvec.v1 <- function(state, datlist, fpar, ppar, model,
                                 nu="nu",
                                 phi="phi",
                                 uvec="uvec",
-                                wvec="wvec",
-                                lambda0="lambda0")) {
+                                wvec="wvec")) {
   last.seed <- .Random.seed  
-  sweep <- as.logical(rbinom(1,1,ppar$psweep))
-  if(ppar$verbose && sweep) cat("(sweep):")
-  if(sweep || ppar$ksweep) {
-    ksamplevec <- 1:(fpar$kmax-1)
+  equal <- as.logical(rbinom(1,1,ppar$pequal))
+  if(ppar$verbose && equal) cat("(equal):")
+  ukmax.old <- state[[nm["uvec"]]][fpar$kmax]
+  if(equal) {
+    k <- sample(fpar$kmax-1, 1)
+    pk.old <- 1/(fpar$kmax-1)
   } else {
-    ksamplevec <- sample(fpar$kmax-1, ppar$ksim,
-                         prob=state[[nm["uvec"]]][-fpar$kmax], replace=TRUE)
+    k <- sample(fpar$kmax-1, 1, prob=state[[nm["uvec"]]][-fpar$kmax])
+    pk.old <- state[[nm["uvec"]]][k]/(1-ukmax.old)
   }
-  naccepted <- 0
-  for(k in ksamplevec) {
-    state.old <- state
-    ukmax.old <- state[[nm["uvec"]]][fpar$kmax]
-    v.old <- state[[nm["vvec"]]][k]
-    v.new <- expit( rnorm(1,logit(v.old),ppar$sd.logit.v) )
-    state[[nm["vvec"]]][k] <- v.new
-    cp <- cumprod(1-state[[nm["vvec"]]][-fpar$kmax])
-    state[[nm["uvec"]]] <- state[[nm["vvec"]]]*c(1,cp)
-    state[[nm["uvec"]]][fpar$kmax] <- cp[fpar$kmax-1]
-    #state[[nm["uvec"]]][fpar$kmax] <- 1-sum(state[[nm["uvec"]]][-fpar$kmax])
-    state[[nm["wvec"]]] <- state[[nm["gamma"]]] * state[[nm["uvec"]]]
-    ukmax.new <- state[[nm["uvec"]]][fpar$kmax]
-    state$llike <- llikef(state, datlist, fpar, model)
-    state$lprior <- lpriorf(state, fpar, model)
-    log.r <- state$llike - state.old$llike
-    if(sweep || ppar$ksweep) {
-      # updating in sequence
-      log.r <- (log.r + state[[nm["alpha"]]]*log((1-v.new)/(1-v.old)) 
-                + log(v.new/v.old)
-      )
-    } else {
-      # updating at random
-      log.r <- (log.r + state[[nm["alpha"]]]*log((1-v.new)/(1-v.old)) 
-                + 2*log(v.new/v.old)
-                + log((1-ukmax.old)/(1-ukmax.new))
-      )
-    }
-    if(ppar$verbose) {
-      cat(sprintf("vvec[%d]: (%g;%g) %g->%g: logr=%g\n",
-                  k, state.old$llike, state$llike,
-                  v.old, v.new, log.r))
-    }
-    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
-      cat(sprintf("vvec[%d]: %g->%g: logr=%g\n",
-                  k, v.old, v.new, log.r))
-      if(ppar$interactive) browser()
-      update.name <- nm["vvec"]
-      fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
-      fname <- gsub(":","-",fname,fixed=TRUE)
-      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-           file=fname)
-    }
-    if(runif(1)<exp(log.r)) {
-      # accept
-      naccepted <- naccepted + 1
-      if(ppar$verbose) cat("+")
-    } else {
-      # reject
-      state <- state.old
-      if(ppar$verbose) cat("-")
-    }
+
+  state.old <- state
+  v.old <- state[[nm["vvec"]]][k]
+  v.new <- expit( rnorm(1,logit(v.old),ppar$sd.logit.v) )
+  state[[nm["vvec"]]][k] <- v.new
+  cp <- cumprod(1-state[[nm["vvec"]]][-fpar$kmax])
+  state[[nm["uvec"]]] <- state[[nm["vvec"]]]*c(1,cp)
+  state[[nm["uvec"]]][fpar$kmax] <- cp[fpar$kmax-1]
+  state[[nm["wvec"]]] <- state[[nm["gamma"]]] * state[[nm["uvec"]]]
+  ukmax.new <- state[[nm["uvec"]]][fpar$kmax]
+  
+  if(equal) {
+    pk.new <- 1/(fpar$kmax-1)
+  } else {
+    pk.new <- state[[nm["uvec"]]][k]/(1-ukmax.new)
   }
-  state$accepted[nm["vvec"]] <- naccepted/length(ksamplevec)
+  state$llike <- llikef(state, datlist, fpar, model)
+  state$lprior <- lpriorf(state, fpar, model)
+  log.r <- state$llike - state.old$llike
+  log.r <- (log.r + state[[nm["alpha"]]]*log((1-v.new)/(1-v.old)) 
+              + log(v.new/v.old)
+              + log(pk.new/pk.old)
+            )
+  if(ppar$verbose) {
+    cat(sprintf("vvec[%d]: (%g;%g) %g->%g: logr=%g\n",
+                k, state.old$llike, state$llike,
+                v.old, v.new, log.r))
+  }
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
+    cat(sprintf("vvec[%d]: %g->%g: logr=%g\n",
+                k, v.old, v.new, log.r))
+    if(ppar$interactive) browser()
+    update.name <- nm["vvec"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=fname)
+  }
+  if(runif(1)<exp(log.r)) {
+    # accept
+    state$accepted[nm["vvec"]] <- 1
+    if(ppar$verbose) cat("+")
+  } else {
+    # reject
+    state <- state.old
+    state$accepted[nm["vvec"]] <- 0
+    if(ppar$verbose) cat("-")
+  }
+
   
   return(state)
 }
@@ -472,101 +463,100 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
                                 nu="nu",
                                 phi="phi",
                                 uvec="uvec",
-                                wvec="wvec",
-                                lambda0="lambda0")) {
+                                wvec="wvec")) {
   last.seed <- .Random.seed
-  # Do not update wvec[kmax]
-  #sweep <- as.logical(rbinom(1,1,ppar$psweep))
-  sweep <- FALSE # do not do a global update of every wvec[k]
-  if(ppar$verbose && sweep) cat("(sweep):")
-  if(sweep || ppar$ksweep) {
-    ksamplevec <- 1:(fpar$kmax-1)
+  equal <- as.logical(rbinom(1,1,ppar$pequal))
+  if(ppar$verbose && equal) cat("(equal):")
+  ukmax.old <- state[[nm["uvec"]]][fpar$kmax]
+  if(equal) {
+    k <- sample(fpar$kmax, 1)
+    pk.old <- 1/(fpar$kmax)
   } else {
-    ksamplevec <- sample(fpar$kmax-1, ppar$ksim,
-                         prob=state[[nm["uvec"]]][-fpar$kmax], replace=TRUE)
+    k <- sample(fpar$kmax, 1, prob=state[[nm["uvec"]]])
+    pk.old <- state[[nm["uvec"]]][k]
   }
-  naccepted <- 0
-  for(k in ksamplevec) {
-    state.old <- state
-    vvec.old <- state[[nm["vvec"]]]
-    gamma.old <- state[[nm["gamma"]]]
-    wkmax.old <- state[[nm["wvec"]]][fpar$kmax]
-    w.old <- state[[nm["wvec"]]][k]
-    w.new <- exp( rnorm(1,log(w.old),ppar$sd.log.w) )
-    state[[nm["wvec"]]][k] <- w.new
-    gamma.new <- sum(state[[nm["wvec"]]])
-    uvec.new <- state[[nm["wvec"]]]/gamma.new
-    ##uvec.new <- pmax(.Machine$double.neg.eps, uvec.new) # needed to stabilise
-    uvec.new <- uvec.new/sum(uvec.new)
-    
-    # v values only change for indices up to and including k
-    # but recalculate all due to potential numerical rounding errors, and avoid 1.0 also
-    vvec.new <- pmin(1-fpar$epsilon, uvec.new/rev(cumsum(rev(uvec.new))))
-    # recalculate uvec.new to ensure consistency
-    uvec.new <- c(vvec.new[-fpar$kmax],1)*c(1,cumprod(1-vvec.new[-fpar$kmax]))
-    state[[nm["gamma"]]] <- gamma.new
-    state[[nm["vvec"]]] <- vvec.new
-    state[[nm["uvec"]]] <- uvec.new
-    state[[nm["wvec"]]] <- state[[nm["gamma"]]]*state[[nm["uvec"]]]
-    if(model %in% c("IFR","DFR","LWB","SBT","MBT") && !is.na(nm["lambda0"])) {
-       state[[nm["lambda0"]]] <- state[[nm["gamma"]]]*state[[nm["eta"]]]
-    } # no need to do anything in the LCV case where gamma doesn't scale other parameters
-    wkmax <- state[[nm["wvec"]]][fpar$kmax]
-    
-    state$llike <- llikef(state, datlist, fpar, model)
-    state$lprior <- lpriorf(state, fpar, model)
-    
-    log.r <- state$llike - state.old$llike
-    log.r <- (log.r - state[[nm["beta"]]]*(gamma.new-gamma.old)
-              + sum(log(vvec.new[1:k]/vvec.old[1:k])))
-    
-    if(sweep || ppar$ksweep) {
-      # updating sequentially
-      log.r <- log.r
-    } else {
-      # updating at random
-      log.r <- (log.r + log((w.new/(gamma.new-wkmax))/(w.old/(gamma.old-wkmax.old))))
-    }
-    
-    if(ppar$verbose) {
-      cat(sprintf("wvec[%d]: (%g;%g) %g->%g: logr=%g\n",
-                  k, state.old$llike, state$llike,
-                  w.old, w.new, log.r))
-    }
-    if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==} || (log.r>0.9 && ppar$verbose)) { ##!!==
-      cat(sprintf("wvec[%d]: %g->%g: logr=%g\n",
-                  k, w.old, w.new, log.r))
-      cat("model:"); cat(model); cat("\n")
-      cat("names(state):"); cat(names(state)); cat("\n")
-      cat("nm:\n"); print(nm)
-      cat("k, llike, llike.old, gamma.new, gamma.new, sum(vv/vv), w.new, w.old, wkmax, wkmax.old)\n")
-      cat(c(k, state$llike, state.old$llike, gamma.new, gamma.old, sum(log(vvec.new[1:k]/vvec.old[1:k])),
-            w.new, w.old, wkmax, wkmax.old)); cat("\n")
-      cat("logr: LR, gamma, sumvv, logw/wold, log.r:\n")
-      cat(c(state$llike - state.old$llike,
-            -state[[nm["beta"]]]*(gamma.new-gamma.old),
-            sum(log(vvec.new[1:k]/vvec.old[1:k])),
-            log((w.new/(gamma.new-wkmax))/(w.old/(gamma.old-wkmax.old))),
-            log.r
-            )); cat("\n")
-      if(ppar$interactive) browser()
-      update.name <- nm["wvec"]
-      fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
-      fname <- gsub(":","-",fname,fixed=TRUE)
-      save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-           file=fname)
-    }
-    if(runif(1)<exp(log.r)) {
-      # accept
-      naccepted <- naccepted + 1
-      if(ppar$verbose) cat("+")
-    } else {
-      # reject
-      state <- state.old
-      if(ppar$verbose) cat("-")
-    }
+  
+  state.old <- state
+  vvec.old <- state[[nm["vvec"]]]
+  gamma.old <- state[[nm["gamma"]]]
+  wkmax.old <- state[[nm["wvec"]]][fpar$kmax]
+  w.old <- state[[nm["wvec"]]][k]
+  w.new <- exp( rnorm(1,log(w.old),ppar$sd.log.w) )
+  state[[nm["wvec"]]][k] <- w.new
+  gamma.new <- sum(state[[nm["wvec"]]])
+  uvec.new <- state[[nm["wvec"]]]/gamma.new
+  ##uvec.new <- pmax(.Machine$double.neg.eps, uvec.new) # needed to stabilise
+  uvec.new <- uvec.new/sum(uvec.new)
+  
+  # v values only change for indices up to and including k
+  # but recalculate all due to potential numerical rounding errors, and avoid 1.0 also
+  vvec.new <- pmin(1-fpar$epsilon, uvec.new/rev(cumsum(rev(uvec.new))))
+  # recalculate uvec.new to ensure consistency
+  uvec.new <- c(vvec.new[-fpar$kmax],1)*c(1,cumprod(1-vvec.new[-fpar$kmax]))
+  state[[nm["gamma"]]] <- gamma.new
+  state[[nm["vvec"]]] <- vvec.new
+  state[[nm["uvec"]]] <- uvec.new
+  state[[nm["wvec"]]] <- state[[nm["gamma"]]]*state[[nm["uvec"]]]
+  wkmax.new <- state[[nm["wvec"]]][fpar$kmax]
+  
+  state$llike <- llikef(state, datlist, fpar, model)
+  state$lprior <- lpriorf(state, fpar, model)
+  if(equal) {
+    pk.new <- 1/(fpar$kmax)
+  } else {
+    pk.new <- state[[nm["uvec"]]][k]
   }
-  state$accepted[nm["wvec"]] <- naccepted/length(ksamplevec)
+  
+  log.r <- state$llike - state.old$llike
+  log.r <- (log.r 
+            + (state[[nm["alpha"]]]-1)*log(wkmax.new/wkmax.old)
+            - state[[nm["beta"]]]*(gamma.new-gamma.old)
+            + sum(log(vvec.new[1:k]/vvec.old[1:k]))
+            + log(pk.new/pk.old))
+  if(k==fpar$kmax) {
+    log.r <- log.r + log(w.new/w.old)
+  } else {
+    log.r <- log.r + 2*log(w.new/w.old)
+  }
+  
+  if(ppar$verbose) {
+    cat(sprintf("wvec[%d]: (%g;%g) %g->%g: logr=%g\n",
+                k, state.old$llike, state$llike,
+                w.old, w.new, log.r))
+  }
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==} || (log.r>0.9 && ppar$verbose)) { ##!!==
+    cat(sprintf("wvec[%d]: %g->%g: logr=%g\n",
+                k, w.old, w.new, log.r))
+    cat("model:"); cat(model); cat("\n")
+    cat("names(state):"); cat(names(state)); cat("\n")
+    cat("nm:\n"); print(nm)
+    cat("k, llike, llike.old, gamma.new, gamma.new, sum(vv/vv), w.new, w.old, wkmax, wkmax.old)\n")
+    cat(c(k, state$llike, state.old$llike, gamma.new, gamma.old, sum(log(vvec.new[1:k]/vvec.old[1:k])),
+          w.new, w.old, wkmax, wkmax.old)); cat("\n")
+    cat("logr: LR, gamma, sumvv, logw/wold, log.r:\n")
+    cat(c(state$llike - state.old$llike,
+          -state[[nm["beta"]]]*(gamma.new-gamma.old),
+          sum(log(vvec.new[1:k]/vvec.old[1:k])),
+          log((w.new/(gamma.new-wkmax))/(w.old/(gamma.old-wkmax.old))),
+          log.r
+          )); cat("\n")
+    if(ppar$interactive) browser()
+    update.name <- nm["wvec"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=fname)
+  }
+  if(runif(1)<exp(log.r)) {
+    # accept
+    state$accepted[nm["wvec"]] <- 1
+    if(ppar$verbose) cat("+")
+  } else {
+    # reject
+    state <- state.old
+    state$accepted[nm["wvec"]] <- 0
+    if(ppar$verbose) cat("-")
+  }
   
   return(state) 
 }
@@ -584,8 +574,7 @@ update.a.v1 <- function(state, datlist, fpar, ppar, model,
                                  nu="nu",
                                  phi="phi",
                                  uvec="uvec",
-                                 wvec="wvec",
-                                 lambda0="lambda0")) {
+                                 wvec="wvec")) {
   last.seed <- .Random.seed
   state.old <- state
   a.old <- state.old[[nm["a"]]]
@@ -625,6 +614,50 @@ update.a.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
+#' pival V1 (MBT)
+#'
+#' @export
+update.pival.v1 <- function(state, datlist, fpar, ppar, model,
+                            nm=c(pival="pival")) {
+  last.seed <- .Random.seed
+  state.old <- state
+  pival.old <- state.old[[nm["pival"]]]
+  pival.new <- expit( rnorm(1, logit(pival.old), ppar$sd.logit.pival) ) 
+  state[[nm["pival"]]] <- pival.new
+  state$llike <- llikef(state, datlist, fpar, model)
+  state$lprior <- lpriorf(state, fpar, model)
+  log.r <- (state$llike - state.old$llike)
+  log.r <- ( log.r + log(pival.new*(1-pival.new)/(pival.old*(1-pival.old))) ) 
+  if(ppar$verbose) {
+    cat(sprintf("pival: (%g;%g) %g->%g: logr=%g\n",
+                state.old$llike, state$llike,
+                pival.old, pival.new, log.r))
+  }
+  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
+    cat(sprintf("pival: %g->%g: logr=%g\n",
+                pival.old, pival.new, log.r))
+    if(ppar$interactive) browser()
+    update.name <- nm["pival"]
+    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
+    fname <- gsub(":","-",fname,fixed=TRUE)
+    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
+         file=fname)
+  }
+  if(runif(1)<exp(log.r)) {
+    # accept
+    state$accepted[nm["pival"]] <- 1
+    if(ppar$verbose) cat("+")
+  } else {
+    # reject
+    state <- state.old
+    state$accepted[nm["pival"]] <- 0
+    if(ppar$verbose) cat("-")
+  }
+  
+  return(state)
+}
+
+
 #' lambda0 V2 (Gibbs) (LCV)
 #'
 #' @export
@@ -646,8 +679,9 @@ update.lambda0.v2 <- function(state, datlist, fpar, ppar, model,
                           lambda0=1, ## Note: unscaled
                           w0=state[[nm["w0"]]],
                           thetavec=state[[nm["thetavec"]]],
+                          uvec=state[[nm["uvec"]]],
                           wvec=state[[nm["wvec"]]]) 
-  cc <- sum(int.lambda.func(datlist$tvec, model.list=temp.model.list))
+  cc <- sum(chzf(datlist$tvec, model.list=temp.model.list, use.Cpp=fpar$use.Cpp))
   
   lambda0.old <- state[[nm["lambda0"]]]
   s1star <- fpar$s1 + datlist$nobs
@@ -719,108 +753,6 @@ update.w0.v1 <- function(state, datlist, fpar, ppar, model,
   return(state)
 }
 
-#' gamma V2 (MH) (SBT,MBT,LCV)
-#'
-#' @export
-update.gamma.v2 <- function(state, datlist, fpar, ppar, model,
-                              nm=c(lambda0="lambda0", # NA in first component of SBT
-                                   w0="w0", #ignored in SBT, MBT
-                                   gamma="gamma",
-                                   thetavec="thetavec",
-                                   vvec="vvec",
-                                   alpha="alpha",
-                                   beta="beta",
-                                   nu="nu",
-                                   phi="phi",
-                                   uvec="uvec",
-                                   wvec="wvec")) {
-  last.seed <- .Random.seed
-  state.old <- state
-  gamma.old <- state.old[[nm["gamma"]]]
-  gamma.new <- exp( rnorm(1, log(gamma.old), ppar$sd.log.gamma) )
-  state[[nm["gamma"]]] <- gamma.new
-  if(model!="LCV" && !is.na(nm[["lambda0"]])) {  
-    # LCV does not scale lambda0 by gamma
-    # lambda0 will be missing for component 1 of SBT
-    state[[nm["lambda0"]]] <- state[[nm["gamma"]]]*state[[nm["eta"]]]
-  }
-  state[[nm["wvec"]]] <- state[[nm["gamma"]]]*state[[nm["uvec"]]]
-  state$llike <- llikef(state, datlist, fpar, model)
-  state$lprior <- lpriorf(state, fpar, model)
-  log.r <- (state$llike - state.old$llike)
-  log.r <- ( log.r + state[[nm["alpha"]]]*log(gamma.new/gamma.old) 
-             - state[[nm["beta"]]]*(gamma.new-gamma.old) )
-  if(ppar$verbose) {
-    cat(sprintf("gamma: (%g;%g) %g->%g: logr=%g\n",
-                state.old$llike, state$llike,
-                gamma.old, gamma.new, log.r))
-  }
-  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
-    cat(sprintf("gamma: %g->%g: logr=%g\n",
-                gamma.old, gamma.new, log.r))
-    if(ppar$interactive) browser()
-    update.name <- nm["gamma"]
-    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
-    fname <- gsub(":","-",fname,fixed=TRUE)
-    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=fname)
-  }
-  if(runif(1)<exp(log.r)) {
-    # accept
-    state$accepted[nm["gamma"]] <- 1
-    if(ppar$verbose) cat("+")
-  } else {
-    # reject
-    state <- state.old
-    state$accepted[nm["gamma"]] <- 0
-    if(ppar$verbose) cat("-")
-  }
-  
-  return(state)
-}
-
-#' pival V1 (MBT)
-#'
-#' @export
-update.pival.v1 <- function(state, datlist, fpar, ppar, model,
-                            nm=c(pival="pival")) {
-  last.seed <- .Random.seed
-  state.old <- state
-  pival.old <- state.old[[nm["pival"]]]
-  pival.new <- expit( rnorm(1, logit(pival.old), ppar$sd.logit.pival) ) 
-  state[[nm["pival"]]] <- pival.new
-  state$llike <- llikef(state, datlist, fpar, model)
-  state$lprior <- lpriorf(state, fpar, model)
-  log.r <- (state$llike - state.old$llike)
-  log.r <- ( log.r + log(pival.new*(1-pival.new)/(pival.old*(1-pival.old))) ) 
-  if(ppar$verbose) {
-    cat(sprintf("pival: (%g;%g) %g->%g: logr=%g\n",
-                state.old$llike, state$llike,
-                pival.old, pival.new, log.r))
-  }
-  if(is.nan(log.r) || is.na(log.r) || length(log.r)==0 || is.nan(state$lprior)) { ##!!==
-    cat(sprintf("pival: %g->%g: logr=%g\n",
-                pival.old, pival.new, log.r))
-    if(ppar$interactive) browser()
-    update.name <- nm["pival"]
-    fname <- paste0("dump-",model,"-",update.name,"-",gsub(" ","-",date()),".Rdata")
-    fname <- gsub(":","-",fname,fixed=TRUE)
-    save(update.name, state.old, state, datlist, fpar, ppar, model, last.seed,
-         file=fname)
-  }
-  if(runif(1)<exp(log.r)) {
-    # accept
-    state$accepted[nm["pival"]] <- 1
-    if(ppar$verbose) cat("+")
-  } else {
-    # reject
-    state <- state.old
-    state$accepted[nm["pival"]] <- 0
-    if(ppar$verbose) cat("-")
-  }
-  
-  return(state)
-}
 
 ## MEW functions
 
