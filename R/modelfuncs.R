@@ -7,7 +7,7 @@
 init.objects <- function(tvec, obs=TRUE,
                          kmax=100,
                          prior.par=NULL,
-                         update.par=NULL,
+                         update.par=NULL, fix.update=NULL,
                          model="IFR",
                          datscale=NULL,
                          epsilon=.Machine$double.neg.eps*100, # tiny value if needed
@@ -39,7 +39,11 @@ init.objects <- function(tvec, obs=TRUE,
     # model parameter names 
     model_parnames <- parnames
     update <- rep(TRUE, length(update_parnames))
-    names(update) <- update_parnames
+    names(update) <- update_parnames    
+    if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
+      fix.update <- fix.update[intersect(names(fix.update),names(update))]
+      if(length(fix.update)>0) update[names(fix.update)] <- fix.update
+    }
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
                  model_parnames=model_parnames,
@@ -90,6 +94,10 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec","gvw")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
+      fix.update <- fix.update[intersect(names(fix.update),names(update))]
+      if(length(fix.update)>0) update[names(fix.update)] <- fix.update
+    }
     ##!!== update[update_parnames%in%c("gamma","vvec","wvec")] <- FALSE ## reinstate this to prevent the warning
     if(any(update[c("gamma","vvec","wvec")])) warning("Should not update gamma/vvec/wvec separately")
     # model parameter names
@@ -134,18 +142,19 @@ init.objects <- function(tvec, obs=TRUE,
     epar$thetavec <- rgamma(kmax, epar$nu, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
 
-  } else if(model%in%c("LWB")) {
+  } else if(model%in%c("LWB","HBT","HCV")) {
 
     if(is.null(prior.par)) {
-      prior.par <- list(nu=1,
+      prior.par <- list(s1=2, s2=2, 
                         c1=1, c2=2/datscale,
-                        a1=4, a2=1,
+                        a1=3, a2=3,
                         b1=1, b2=1/datscale,
+                        g1=2, g2=2, 
                         f1=2, f2=2*datscale)
     }
     if(is.null(update.par)) {
       update.par <- list(pequal=0.5, # probability we select a support point with equal probability
-                         sd.log.eta=0.3,
+                         sd.log.lambda0=0.3,
                          sd.log.a=0.1,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
@@ -153,11 +162,11 @@ init.objects <- function(tvec, obs=TRUE,
                          sd.log.alpha=0.3)
     }
     # fixed parameters
-    parnames <- c("eta","a","gamma","thetavec","vvec","alpha","beta","phi")
+    parnames <- c("lambda0","a","gamma","thetavec","vvec","alpha","beta","phi")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
-                 nu=prior.par$nu,                  # prior for eta (lambda0/gamma)
+                 s1=prior.par$c1, s2=prior.par$c2, # prior for lambda0
                  c1=prior.par$c1, c2=prior.par$c2, # prior for the cutpoint a
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta
@@ -168,50 +177,55 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec","gvw")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
+      fix.update <- fix.update[intersect(names(fix.update),names(update))]
+      if(length(fix.update)>0) update[names(fix.update)] <- fix.update
+    }
     # model parameter names
     model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
                  model_parnames=model_parnames,
-                 ksweep=FALSE, # = all support points are updated each time
-                 ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
-                 kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
                  pequal=update.par$pequal,
-                 sd.log.eta=update.par$sd.log.eta,
+                 pgvw=update.par$pgvw,
+                 sd.log.lambda0=update.par$sd.log.lambda0,
                  sd.log.a=update.par$sd.log.a,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
+                 sd.log.nu=update.par$sd.log.nu,
                  update=update,
                  verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
-      epar <- list(eta=1/prior.par$nu,
+      epar <- list(lambda0=prior.par$s1/prior.par$s2,
                    a=prior.par$c1/prior.par$c2,
                    gamma=NA,
                    thetavec=NA,
                    vvec=NA,
                    alpha=prior.par$a1/prior.par$a2,
                    beta=prior.par$b1/prior.par$b2,
+                   nu=prior.par$f1/prior.par$g2,
                    phi=prior.par$f1/prior.par$b2)
       epar$gamma <- epar$alpha/epar$beta
     } else {
       epar <- list(lambda0=rgamma(1,prior.par$s1,prior.par$s2),
-                   a=prior.par$c1/prior.par$c2,
+                   a=rgamma(1,prior.par$c1,prior.par$c2),
                    gamma=NA,
                    thetavec=NA,
                    vvec=NA,
                    alpha=rgamma(1,prior.par$a1,prior.par$a2),
                    beta=rgamma(1,prior.par$b1,prior.par$b2),
+                   nu=rgamma(1,prior.par$g1,prior.par$g2),
                    phi=rgamma(1,prior.par$f1,prior.par$b2))
       epar$gamma <- rgamma(1,epar$alpha,epar$beta)
     }
     epar$thetavec <- rgamma(kmax, epar$nu, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
 
-  } else if(model%in%c("SBT")) {
+  } else if(model%in%c("SBT","SCV")) {
 
     if(is.null(prior.par)) {
       prior.par <- list(nu=1,
@@ -247,6 +261,10 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec1","gvw1","wvec2","gvw2")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
+      fix.update <- fix.update[intersect(names(fix.update),names(update))]
+      if(length(fix.update)>0) update[names(fix.update)] <- fix.update
+    }
     # model parameter names
     model_parnames <- parnames
     # proposal parameters for updates
@@ -343,6 +361,10 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec1","gvw1","wvec2","gvw2")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
+      fix.update <- fix.update[intersect(names(fix.update),names(update))]
+      if(length(fix.update)>0) update[names(fix.update)] <- fix.update
+    }
     update["eta1"] <- FALSE # eta1 is not a real parameter - it is always zero
     # model parameter names
     model_parnames <- parnames
@@ -443,6 +465,10 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames,"wvec","gvw")
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
+      fix.update <- fix.update[intersect(names(fix.update),names(update))]
+      if(length(fix.update)>0) update[names(fix.update)] <- fix.update
+    }
     # model parameter names
     model_parnames <- parnames
     # proposal parameters for updates
@@ -486,172 +512,6 @@ init.objects <- function(tvec, obs=TRUE,
     epar$thetavec <- rgamma(kmax, epar$nu, epar$phi)
     epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
 
-  } else if(model%in%c("CIR","CDR")) {
-    
-    if(is.null(prior.par)) {
-      prior.par <- list(nu=1/datscale,
-                        a1=4, a2=1,
-                        b1=1, b2=1/(datscale^2),
-                        f1=2, f2=2*datscale)
-    }
-    if(is.null(update.par)) {
-      update.par <- list(pequal=0.5, # probability we select a support point with equal probability
-                         sd.log.eta=0.3,
-                         sd.log.theta=0.3,
-                         sd.logit.v=0.3,
-                         sd.log.w=0.3,
-                         sd.log.alpha=0.3)
-    }
-    # fixed parameters
-    parnames <- c("eta","gamma","thetavec","vvec","alpha","beta","phi")
-    fpar <- list(model=model,                      # model name
-                 parnames=parnames,                # parameters
-                 kmax=kmax,                        # sum truncation point
-                 nu=prior.par$nu,                  # prior for eta (lambda0/gamma)
-                 a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
-                 b1=prior.par$b1, b2=prior.par$b2, # prior for beta
-                 f1=prior.par$f1, f2=prior.par$f2, # prior for phi
-                 epsilon=epsilon,
-                 use.Cpp=use.Cpp)
-    # parameters to update
-    update_parnames <- c(parnames,"wvec","gvw")
-    update <- rep(TRUE, length(update_parnames))
-    names(update) <- update_parnames
-    # model parameter names
-    model_parnames <- parnames
-    # proposal parameters for updates
-    ppar <- list(update_parnames=update_parnames,
-                 model_parnames=model_parnames,
-                 ksweep=FALSE, # = all support points are updated each time
-                 ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
-                 kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
-                 pequal=update.par$pequal,
-                 sd.log.eta=update.par$sd.log.eta,
-                 sd.log.theta=update.par$sd.log.theta,
-                 sd.logit.v=update.par$sd.logit.v,
-                 sd.log.w=update.par$sd.log.w,
-                 sd.log.alpha=update.par$sd.log.alpha,
-                 update=update,
-                 verbose=FALSE,
-                 interactive=FALSE)
-    # parameters to estimate
-    if(generate=="fixed") {
-      epar <- list(eta=1/prior.par$nu,
-                   gamma=NA,
-                   thetavec=NA,
-                   vvec=NA,
-                   alpha=prior.par$a1/prior.par$a2,
-                   beta=prior.par$b1/prior.par$b2,
-                   phi=prior.par$f1/prior.par$b2)
-      epar$gamma <- epar$alpha/epar$beta
-    } else {
-      epar <- list(lambda0=rgamma(1,prior.par$s1,prior.par$s2),
-                   gamma=NA,
-                   thetavec=NA,
-                   vvec=NA,
-                   alpha=rgamma(1,prior.par$a1,prior.par$a2),
-                   beta=rgamma(1,prior.par$b1,prior.par$b2),
-                   phi=rgamma(1,prior.par$f1,prior.par$b2))
-      epar$gamma <- rgamma(1,epar$alpha,epar$beta)
-    }
-    epar$thetavec <- rgamma(kmax, epar$nu, epar$phi)
-    epar$vvec <- rbeta.t(kmax, 1, epar$alpha)
-    
-  } else if(model%in%c("CVX")) {
-    if(is.null(prior.par)) {
-      prior.par <- list(nu=1/datscale,
-                        a1=4, a2=1,
-                        b1=1, b2=1/(datscale^2),
-                        f11=1, f21=datscale/2, # DFR
-                        f12=2, f22=2*datscale) # IFR
-    }
-    if(is.null(update.par)) {
-      update.par <- list(pequal=0.5, # probability we select a support point with equal probability
-                         sd.log.eta=0.3,
-                         sd.log.gamma=0.1,
-                         sd.log.theta=0.3,
-                         sd.logit.v=0.3,
-                         sd.log.w=0.3,
-                         sd.log.alpha=0.3)
-    }
-    # fixed parameters
-    parnames <- c("eta",
-                  "gamma1","thetavec1","vvec1","alpha1","beta1","phi1",
-                  "gamma2","thetavec2","vvec2","alpha2","beta2","phi2")
-    fpar <- list(model=model,                      # model name
-                 parnames=parnames,                # parameters
-                 kmax=kmax,                        # sum truncation point
-                 nu=prior.par$nu,                  # prior for eta (lambda0/gamma2)
-                 a1=prior.par$a1, a2=prior.par$a2, # prior for alpha1,alpha2
-                 b1=prior.par$b1, b2=prior.par$b2, # prior for beta1,beta2
-                 f11=prior.par$f11, f21=prior.par$f21, # prior for phi1
-                 f12=prior.par$f12, f22=prior.par$f22, # prior for phi2
-                 epsilon=epsilon,
-                 use.Cpp=use.Cpp)
-    # parameters to update
-    update_parnames <- c(parnames,"wvec1","gvw1","wvec2","gvw2")
-    update <- rep(TRUE, length(update_parnames))
-    names(update) <- update_parnames
-    # model parameter names
-    model_parnames <- parnames
-    # proposal parameters for updates
-    ppar <- list(update_parnames=update_parnames,
-                 model_parnames=model_parnames,
-                 ksweep=FALSE, # = all support points are updated each time
-                 ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
-                 kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
-                 pequal=update.par$pequal,
-                 sd.log.eta=update.par$sd.log.eta,
-                 sd.log.gamma=update.par$sd.log.gamma,
-                 sd.log.theta=update.par$sd.log.theta,
-                 sd.logit.v=update.par$sd.logit.v,
-                 sd.log.w=update.par$sd.log.w,
-                 sd.log.alpha=update.par$sd.log.alpha,
-                 update=update,
-                 verbose=FALSE,
-                 interactive=FALSE)
-    # parameters to estimate
-    if(generate=="fixed") {
-      epar <- list(eta=1/prior.par$nu,
-                   gamma1=NA,
-                   thetavec1=NA,
-                   vvec1=NA,
-                   alpha1=prior.par$a1/prior.par$a2,
-                   beta1=prior.par$b1/prior.par$b2,
-                   phi1=prior.par$f11/prior.par$f21,
-                   gamma2=NA,
-                   thetavec2=NA,
-                   vvec2=NA,
-                   alpha2=prior.par$a1/prior.par$a2,
-                   beta2=prior.par$b1/prior.par$b2,
-                   phi2=prior.par$f12/prior.par$f22)
-      epar$gamma1 <- epar$alpha1/epar$beta1
-      epar$gamma2 <- epar$alpha2/epar$beta2
-    } else {
-      epar <- list(lambda01=0,
-                   gamma1=NA,
-                   thetavec1=NA,
-                   vvec1=NA,
-                   alpha1=rgamma(1,prior.par$a1,prior.par$a2),
-                   beta1=rgamma(1,prior.par$b1,prior.par$b2),
-                   nu1=rgamma(1,prior.par$g11,prior.par$g21),
-                   phi1=rgamma(1,prior.par$f11,prior.par$f21),
-                   lambda02=rgamma(1,prior.par$s1,prior.par$s2),
-                   gamma2=NA,
-                   thetavec2=NA,
-                   vvec2=NA,
-                   alpha2=rgamma(1,prior.par$a1,prior.par$a2),
-                   beta2=rgamma(1,prior.par$b1,prior.par$b2),
-                   nu1=rgamma(1,prior.par$g12,prior.par$g22),
-                   phi2=rgamma(1,prior.par$f12,prior.par$f22))
-      epar$gamma1 <- rgamma(1,epar$alpha1,epar$beta1)
-      epar$gamma2 <- rgamma(1,epar$alpha2,epar$beta2)
-    }
-    epar$thetavec1 <- rgamma(kmax, epar$nu1, epar$phi1)
-    epar$vvec1 <- rbeta.t(kmax, 1, epar$alpha1)
-    epar$thetavec2 <- rgamma(kmax, epar$nu2, epar$phi2)
-    epar$vvec2 <- rbeta.t(kmax, 1, epar$alpha2)
-    
   } else if(model%in%c("MEW")) {
     
     if(is.null(prior.par)) {
@@ -680,6 +540,10 @@ init.objects <- function(tvec, obs=TRUE,
     update_parnames <- c(parnames)
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
+    if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
+      fix.update <- fix.update[intersect(names(fix.update),names(update))]
+      if(length(fix.update)>0) update[names(fix.update)] <- fix.update
+    }
     # model parameter names
     model_parnames <- parnames
     # proposal parameters for updates

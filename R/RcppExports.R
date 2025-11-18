@@ -136,13 +136,13 @@ hazf_chzf_ifr_c <- function(tvec, lambda0, thetavec, wvec) {
     .Call(`_gamrel_hazf_chzf_ifr_c`, tvec, lambda0, thetavec, wvec)
 }
 
-#' Log prior - IFR/DFR
+#' Log prior - IFR/DFR/CIR/CDR
 #' 
 #' 
 #' @param eta eta
 #' @param gamma gamma
 #' 
-#' @description log(prior) for the IFR and DFR models - in vector form
+#' @description log(prior) for the IFR, DFR, CIR and CDR models - in vector form
 #' 
 #' @export
 logprior_ifr_c <- function(lambda0, gamma, thetavec, vvec, alpha, beta, nu, phi, s1, s2, a1, a2, b1, b2, g1, g2, f1, f2) {
@@ -322,6 +322,19 @@ chzf_lwb_c <- function(tvec, lambda0, a, thetavec, wvec) {
 #' @export
 hazf_chzf_lwb_c <- function(tvec, lambda0, a, thetavec, wvec) {
     .Call(`_gamrel_hazf_chzf_lwb_c`, tvec, lambda0, a, thetavec, wvec)
+}
+
+#' Log prior - LWB/HBT/HCV
+#' 
+#' 
+#' @param eta eta
+#' @param gamma gamma
+#' 
+#' @description log(prior) for the LWB, HBT and HCV models - in vector form
+#' 
+#' @export
+logprior_lwb_c <- function(lambda0, gamma, thetavec, vvec, a, alpha, beta, nu, phi, s1, s2, c1, c2, a1, a2, b1, b2, g1, g2, f1, f2) {
+    .Call(`_gamrel_logprior_lwb_c`, lambda0, gamma, thetavec, vvec, a, alpha, beta, nu, phi, s1, s2, c1, c2, a1, a2, b1, b2, g1, g2, f1, f2)
 }
 
 #' Hazard rate function - HBT
@@ -615,6 +628,19 @@ chzf_lcv_c <- function(tvec, lambda0, w0, thetavec, wvec, epsilon) {
 #' @export
 hazf_chzf_lcv_c <- function(tvec, lambda0, w0, thetavec, wvec, epsilon) {
     .Call(`_gamrel_hazf_chzf_lcv_c`, tvec, lambda0, w0, thetavec, wvec, epsilon)
+}
+
+#' Log prior - LCV
+#' 
+#' 
+#' @param eta eta
+#' @param gamma gamma
+#' 
+#' @description log(prior) for the LCV model - in vector form
+#' 
+#' @export
+logprior_lcv_c <- function(lambda0, w0, gamma, thetavec, vvec, a, alpha, beta, nu, phi, s1, s2, sigmapw0, a1, a2, b1, b2, g1, g2, f1, f2) {
+    .Call(`_gamrel_logprior_lcv_c`, lambda0, w0, gamma, thetavec, vvec, a, alpha, beta, nu, phi, s1, s2, sigmapw0, a1, a2, b1, b2, g1, g2, f1, f2)
 }
 
 #' Hazard rate function - MEW

@@ -310,15 +310,15 @@ lpriorfunc.vector <- function(state, fpar, model) {
     retval <- switch(model, 
          CON=logprior.CON(state, fpar, use.Cpp=fpar$use.Cpp),
          IFR=logprior.IFR(state, fpar, use.Cpp=fpar$use.Cpp),
-         DFR=logprior.DFR(state, fpar, use.Cpp=fpar$use.Cpp),
-         CIR=logprior.CIR(state, fpar, use.Cpp=fpar$use.Cpp),
-         CDR=logprior.CDR(state, fpar, use.Cpp=fpar$use.Cpp),
+         DFR=logprior.IFR(state, fpar, use.Cpp=fpar$use.Cpp),# use IFR
+         CIR=logprior.IFR(state, fpar, use.Cpp=fpar$use.Cpp),# use IFR
+         CDR=logprior.IFR(state, fpar, use.Cpp=fpar$use.Cpp),# use IFR
          LWB=logprior.LWB(state, fpar, use.Cpp=fpar$use.Cpp),
-         HBT=logprior.HBT(state, fpar, use.Cpp=fpar$use.Cpp),
-         HCV=logprior.HCV(state, fpar, use.Cpp=fpar$use.Cpp),
-         SBT=logprior.SBT(state, fpar, use.Cpp=fpar$use.Cpp),
-         SCV=logprior.SCV(state, fpar, use.Cpp=fpar$use.Cpp),
-         MBT=logprior.MBT(state, fpar, use.Cpp=fpar$use.Cpp),
+         HBT=logprior.LWB(state, fpar, use.Cpp=fpar$use.Cpp),# use LWB
+         HCV=logprior.LWB(state, fpar, use.Cpp=fpar$use.Cpp),# use LWB
+         SBT=logprior.SBT(state, fpar, use.Cpp=fpar$use.Cpp),# to do
+         SCV=logprior.SCV(state, fpar, use.Cpp=fpar$use.Cpp),# to do
+         MBT=logprior.MBT(state, fpar, use.Cpp=fpar$use.Cpp),# to do
          LCV=logprior.LCV(state, fpar, use.Cpp=fpar$use.Cpp),
          MEW=logprior.MEW(state, fpar, use.Cpp=fpar$use.Cpp)
   )
@@ -554,6 +554,8 @@ logprior.IFR <- function(state, fpar, use.Cpp) {
                                   fpar$g1, fpar$g2, fpar$f1, fpar$f2)
      names(lprior.vec) <- fpar$parnames
   } else {
+    lprior.vec <- rep(NA,length=length(fpar$parnames))
+    names(lprior.vec) <- fpar$parnames
     # prior for lambda0
     lprior.vec["lambda0"] <- (fpar$s1-1)*log(state$lambda0) - fpar$s2*state$lambda0
     # prior for gamma
@@ -612,39 +614,6 @@ invsurvf.DFR <- function(uvec, model.list, use.Cpp=FALSE) {
             + (othetavec[kvecp1]-othetavec[kvec])/(ivec[kvecp1]-ivec[kvec])*(-log(uvec)-ivec[kvec])
   )
   return(tvec)
-}
-logprior.DFR <- function(state, fpar, use.Cpp) {
-  if(use.Cpp) {
-    lprior.vec <- lprior_ifrdfr_c(state$eta, 
-                                  state$gamma,
-                                  state$thetavec, 
-                                  state$vvec,
-                                  state$alpha, 
-                                  state$beta,
-                                  state$phi,
-                                  fpar$nu, fpar$a1, fpar$a2, fpar$b1, fpar$b2, fpar$f1, fpar$f2)
-    names(lprior.vec) <- fpar$parnames
-  } else {
-    # prior for eta
-    lprior.vec["eta"] <- -state$eta*fpar$nu 
-    # prior for gamma
-    lprior.vec["gamma"] <- dgamma(state$gamma, state$alpha, state$beta, log=TRUE)
-    # prior for thetavec
-    lprior.vec["thetavec"] <- sum( (log(state$phi)-state$phi*state$thetavec) )
-    # prior for vvec
-    lprior.vec["vvec"] <-  sum( (log(state$alpha) + (state$alpha-1)*log(1-state$vvec[-fpar$kmax])) )
-    # prior for alpha
-    #lprior.vec["alpha"] <- dgamma(state$alpha, fpar$a1, fpar$a2, log=TRUE)
-    lprior.vec["alpha"] <- (fpar$a1-1)*log(state$alpha) - fpar$a2*state$alpha
-    # prior for beta
-    #lprior.vec["beta"] <- dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE)
-    lprior.vec["beta"] <- (fpar$b1-1)*log(state$beta) - fpar$b2*state$beta
-    # prior for phi
-    #lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
-    lprior.vec["phi"] <- (fpar$f1-1)*log(state$phi) - fpar$f2*state$phi
-  }  
-  
-  return(lprior.vec)
 }
 
 ####################################################
@@ -777,6 +746,49 @@ invsurvf.LWB <- function(uvec, model.list, use.Cpp=FALSE) {
                         othetavec[kvec],othetavec[kvec+1],
                         ivec[kvec],ivec[kvec+1])
   return(tvec)
+}
+logprior.LWB <- function(state, fpar, use.Cpp) {
+  if(use.Cpp) {
+    lprior.vec <- logprior_lwb_c(state$lambda0, 
+                                 state$gamma,
+                                 state$thetavec, 
+                                 state$vvec,
+                                 state$a,
+                                 state$alpha, 
+                                 state$beta,
+                                 state$nu,
+                                 state$phi,
+                                 fpar$s1, fpar$s2, fpar$c1, fpar$c2,  
+                                 fpar$a1, fpar$a2, fpar$b1, fpar$b2, 
+                                 fpar$g1, fpar$g2, fpar$f1, fpar$f2)
+    names(lprior.vec) <- fpar$parnames
+  } else {
+    lprior.vec <- rep(NA,length=length(fpar$parnames))
+    names(lprior.vec) <- fpar$parnames
+    # prior for lambda0
+    lprior.vec["lambda0"] <- (fpar$s1-1)*log(state$lambda0) - fpar$s2*state$lambda0
+    # prior for gamma
+    lprior.vec["gamma"] <- dgamma(state$gamma, state$alpha, state$beta, log=TRUE)
+    # prior for thetavec
+    lprior.vec["thetavec"] <- sum( (log(state$phi)-state$phi*state$thetavec) )
+    # prior for vvec
+    lprior.vec["vvec"] <-  sum( (log(state$alpha) + (state$alpha-1)*log(1-state$vvec[-fpar$kmax])) )
+    # prior for a
+    lprior.vec["a"] - (fpar$c1-1)*log(state$a) - fpar$c2*state$a
+    # prior for alpha
+    #lprior.vec["alpha"] <- dgamma(state$alpha, fpar$a1, fpar$a2, log=TRUE)
+    lprior.vec["alpha"] <- (fpar$a1-1)*log(state$alpha) - fpar$a2*state$alpha
+    # prior for beta
+    #lprior.vec["beta"] <- dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE)
+    lprior.vec["beta"] <- (fpar$b1-1)*log(state$beta) - fpar$b2*state$beta
+    # prior for nu
+    lprior.vec["nu"] <- (fpar$g1-1)*log(state$nu) - fpar$g2*state$nu
+    # prior for phi
+    #lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
+    lprior.vec["phi"] <- (fpar$f1-1)*log(state$phi) - fpar$f2*state$phi
+  }  
+  
+  return(lprior.vec)
 }
 
 ####################################################
@@ -1161,6 +1173,49 @@ invsurvf.LCV <- function(uvec, model.list, use.Cpp=FALSE) {
   
   return(tvec)
 }  
+logprior.LCV <- function(state, fpar, use.Cpp) {
+  if(use.Cpp) {
+    lprior.vec <- logprior_lcv_c(state$lambda0,
+                                 state$w0,
+                                 state$gamma,
+                                 state$thetavec, 
+                                 state$vvec,
+                                 state$alpha, 
+                                 state$beta,
+                                 state$nu,
+                                 state$phi,
+                                 fpar$s1, fpar$s2, fpar$sigmap.w0,
+                                 fpar$a1, fpar$a2, fpar$b1, fpar$b2, 
+                                 fpar$g1, fpar$g2, fpar$f1, fpar$f2)
+    names(lprior.vec) <- fpar$parnames
+  } else {
+    lprior.vec <- rep(NA,length=length(fpar$parnames))
+    names(lprior.vec) <- fpar$parnames
+    # prior for lambda0
+    lprior.vec["lambda0"] <- (fpar$s1-1)*log(state$lambda0) - fpar$s2*state$lambda0
+    # prior for w0
+    lprior.vec["w0"] <- -(1/(2*fpar$sigmap.w0^2))*state$w0^2
+    # prior for gamma
+    lprior.vec["gamma"] <- dgamma(state$gamma, state$alpha, state$beta, log=TRUE)
+    # prior for thetavec
+    lprior.vec["thetavec"] <- sum( (log(state$phi)-state$phi*state$thetavec) )
+    # prior for vvec
+    lprior.vec["vvec"] <-  sum( (log(state$alpha) + (state$alpha-1)*log(1-state$vvec[-fpar$kmax])) )
+    # prior for alpha
+    #lprior.vec["alpha"] <- dgamma(state$alpha, fpar$a1, fpar$a2, log=TRUE)
+    lprior.vec["alpha"] <- (fpar$a1-1)*log(state$alpha) - fpar$a2*state$alpha
+    # prior for beta
+    #lprior.vec["beta"] <- dgamma(state$beta, fpar$b1, fpar$b2, log=TRUE)
+    lprior.vec["beta"] <- (fpar$b1-1)*log(state$beta) - fpar$b2*state$beta
+    # prior for nu
+    lprior.vec["nu"] <- (fpar$g1-1)*log(state$nu) - fpar$g2*state$nu
+    # prior for phi
+    #lprior.vec["phi"] <- dgamma(state$phi, fpar$f1, fpar$f2, log=TRUE)
+    lprior.vec["phi"] <- (fpar$f1-1)*log(state$phi) - fpar$f2*state$phi
+  }  
+  
+  return(lprior.vec)
+}
 
 
 ####################################################

@@ -283,13 +283,13 @@ NumericMatrix hazf_chzf_ifr_c(NumericVector tvec,
 }
 
 //**********************************************************************
-//' Log prior - IFR/DFR
+//' Log prior - IFR/DFR/CIR/CDR
 //' 
 //' 
 //' @param eta eta
 //' @param gamma gamma
 //' 
-//' @description log(prior) for the IFR and DFR models - in vector form
+//' @description log(prior) for the IFR, DFR, CIR and CDR models - in vector form
 //' 
 //' @export
 // [[Rcpp::export]]
@@ -788,6 +788,60 @@ NumericMatrix hazf_chzf_lwb_c(NumericVector tvec,
  
  return haz_chz_mat;
 }
+
+//**********************************************************************
+//' Log prior - LWB/HBT/HCV
+//' 
+//' 
+//' @param eta eta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the LWB, HBT and HCV models - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector logprior_lwb_c(double lambda0, 
+                            double gamma,
+                            NumericVector thetavec, 
+                            NumericVector vvec,
+                            double a,
+                            double alpha, 
+                            double beta,
+                            double nu,
+                            double phi,
+                            double s1, double s2, double c1, double c2,
+                            double a1, double a2, double b1, double b2, 
+                            double g1, double g2, double f1, double f2) {
+ 
+ int kmax = vvec.size();
+ NumericVector lpriorvec(9);
+ int i;
+ 
+ // lambda0
+ lpriorvec[0] = (s1-1)*log(lambda0)- s2*lambda0;
+ // gamma
+ lpriorvec[1] = R::dgamma(gamma, alpha, 1./beta, true);
+ // thetavec
+ lpriorvec[2] = kmax*log(phi);
+ for(i=0; i<kmax; i++) lpriorvec[2] += (-phi*thetavec[i]);
+ // vvec
+ lpriorvec[3] =  (kmax-1)*log(alpha);
+ for(i=0; i<kmax-1; i++) lpriorvec[3] += (alpha-1)*log(1-vvec[i]);
+ // a 
+ lpriorvec[4] = (c1-1)*log(a) - c2*a;
+ // alpha
+ lpriorvec[5] = (a1-1)*log(alpha) - a2*alpha;
+ // beta
+ lpriorvec[6] = (b1-1)*log(beta) - b2*beta;
+ // nu
+ lpriorvec[7] = (g1-1)*log(nu) - g2*nu;
+ // phi
+ lpriorvec[8] = (f1-1)*log(phi) - f2*phi;
+ 
+ return lpriorvec;
+}   
+
+
 
 //**********************************************************************
 //* HBT - Ho Bathtub
@@ -1597,6 +1651,59 @@ NumericMatrix hazf_chzf_lcv_c(NumericVector tvec,
   
   return haz_chz_mat;
 }
+
+//**********************************************************************
+//' Log prior - LCV
+//' 
+//' 
+//' @param eta eta
+//' @param gamma gamma
+//' 
+//' @description log(prior) for the LCV model - in vector form
+//' 
+//' @export
+// [[Rcpp::export]]
+NumericVector logprior_lcv_c(double lambda0, 
+                            double w0,
+                            double gamma,
+                            NumericVector thetavec, 
+                            NumericVector vvec,
+                            double a,
+                            double alpha, 
+                            double beta,
+                            double nu,
+                            double phi,
+                            double s1, double s2, double sigmapw0,
+                            double a1, double a2, double b1, double b2, 
+                            double g1, double g2, double f1, double f2) {
+ 
+ int kmax = vvec.size();
+ NumericVector lpriorvec(9);
+ int i;
+ 
+ // lambda0
+ lpriorvec[0] = (s1-1)*log(lambda0)- s2*lambda0;
+ // w0
+ lpriorvec[1] = -w0*w0/(2*sigmapw0*sigmapw0);
+ // gamma
+ lpriorvec[2] = R::dgamma(gamma, alpha, 1./beta, true);
+ // thetavec
+ lpriorvec[3] = kmax*log(phi);
+ for(i=0; i<kmax; i++) lpriorvec[2] += (-phi*thetavec[i]);
+ // vvec
+ lpriorvec[4] =  (kmax-1)*log(alpha);
+ for(i=0; i<kmax-1; i++) lpriorvec[3] += (alpha-1)*log(1-vvec[i]);
+ // alpha
+ lpriorvec[5] = (a1-1)*log(alpha) - a2*alpha;
+ // beta
+ lpriorvec[6] = (b1-1)*log(beta) - b2*beta;
+ // nu
+ lpriorvec[7] = (g1-1)*log(nu) - g2*nu;
+ // phi
+ lpriorvec[8] = (f1-1)*log(phi) - f2*phi;
+ 
+ return lpriorvec;
+}   
 
 
 //**********************************************************************

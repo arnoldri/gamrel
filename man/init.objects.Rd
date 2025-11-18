@@ -10,6 +10,7 @@ init.objects(
   kmax = 100,
   prior.par = NULL,
   update.par = NULL,
+  fix.update = NULL,
   model = "IFR",
   datscale = NULL,
   epsilon = .Machine$double.neg.eps * 100,
