@@ -639,8 +639,8 @@ hazf_chzf_lcv_c <- function(tvec, lambda0, w0, thetavec, wvec, epsilon) {
 #' @description log(prior) for the LCV model - in vector form
 #' 
 #' @export
-logprior_lcv_c <- function(lambda0, w0, gamma, thetavec, vvec, a, alpha, beta, nu, phi, s1, s2, sigmapw0, a1, a2, b1, b2, g1, g2, f1, f2) {
-    .Call(`_gamrel_logprior_lcv_c`, lambda0, w0, gamma, thetavec, vvec, a, alpha, beta, nu, phi, s1, s2, sigmapw0, a1, a2, b1, b2, g1, g2, f1, f2)
+logprior_lcv_c <- function(lambda0, w0, gamma, thetavec, vvec, alpha, beta, nu, phi, s1, s2, sigmapw0, a1, a2, b1, b2, g1, g2, f1, f2) {
+    .Call(`_gamrel_logprior_lcv_c`, lambda0, w0, gamma, thetavec, vvec, alpha, beta, nu, phi, s1, s2, sigmapw0, a1, a2, b1, b2, g1, g2, f1, f2)
 }
 
 #' Hazard rate function - MEW

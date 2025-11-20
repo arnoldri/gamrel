@@ -10,7 +10,6 @@ logprior_lcv_c(
   gamma,
   thetavec,
   vvec,
-  a,
   alpha,
   beta,
   nu,

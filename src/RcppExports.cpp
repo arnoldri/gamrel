@@ -672,8 +672,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // logprior_lcv_c
-NumericVector logprior_lcv_c(double lambda0, double w0, double gamma, NumericVector thetavec, NumericVector vvec, double a, double alpha, double beta, double nu, double phi, double s1, double s2, double sigmapw0, double a1, double a2, double b1, double b2, double g1, double g2, double f1, double f2);
-RcppExport SEXP _gamrel_logprior_lcv_c(SEXP lambda0SEXP, SEXP w0SEXP, SEXP gammaSEXP, SEXP thetavecSEXP, SEXP vvecSEXP, SEXP aSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP nuSEXP, SEXP phiSEXP, SEXP s1SEXP, SEXP s2SEXP, SEXP sigmapw0SEXP, SEXP a1SEXP, SEXP a2SEXP, SEXP b1SEXP, SEXP b2SEXP, SEXP g1SEXP, SEXP g2SEXP, SEXP f1SEXP, SEXP f2SEXP) {
+NumericVector logprior_lcv_c(double lambda0, double w0, double gamma, NumericVector thetavec, NumericVector vvec, double alpha, double beta, double nu, double phi, double s1, double s2, double sigmapw0, double a1, double a2, double b1, double b2, double g1, double g2, double f1, double f2);
+RcppExport SEXP _gamrel_logprior_lcv_c(SEXP lambda0SEXP, SEXP w0SEXP, SEXP gammaSEXP, SEXP thetavecSEXP, SEXP vvecSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP nuSEXP, SEXP phiSEXP, SEXP s1SEXP, SEXP s2SEXP, SEXP sigmapw0SEXP, SEXP a1SEXP, SEXP a2SEXP, SEXP b1SEXP, SEXP b2SEXP, SEXP g1SEXP, SEXP g2SEXP, SEXP f1SEXP, SEXP f2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -682,7 +682,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type thetavec(thetavecSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type vvec(vvecSEXP);
-    Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
@@ -698,7 +697,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type g2(g2SEXP);
     Rcpp::traits::input_parameter< double >::type f1(f1SEXP);
     Rcpp::traits::input_parameter< double >::type f2(f2SEXP);
-    rcpp_result_gen = Rcpp::wrap(logprior_lcv_c(lambda0, w0, gamma, thetavec, vvec, a, alpha, beta, nu, phi, s1, s2, sigmapw0, a1, a2, b1, b2, g1, g2, f1, f2));
+    rcpp_result_gen = Rcpp::wrap(logprior_lcv_c(lambda0, w0, gamma, thetavec, vvec, alpha, beta, nu, phi, s1, s2, sigmapw0, a1, a2, b1, b2, g1, g2, f1, f2));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -847,7 +846,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_hazf_lcv_c", (DL_FUNC) &_gamrel_hazf_lcv_c, 5},
     {"_gamrel_chzf_lcv_c", (DL_FUNC) &_gamrel_chzf_lcv_c, 6},
     {"_gamrel_hazf_chzf_lcv_c", (DL_FUNC) &_gamrel_hazf_chzf_lcv_c, 6},
-    {"_gamrel_logprior_lcv_c", (DL_FUNC) &_gamrel_logprior_lcv_c, 21},
+    {"_gamrel_logprior_lcv_c", (DL_FUNC) &_gamrel_logprior_lcv_c, 20},
     {"_gamrel_hazf_mew_c", (DL_FUNC) &_gamrel_hazf_mew_c, 5},
     {"_gamrel_chzf_mew_c", (DL_FUNC) &_gamrel_chzf_mew_c, 5},
     {"_gamrel_hazf_chzf_mew_c", (DL_FUNC) &_gamrel_hazf_chzf_mew_c, 5},

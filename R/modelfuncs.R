@@ -155,14 +155,16 @@ init.objects <- function(tvec, obs=TRUE,
     if(is.null(update.par)) {
       update.par <- list(pequal=0.5, # probability we select a support point with equal probability
                          sd.log.lambda0=0.3,
+                         sd.log.gamma=0.3,
                          sd.log.a=0.1,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
                          sd.log.w=0.3,
-                         sd.log.alpha=0.3)
+                         sd.log.alpha=0.3,
+                         sd.log.nu=0.3)
     }
     # fixed parameters
-    parnames <- c("lambda0","a","gamma","thetavec","vvec","alpha","beta","phi")
+    parnames <- c("lambda0","a","gamma","thetavec","vvec","alpha","beta","nu","phi")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
@@ -170,6 +172,7 @@ init.objects <- function(tvec, obs=TRUE,
                  c1=prior.par$c1, c2=prior.par$c2, # prior for the cutpoint a
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta
+                 g1=prior.par$g1, g2=prior.par$g2, # prior for nu
                  f1=prior.par$f1, f2=prior.par$f2, # prior for phi
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
@@ -189,6 +192,7 @@ init.objects <- function(tvec, obs=TRUE,
                  pequal=update.par$pequal,
                  pgvw=update.par$pgvw,
                  sd.log.lambda0=update.par$sd.log.lambda0,
+                 sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.a=update.par$sd.log.a,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
@@ -231,29 +235,35 @@ init.objects <- function(tvec, obs=TRUE,
       prior.par <- list(nu=1,
                         a1=4, a2=1,
                         b1=1, b2=1/datscale,
+                        g11=1, g21=1, 
                         f11=1, f21=datscale/2, # DFR
+                        g12=1, g22=1,
                         f12=2, f22=2*datscale) # IFR
     }
     if(is.null(update.par)) {
       update.par <- list(pequal=0.5, # probability we select a support point with equal probability
-                         sd.log.eta=0.3,
+                         sd.log.lambda0=0.3,
                          sd.log.gamma=0.1,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
                          sd.log.w=0.3,
-                         sd.log.alpha=0.3)
+                         sd.log.alpha=0.3,
+                         sd.log.nu=0.3)
     }
     # fixed parameters
-    parnames <- c("eta",
-                  "gamma1","thetavec1","vvec1","alpha1","beta1","phi1",
-                  "gamma2","thetavec2","vvec2","alpha2","beta2","phi2")
+    parnames <- c("lambda01",
+                  "gamma1","thetavec1","vvec1","alpha1","beta1","nu1","phi1",
+                  "lambda02",
+                  "gamma2","thetavec2","vvec2","alpha2","beta2","nu2","phi2")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
                  nu=prior.par$nu,                  # prior for eta (lambda0/gamma2)
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha1,alpha2
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta1,beta2
+                 g11=prior.par$g11, g21=prior.par$g21, # prior for nu1
                  f11=prior.par$f11, f21=prior.par$f21, # prior for phi1
+                 g12=prior.par$g12, g22=prior.par$g22, # prior for nu2
                  f12=prior.par$f12, f22=prior.par$f22, # prior for phi2
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
@@ -265,6 +275,7 @@ init.objects <- function(tvec, obs=TRUE,
       fix.update <- fix.update[intersect(names(fix.update),names(update))]
       if(length(fix.update)>0) update[names(fix.update)] <- fix.update
     }
+    update["lambda02"] <- FALSE # not a true parameter, lambda02 is always 0
     # model parameter names
     model_parnames <- parnames
     # proposal parameters for updates
@@ -280,23 +291,26 @@ init.objects <- function(tvec, obs=TRUE,
                  sd.logit.v=update.par$sd.logit.v,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
+                 sd.log.nu=update.par$sd.log.nu,
                  update=update,
                  verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
-      epar <- list(eta=1/prior.par$nu,
+      epar <- list(lambda01=prior.par$s1/prior.par$s2,
                    gamma1=NA,
                    thetavec1=NA,
                    vvec1=NA,
                    alpha1=prior.par$a1/prior.par$a2,
                    beta1=prior.par$b1/prior.par$b2,
+                   nu1=prior.par$g11/prior.par$g21,
                    phi1=prior.par$f11/prior.par$f21,
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
                    alpha2=prior.par$a1/prior.par$a2,
                    beta2=prior.par$b1/prior.par$b2,
+                   nu2=prior.par$g12/prior.par$g22,
                    phi2=prior.par$f12/prior.par$f22)
       epar$gamma1 <- epar$alpha1/epar$beta1
       epar$gamma2 <- epar$alpha2/epar$beta2
@@ -307,12 +321,14 @@ init.objects <- function(tvec, obs=TRUE,
                    vvec1=NA,
                    alpha1=rgamma(1,prior.par$a1,prior.par$a2),
                    beta1=rgamma(1,prior.par$b1,prior.par$b2),
+                   nu1=rgamma(1,prior.par$g11,prior.par$g21),
                    phi1=rgamma(1,prior.par$f11,prior.par$f21),
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
                    alpha2=rgamma(1,prior.par$a1,prior.par$a2),
                    beta2=rgamma(1,prior.par$b1,prior.par$b2),
+                   nu2=rgamma(1,prior.par$g12,prior.par$g22),
                    phi2=rgamma(1,prior.par$f12,prior.par$f22))
       epar$gamma1 <- rgamma(1,epar$alpha1,epar$beta1)
       epar$gamma2 <- rgamma(1,epar$alpha2,epar$beta2)
@@ -325,7 +341,7 @@ init.objects <- function(tvec, obs=TRUE,
   } else if(model%in%c("MBT")) {
 
     if(is.null(prior.par)) {
-      prior.par <- list(nu=1,
+      prior.par <- list(s1=1, s2=datscale/100, 
                         a1=4, a2=1,
                         b1=1, b2=1/datscale,
                         g11=2, g21=2,
@@ -336,25 +352,28 @@ init.objects <- function(tvec, obs=TRUE,
     if(is.null(update.par)) {
       update.par <- list(pequal=0.5, # probability we select a support point with equal probability
                          sd.logit.pival=0.1,
-                         sd.log.eta=0.3,
+                         sd.log.lambda0=0.3,
                          sd.log.gamma=0.1,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
                          sd.log.w=0.3,
-                         sd.log.alpha=0.3)
+                         sd.log.alpha=0.3,
+                         sd.log.nu=0.3)
     }
     # fixed parameters
     parnames <- c("pival",
-                  "eta1","gamma1","thetavec1","vvec1","alpha1","beta1","phi1",
-                  "eta2","gamma2","thetavec2","vvec2","alpha2","beta2","phi2")
+                  "lambda01","gamma1","thetavec1","vvec1","alpha1","beta1","nu1","phi1",
+                  "lambda02","gamma2","thetavec2","vvec2","alpha2","beta2","nu2","phi2")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
-                 nu=prior.par$nu,                  # prior for eta1,eta2 (lambda0/gamma)
+                 s1=prior.par$s1, s2=prior.par$s2, # prior for lambda01
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha1,alpha2,
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta1,beta2
+                 g11=prior.par$g11, g21=prior.par$g21, # prior for nu1
                  f11=prior.par$f11, f21=prior.par$f21, # prior for phi1
-                 f12=prior.par$f12, f22=prior.par$f22, # prior for phi1
+                 g12=prior.par$g12, g22=prior.par$g22, # prior for nu2
+                 f12=prior.par$f12, f22=prior.par$f22, # prior for phi2
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
@@ -365,7 +384,7 @@ init.objects <- function(tvec, obs=TRUE,
       fix.update <- fix.update[intersect(names(fix.update),names(update))]
       if(length(fix.update)>0) update[names(fix.update)] <- fix.update
     }
-    update["eta1"] <- FALSE # eta1 is not a real parameter - it is always zero
+    update["lambda20"] <- FALSE # lambda20 is not a real parameter - it is always zero
     # model parameter names
     model_parnames <- parnames
     # proposal parameters for updates
@@ -382,20 +401,21 @@ init.objects <- function(tvec, obs=TRUE,
                  sd.logit.v=update.par$sd.logit.v,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
+                 sd.log.nu=update.par$sd.log.nu,
                  update=update,
                  verbose=FALSE,
                  interactive=FALSE)
     # parameters to estimate
     if(generate=="fixed") {
       epar <- list(pival=0.5,
-                   eta1=0,
+                   lambda01=prior.par$s11/prior.par$s21,
                    gamma1=NA,
                    thetavec1=NA,
                    vvec1=NA,
                    alpha1=prior.par$a1/prior.par$a2,
                    beta1=prior.par$b1/prior.par$b2,
                    phi1=prior.par$f11/prior.par$f21,
-                   eta2=2/prior.par$nu,
+                   lambda02=0,
                    gamma2=NA,
                    thetavec2=NA,
                    vvec2=NA,
@@ -433,11 +453,11 @@ init.objects <- function(tvec, obs=TRUE,
   } else if(model%in%c("LCV")) {
 
     if(is.null(prior.par)) {
-      prior.par <- list(nu=1,
-                        s1=1, s2=datscale/100.,
+      prior.par <- list(s1=1, s2=datscale/100.,
                         sigmap.w0=100./datscale,
                         a1=4, a2=1,
                         b1=1, b2=1/datscale,
+                        g1=1, g2=1, 
                         f1=1, f2=datscale)
     }
     if(is.null(update.par)) {
@@ -447,10 +467,11 @@ init.objects <- function(tvec, obs=TRUE,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
                          sd.log.w=0.05,
-                         sd.log.alpha=0.3)
+                         sd.log.alpha=0.3,
+                         sd.log.nu=0.3)
     }
     # fixed parameters
-    parnames <- c("lambda0","w0","gamma","thetavec","vvec","alpha","beta","phi")
+    parnames <- c("lambda0","w0","gamma","thetavec","vvec","alpha","beta","nu","phi")
     fpar <- list(model=model,                      # model name
                  parnames=parnames,                # parameters
                  kmax=kmax,                        # sum truncation point
@@ -458,6 +479,7 @@ init.objects <- function(tvec, obs=TRUE,
                  sigmap.w0=prior.par$sigmap.w0,    # prior for w0
                  a1=prior.par$a1, a2=prior.par$a2, # prior for alpha
                  b1=prior.par$b1, b2=prior.par$b2, # prior for beta
+                 g1=prior.par$f1, g2=prior.par$f2, # prior for nu
                  f1=prior.par$f1, f2=prior.par$f2, # prior for phi
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
@@ -474,16 +496,16 @@ init.objects <- function(tvec, obs=TRUE,
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
                  model_parnames=model_parnames,
-                 ksweep=FALSE, # = all support points are updated each time
-                 ksim=min(kmax,max(5,round(kmax/5))),  # only used if *not* doing a sweep update
-                 kswap=min(kmax,max(5,round(kmax/5))), # number of theta values to swap
                  pequal=update.par$pequal,
+                 sd.log.lambda0=update.par$sd.log.lambda0,
+                 pgvw=update.par$pgvw,
                  sd.w0=update.par$sd.w0,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
                  sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
+                 sd.log.nu=update.par$sd.log.nu,
                  update=update,
                  verbose=FALSE,
                  interactive=FALSE)
@@ -496,6 +518,7 @@ init.objects <- function(tvec, obs=TRUE,
                    vvec=NA,
                    alpha=prior.par$a1/prior.par$a2,
                    beta=prior.par$b1/prior.par$b2,
+                   nu=prior.par$g1/prior.par$g2,
                    phi=prior.par$f1/prior.par$b2)
       epar$gamma <- epar$alpha/epar$beta
     } else {
@@ -506,6 +529,7 @@ init.objects <- function(tvec, obs=TRUE,
                    vvec=NA,
                    alpha=rgamma(1,prior.par$a1,prior.par$a2),
                    beta=rgamma(1,prior.par$b1,prior.par$b2),
+                   nu=rgamma(1,prior.par$g1,prior.par$g2),
                    phi=rgamma(1,prior.par$f1,prior.par$b2))
       epar$gamma <- rgamma(1,epar$alpha,epar$beta)
     }
@@ -604,7 +628,7 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
       # compute the scaled weights wvec
       state$wvec <- state$gamma * state$uvec
 
-  } else if(model%in%c("LWB")) {
+  } else if(model%in%c("LWB","HBT","HCV")) {
     state <- epar
     # complete state with useful quantities
     # derive the unscaled weights uvec
@@ -614,10 +638,13 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     # compute the scaled weights wvec
     state$wvec <- state$gamma * state$uvec
 
-  } else if(model%in%c("SBT")) {
+  } else if(model%in%c("SBT","SCV")) {
     state <- epar
     # complete state with useful quantities
 
+    # ensure lambda02=0
+    state$lambd02 <- 0
+    
     # derive the unscaled weights uvec
     cp <- cumprod(1-state$vvec1[-fpar$kmax])
     state$uvec1 <- state$vvec1*c(1,cp)
@@ -636,8 +663,8 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state <- epar
     # complete state with useful quantities
 
-    # ensure eta1=0
-    state$eta1 <- 0
+    # ensure lambda02=0
+    state$lambd02 <- 0
       
     # derive the unscaled weights uvec
     cp <- cumprod(1-state$vvec1[-fpar$kmax])
@@ -662,24 +689,6 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
     state$uvec[fpar$kmax] <- cp[fpar$kmax-1]
     # compute the scaled weights wvec
     state$wvec <- state$gamma * state$uvec
-    
-  } else if(model%in%c("CVX")) {
-    state <- epar
-    # complete state with useful quantities
-    
-    # derive the unscaled weights uvec
-    cp <- cumprod(1-state$vvec1[-fpar$kmax])
-    state$uvec1 <- state$vvec1*c(1,cp)
-    state$uvec1[fpar$kmax] <- cp[fpar$kmax-1]
-    # compute the scaled weights wvec
-    state$wvec1 <- state$gamma1 * state$uvec1
-    
-    # derive the unscaled weights uvec
-    cp <- cumprod(1-state$vvec2[-fpar$kmax])
-    state$uvec2 <- state$vvec2*c(1,cp)
-    state$uvec2[fpar$kmax] <- cp[fpar$kmax-1]
-    # compute the scaled weights wvec
-    state$wvec2 <- state$gamma2 * state$uvec2
     
   } else if(model%in%c("MEW")) {
     state <- epar

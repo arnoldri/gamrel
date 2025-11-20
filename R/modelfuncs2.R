@@ -725,7 +725,7 @@ chzf.LWB <- function(tvec, model.list, use.Cpp=FALSE) {
                                         )
     clambdavec <- clambdavec + ifelse(tvec>model.list$a,
                                       as.vector(outer(tvec,model.list$thetavec,
-                                                      function(t,theta) (t-model.list$a-theta)*(theta<t-a))
+                                                      function(t,theta) (t-model.list$a-theta)*(theta<t-model.list$a))
                                                 %*%model.list$wvec),
                                       0)
   }
@@ -774,7 +774,7 @@ logprior.LWB <- function(state, fpar, use.Cpp) {
     # prior for vvec
     lprior.vec["vvec"] <-  sum( (log(state$alpha) + (state$alpha-1)*log(1-state$vvec[-fpar$kmax])) )
     # prior for a
-    lprior.vec["a"] - (fpar$c1-1)*log(state$a) - fpar$c2*state$a
+    lprior.vec["a"] <- (fpar$c1-1)*log(state$a) - fpar$c2*state$a
     # prior for alpha
     #lprior.vec["alpha"] <- dgamma(state$alpha, fpar$a1, fpar$a2, log=TRUE)
     lprior.vec["alpha"] <- (fpar$a1-1)*log(state$alpha) - fpar$a2*state$alpha
