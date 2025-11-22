@@ -530,14 +530,14 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
     cat("model:"); cat(model); cat("\n")
     cat("names(state):"); cat(names(state)); cat("\n")
     cat("nm:\n"); print(nm)
-    cat("k, llike, llike.old, gamma.new, gamma.new, sum(vv/vv), w.new, w.old, wkmax, wkmax.old)\n")
+    cat("k, llike, llike.old, gamma.new, gamma.new, sum(vv/vv), w.new, w.old, wkmax.new, wkmax.old)\n")
     cat(c(k, state$llike, state.old$llike, gamma.new, gamma.old, sum(log(vvec.new[1:k]/vvec.old[1:k])),
-          w.new, w.old, wkmax, wkmax.old)); cat("\n")
+          w.new, w.old, wkmax.new, wkmax.old)); cat("\n")
     cat("logr: LR, gamma, sumvv, logw/wold, log.r:\n")
     cat(c(state$llike - state.old$llike,
           -state[[nm["beta"]]]*(gamma.new-gamma.old),
           sum(log(vvec.new[1:k]/vvec.old[1:k])),
-          log((w.new/(gamma.new-wkmax))/(w.old/(gamma.old-wkmax.old))),
+          log((w.new/(gamma.new-wkmax.new))/(w.old/(gamma.old-wkmax.old))),
           log.r
           )); cat("\n")
     if(ppar$interactive) browser()
