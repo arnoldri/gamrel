@@ -481,6 +481,15 @@ update.wvec.v1 <- function(state, datlist, fpar, ppar, model,
   gamma.old <- state[[nm["gamma"]]]
   wkmax.old <- state[[nm["wvec"]]][fpar$kmax]
   w.old <- state[[nm["wvec"]]][k]
+  
+  # escape if w.old is zero and cannot be updated by a log Normal update
+  if(w.old==0) {
+    # accept
+    state$accepted[nm["wvec"]] <- 1
+    if(ppar$verbose) cat("+")
+    return(state)
+  }
+  
   w.new <- exp( rnorm(1,log(w.old),ppar$sd.log.w) )
   state[[nm["wvec"]]][k] <- w.new
   gamma.new <- sum(state[[nm["wvec"]]])
