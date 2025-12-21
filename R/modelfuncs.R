@@ -99,7 +99,7 @@ init.objects <- function(tvec, obs=TRUE,
       if(length(fix.update)>0) update[names(fix.update)] <- fix.update
     }
     ##!!== update[update_parnames%in%c("gamma","vvec","wvec")] <- FALSE ## reinstate this to prevent the warning
-    if(any(update[c("gamma","vvec","wvec")])) warning("Should not update gamma/vvec/wvec separately")
+    if(update["gvw"] && any(update[c("gamma","vvec","wvec")])) warning("Should not update gamma/vvec/wvec separately")
     # model parameter names
     model_parnames <- parnames
     # proposal parameters for updates

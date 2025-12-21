@@ -41,6 +41,31 @@ solveptlinear <- function(f,t1,t2,f1,f2) {
 }
 
 ####################################################
+# Checking functions
+
+#' Check that constraints are met
+#' 
+#' @export
+check.state <- function(state, fpar, ppar) {
+  clist <- list(
+    gamma=state$gamma,
+    sumuvec=sum(state$uvec)-1,
+    sumwvec=sum(state$wvec)-state$gamma,
+    r=range(state$wvec/state$uvec)-state$gamma
+  )
+  clist$s <- max(abs(c(clist$sumuvec,clist$sumwvec,clist$r[1],clist$r[2])))
+  return(clist)
+}
+
+#' Count the number of components adding to fixed proportion
+#' 
+#' @export
+ncompf <- function(state, proportion=0.95, datlist, fpar, ppar, model) {
+  sum(cumsum(sort(state$uvec,decreasing=TRUE))<=proportion)
+}
+
+
+####################################################
 #' Make data list object
 #' 
 #' @param tvec Vector of failure times
