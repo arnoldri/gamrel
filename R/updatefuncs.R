@@ -108,27 +108,6 @@ update_state.ifr <- function(state, datlist, fpar, ppar, model) {
     if(ppar$verbose) cat("\n")
   }
   
-  # update wvec ##!!== OK
-  if(ppar$update["wvec"]) {
-    if(ppar$verbose) cat("wvec:")
-    state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update gamma/vvec/wvec ##!!== OK  
-  if(ppar$update["gvw"]) {
-    move <- sample(c("gamma","vvec","wvec"), 1, prob=ppar$pgvw)
-    if(ppar$verbose) cat("gvw:",move,":")
-    if(move=="gamma") {
-      state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    } else if(move=="vvec") {
-      state <- update.vvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    } else if(move=="wvec") {
-      state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    }
-    if(ppar$verbose) cat("\n")
-  }
-  
   return(state)
 }
 
@@ -204,27 +183,6 @@ update_state.lwb <- function(state, datlist, fpar, ppar, model) {
     if(ppar$verbose) cat("\n")
   }
   
-  # update wvec ##!!== OK
-  if(ppar$update["wvec"]) {
-    if(ppar$verbose) cat("wvec:")
-    state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update gamma/vvec/wvec ##!!== OK  
-  if(ppar$update["gvw"]) {
-    move <- sample(c("gamma","vvec","wvec"), 1, prob=ppar$pgvw)
-    if(ppar$verbose) cat("gvw:",move,":")
-    if(move=="gamma") {
-      state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    } else if(move=="vvec") {
-      state <- update.vvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    } else if(move=="wvec") {
-      state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    }
-    if(ppar$verbose) cat("\n")
-  }
-  
   return(state)
 }
 update_state.sbt <- function(state, datlist, fpar, ppar, model) { 
@@ -253,7 +211,6 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
                 phi="phi",
                 uvec="uvec",
                 wvec="wvec",
-                thetaswap="thetaswap",
                 f1="f1", f2="f2")
     ntp <- names(tparnm)
     tparnm <- paste0(tparnm,j)
@@ -307,24 +264,8 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
       state <- update.phi.v1(state, datlist, fpar, ppar, model, nm=tparnm)
       if(ppar$verbose) cat("\n")
     }
-    
-    # update wvec ##!!== OK
-    wvec.name <- paste0("wvec",j)
-    if(ppar$update[wvec.name]) {
-      if(ppar$verbose) cat(wvec.name)
-      state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
-    
-    # swap elements of thetavec ##!!== OK
-    thetaswap.name <- paste0("thetaswap",j)
-    if(ppar$update[thetaswap.name]) {
-      if(ppar$verbose) cat(thetaswap.name)
-      state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
   }
-  
+    
   return(state)
 }
 
@@ -354,7 +295,6 @@ update_state.mbt <- function(state, datlist, fpar, ppar, model) {
                 uvec="uvec",
                 wvec="wvec",
                 lambda0="lambda0",
-                thetaswap="thetaswap",
                 f1="f1", f2="f2")
     ntp <- names(tparnm)
     tparnm <- paste0(tparnm,j)
@@ -415,24 +355,8 @@ update_state.mbt <- function(state, datlist, fpar, ppar, model) {
       state <- update.phi.v1(state, datlist, fpar, ppar, model, nm=tparnm)
       if(ppar$verbose) cat("\n")
     }
-    
-    # update wvec ##!!== OK
-    wvec.name <- paste0("wvec",j)
-    if(ppar$update[wvec.name]) {
-      if(ppar$verbose) cat(wvec.name)
-      state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
-    
-    # swap elements of thetavec ##!!== OK
-    thetaswap.name <- paste0("thetaswap",j)
-    if(ppar$update[thetaswap.name]) {
-      if(ppar$verbose) cat(thetaswap.name)
-      state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
   }
-  
+    
   return(state)
 }
 
@@ -506,27 +430,6 @@ update_state.lcv <- function(state, datlist, fpar, ppar, model) {
     if(ppar$verbose) cat("\n")
   }
   
-  # update wvec ##!!== OK
-  if(ppar$update["wvec"]) {
-    if(ppar$verbose) cat("wvec:")
-    state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update gamma/vvec/wvec ##!!== OK  
-  if(ppar$update["gvw"]) {
-    move <- sample(c("gamma","vvec","wvec"), 1, prob=ppar$pgvw)
-    if(ppar$verbose) cat("gvw:",move,":")
-    if(move=="gamma") {
-      state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    } else if(move=="vvec") {
-      state <- update.vvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    } else if(move=="wvec") {
-      state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    }
-    if(ppar$verbose) cat("\n")
-  }
-  
   return(state)
 }
 
@@ -587,20 +490,6 @@ update_state.circdr <- function(state, datlist, fpar, ppar, model) {
     if(ppar$verbose) cat("\n")
   }
   
-  # update wvec ##!!== OK
-  if(ppar$update["wvec"]) {
-    if(ppar$verbose) cat("wvec:")
-    state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # swap elements of thetavec ##!!== OK  
-  if(ppar$update["thetaswap"]) {
-    if(ppar$verbose) cat("thetaswap:")
-    state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
   return(state)
 }
 
@@ -630,7 +519,6 @@ update_state.cvx <- function(state, datlist, fpar, ppar, model) {
                 phi="phi",
                 uvec="uvec",
                 wvec="wvec",
-                thetaswap="thetaswap",
                 f1="f1", f2="f2")
     ntp <- names(tparnm)
     tparnm <- paste0(tparnm,j)
@@ -685,21 +573,6 @@ update_state.cvx <- function(state, datlist, fpar, ppar, model) {
       if(ppar$verbose) cat("\n")
     }
     
-    # update wvec ##!!== OK
-    wvec.name <- paste0("wvec",j)
-    if(ppar$update[wvec.name]) {
-      if(ppar$verbose) cat(wvec.name)
-      state <- update.wvec.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
-    
-    # swap elements of thetavec ##!!== OK
-    thetaswap.name <- paste0("thetaswap",j)
-    if(ppar$update[thetaswap.name]) {
-      if(ppar$verbose) cat(thetaswap.name)
-      state <- update.thetaswap.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
   }
   
   return(state)

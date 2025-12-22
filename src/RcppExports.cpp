@@ -790,16 +790,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rcpp_hello_world
-List rcpp_hello_world();
-RcppExport SEXP _gamrel_rcpp_hello_world() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello_world());
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_csqrt", (DL_FUNC) &_gamrel_csqrt, 1},
@@ -853,7 +843,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gamrel_logprior_mew_c", (DL_FUNC) &_gamrel_logprior_mew_c, 12},
     {"_gamrel_shellSort_c", (DL_FUNC) &_gamrel_shellSort_c, 1},
     {"_gamrel_order_c", (DL_FUNC) &_gamrel_order_c, 1},
-    {"_gamrel_rcpp_hello_world", (DL_FUNC) &_gamrel_rcpp_hello_world, 0},
     {NULL, NULL, 0}
 };
 

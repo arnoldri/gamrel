@@ -69,7 +69,6 @@ init.objects <- function(tvec, obs=TRUE,
     }
     if(is.null(update.par)) {
       update.par <- list(pequal=0.5, # probability we select a support point with equal probability
-                         pgvw=c(0.2,0.4,0.4), # probability we update gamma/vvec/wvec
                          sd.log.lambda0=0.3,
                          sd.log.gamma=0.3,
                          sd.log.theta=0.3,
@@ -91,22 +90,19 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec","gvw")
+    update_parnames <- c(parnames)
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
       fix.update <- fix.update[intersect(names(fix.update),names(update))]
       if(length(fix.update)>0) update[names(fix.update)] <- fix.update
     }
-    ##!!== update[update_parnames%in%c("gamma","vvec","wvec")] <- FALSE ## reinstate this to prevent the warning
-    if(update["gvw"] && any(update[c("gamma","vvec","wvec")])) warning("Should not update gamma/vvec/wvec separately")
     # model parameter names
     model_parnames <- parnames
     # proposal parameters for updates
     ppar <- list(update_parnames=update_parnames,
                  model_parnames=model_parnames,
                  pequal=update.par$pequal,
-                 pgvw=update.par$pgvw,
                  sd.log.lambda0=update.par$sd.log.lambda0,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,
@@ -177,7 +173,7 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec","gvw")
+    update_parnames <- c(parnames)
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
@@ -190,7 +186,6 @@ init.objects <- function(tvec, obs=TRUE,
     ppar <- list(update_parnames=update_parnames,
                  model_parnames=model_parnames,
                  pequal=update.par$pequal,
-                 pgvw=update.par$pgvw,
                  sd.log.lambda0=update.par$sd.log.lambda0,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.a=update.par$sd.log.a,
@@ -268,7 +263,7 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec1","gvw1","wvec2","gvw2")
+    update_parnames <- c(parnames)
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
@@ -377,7 +372,7 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec1","gvw1","wvec2","gvw2")
+    update_parnames <- c(parnames)
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
@@ -484,7 +479,7 @@ init.objects <- function(tvec, obs=TRUE,
                  epsilon=epsilon,
                  use.Cpp=use.Cpp)
     # parameters to update
-    update_parnames <- c(parnames,"wvec","gvw")
+    update_parnames <- c(parnames)
     update <- rep(TRUE, length(update_parnames))
     names(update) <- update_parnames
     if(!is.null(fix.update)) { # parameters which we want to fix update (TRUE or FALSE)
@@ -498,7 +493,6 @@ init.objects <- function(tvec, obs=TRUE,
                  model_parnames=model_parnames,
                  pequal=update.par$pequal,
                  sd.log.lambda0=update.par$sd.log.lambda0,
-                 pgvw=update.par$pgvw,
                  sd.w0=update.par$sd.w0,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,

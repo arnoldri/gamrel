@@ -726,7 +726,3 @@ order_c <- function(x) {
     .Call(`_gamrel_order_c`, x)
 }
 
-rcpp_hello_world <- function() {
-    .Call(`_gamrel_rcpp_hello_world`)
-}
-
