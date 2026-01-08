@@ -748,6 +748,10 @@ set.default.priors <- function(model, datscale) {
         prior.par$g12 <- 2; prior.par$g22 <- 2;
       }
 
+      if(model%in%c("MBT")) {
+         prior.par$sd.logit.pival=0.1;
+      }
+
       if(model%in%c("LCV")) {
          prior.par$sigmap.w0=2/datscale;
          update.par$sd.w0=1./datscale;
