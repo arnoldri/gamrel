@@ -186,20 +186,11 @@ update_state.lwb <- function(state, datlist, fpar, ppar, model) {
   return(state)
 }
 update_state.sbt <- function(state, datlist, fpar, ppar, model) { 
-  # Update a SBT state
+  # Update a SBT state # NOT CHECKED
   state$count <- state$count + 1
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
   parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
-
-  # update eta ##!!== OK 
-  if(ppar$update["eta"]) {
-    if(ppar$verbose) cat("eta:")
-    tparnm <- parnm
-    tparnm["gamma"] <- "gamma2"
-    state <- update.eta.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-    if(ppar$verbose) cat("\n")
-  }
 
   for(j in c(1,2)) {  # j=1:DFR component; j=2:IFR component
 
@@ -208,6 +199,7 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
                 vvec="vvec",
                 alpha="alpha",
                 beta="beta",
+                nu="nu",
                 phi="phi",
                 uvec="uvec",
                 wvec="wvec",
@@ -215,8 +207,18 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
     ntp <- names(tparnm)
     tparnm <- paste0(tparnm,j)
     names(tparnm) <- ntp
-    tparnm <- c(eta="eta",lambda0=ifelse(j==1,NA,"lambda0"),tparnm)
+    tparnm <- c(lambda0=ifelse(j==2,NA,"lambda0"),tparnm)
     
+    # update lambda0 ##!!== OK
+    if(j==1) { # DFR component only
+      lambda0.name <- "lambda0"
+      if(ppar$update[lambda0.name]) {
+        if(ppar$verbose) cat(lambda0.name)
+        state <- update.lambda0.v1(state, datlist, fpar, ppar, model, nm=tparnm)
+        if(ppar$verbose) cat("\n")
+      }
+    }
+  
     # update gamma ##!!== OK 
     gamma.name <- paste0("gamma",j)
     if(ppar$update[gamma.name]) {
@@ -270,7 +272,7 @@ update_state.sbt <- function(state, datlist, fpar, ppar, model) {
 }
 
 update_state.mbt <- function(state, datlist, fpar, ppar, model) { 
-  # Update a MBT state
+  # Update a MBT state # NOT CHECKED
   state$count <- state$count + 1
   parnm <- unique(c(names(state),names(ppar$update)))
   names(parnm) <- parnm
@@ -285,27 +287,29 @@ update_state.mbt <- function(state, datlist, fpar, ppar, model) {
 
   for(j in c(1,2)) {  # j=1:DFR component; j=2:IFR component
     
-    tparnm <- c(eta="eta",
-                gamma="gamma",
+    tparnm <- c(gamma="gamma",
                 thetavec="thetavec",
                 vvec="vvec",
                 alpha="alpha",
                 beta="beta",
+                nu="nu",
                 phi="phi",
                 uvec="uvec",
                 wvec="wvec",
-                lambda0="lambda0",
                 f1="f1", f2="f2")
     ntp <- names(tparnm)
     tparnm <- paste0(tparnm,j)
     names(tparnm) <- ntp
-
-    # update eta ##!!== OK 
-    eta.name <- paste0("eta",j)
-    if(j==2 && ppar$update[eta.name]) { # only update eta2 (the IFR component)
-      if(ppar$verbose) cat(eta.name)
-      state <- update.eta.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
+    tparnm <- c(lambda0=ifelse(j==2,NA,"lambda0"),tparnm)
+    
+    # update lambda0 ##!!== OK
+    if(j==1) { # DFR component only
+      lambda0.name <- "lambda0"
+      if(ppar$update[lambda0.name]) {
+        if(ppar$verbose) cat(lambda0.name)
+        state <- update.lambda0.v1(state, datlist, fpar, ppar, model, nm=tparnm)
+        if(ppar$verbose) cat("\n")
+      }
     }
     
     # update gamma ##!!== OK 
@@ -433,150 +437,6 @@ update_state.lcv <- function(state, datlist, fpar, ppar, model) {
   return(state)
 }
 
-update_state.circdr <- function(state, datlist, fpar, ppar, model) { 
-  # Update an CIR or CDR state
-  state$count <- state$count + 1
-  
-  parnm <- unique(c(names(state),names(ppar$update)))
-  names(parnm) <- parnm
-  parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
-
-  # update eta ##!!== OK 
-  if(ppar$update["eta"]) {
-    if(ppar$verbose) cat("eta:")
-    state <- update.eta.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update gamma ##!!== OK 
-  if(ppar$update["gamma"]) {
-    if(ppar$verbose) cat("gamma:")
-    state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update thetavec ##!!== OK  
-  if(ppar$update["thetavec"]) {
-    if(ppar$verbose) cat("thetavec:")
-    state <- update.thetavec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update vvec ##!!== OK
-  if(ppar$update["vvec"]) {
-    if(ppar$verbose) cat("vvec:")
-    state <- update.vvec.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update alpha ##!!== OK  
-  if(ppar$update["alpha"]) {
-    if(ppar$verbose) cat("alpha:")
-    state <- update.alpha.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update beta ##!!== OK
-  if(ppar$update["beta"]) {
-    if(ppar$verbose) cat("beta:")
-    state <- update.beta.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  # update phi ##!!==  OK
-  if(ppar$update["phi"]) {
-    if(ppar$verbose) cat("phi:")
-    state <- update.phi.v1(state, datlist, fpar, ppar, model, nm=parnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  return(state)
-}
-
-update_state.cvx <- function(state, datlist, fpar, ppar, model) { 
-  # Update a CVX state
-  state$count <- state$count + 1
-  parnm <- unique(c(names(state),names(ppar$update)))
-  names(parnm) <- parnm
-  parnm <- c(parnm,c(g1="g1",g2="g2",f1="f1",f2="f2"))
-
-  # update eta ##!!== OK 
-  if(ppar$update["eta"]) {
-    if(ppar$verbose) cat("eta:")
-    tparnm <- parnm
-    tparnm["gamma"] <- "gamma2"
-    state <- update.eta.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-    if(ppar$verbose) cat("\n")
-  }
-  
-  for(j in c(1,2)) {  # j=1:CDR component; j=2:CIR component
-    
-    tparnm <- c(gamma="gamma",
-                thetavec="thetavec",
-                vvec="vvec",
-                alpha="alpha",
-                beta="beta",
-                phi="phi",
-                uvec="uvec",
-                wvec="wvec",
-                f1="f1", f2="f2")
-    ntp <- names(tparnm)
-    tparnm <- paste0(tparnm,j)
-    names(tparnm) <- ntp
-    tparnm <- c(eta="eta",lambda0=ifelse(j==1,NA,"lambda0"),tparnm)
-    
-    # update gamma ##!!== OK 
-    gamma.name <- paste0("gamma",j)
-    if(ppar$update[gamma.name]) {
-      if(ppar$verbose) cat(gamma.name)
-      state <- update.gamma.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
-    
-    # update thetavec ##!!== OK  
-    thetavec.name <- paste0("thetavec",j)
-    if(ppar$update[thetavec.name]) {
-      if(ppar$verbose) cat(thetavec.name)
-      state <- update.thetavec.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
-    
-    # update vvec ##!!== OK
-    vvec.name <- paste0("vvec",j)
-    if(ppar$update[vvec.name]) {
-      if(ppar$verbose) cat(vvec.name)
-      state <- update.vvec.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
-    
-    # update alpha ##!!== OK  
-    alpha.name <- paste0("alpha",j)
-    if(ppar$update[alpha.name]) {
-      if(ppar$verbose) cat(alpha.name)
-      state <- update.alpha.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
-    
-    # update beta ##!!== OK
-    beta.name <- paste0("beta",j)
-    if(ppar$update[beta.name]) {
-      if(ppar$verbose) cat(beta.name)
-      state <- update.beta.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
-    
-    # update phi ##!!==  OK
-    phi.name <- paste0("phi",j)
-    if(ppar$update[phi.name]) {
-      if(ppar$verbose) cat(phi.name)
-      state <- update.phi.v1(state, datlist, fpar, ppar, model, nm=tparnm)
-      if(ppar$verbose) cat("\n")
-    }
-    
-  }
-  
-  return(state)
-}
 
 update_state.mew <- function(state, datlist, fpar, ppar, model) { 
   # Update a MEW state

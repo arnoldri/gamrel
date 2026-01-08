@@ -73,7 +73,6 @@ init.objects <- function(tvec, obs=TRUE,
                          sd.log.gamma=0.3,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
-                         sd.log.w=0.3,
                          sd.log.alpha=0.3,
                          sd.log.nu=0.3)
     }
@@ -107,7 +106,6 @@ init.objects <- function(tvec, obs=TRUE,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
-                 sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  sd.log.nu=update.par$sd.log.nu,
                  update=update,
@@ -155,7 +153,6 @@ init.objects <- function(tvec, obs=TRUE,
                          sd.log.a=0.1,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
-                         sd.log.w=0.3,
                          sd.log.alpha=0.3,
                          sd.log.nu=0.3)
     }
@@ -191,7 +188,6 @@ init.objects <- function(tvec, obs=TRUE,
                  sd.log.a=update.par$sd.log.a,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
-                 sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  sd.log.nu=update.par$sd.log.nu,
                  update=update,
@@ -241,7 +237,6 @@ init.objects <- function(tvec, obs=TRUE,
                          sd.log.gamma=0.1,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
-                         sd.log.w=0.3,
                          sd.log.alpha=0.3,
                          sd.log.nu=0.3)
     }
@@ -284,7 +279,6 @@ init.objects <- function(tvec, obs=TRUE,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
-                 sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  sd.log.nu=update.par$sd.log.nu,
                  update=update,
@@ -351,7 +345,6 @@ init.objects <- function(tvec, obs=TRUE,
                          sd.log.gamma=0.1,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
-                         sd.log.w=0.3,
                          sd.log.alpha=0.3,
                          sd.log.nu=0.3)
     }
@@ -394,7 +387,6 @@ init.objects <- function(tvec, obs=TRUE,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
-                 sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  sd.log.nu=update.par$sd.log.nu,
                  update=update,
@@ -461,7 +453,6 @@ init.objects <- function(tvec, obs=TRUE,
                          sd.log.gamma=0.05,
                          sd.log.theta=0.3,
                          sd.logit.v=0.3,
-                         sd.log.w=0.05,
                          sd.log.alpha=0.3,
                          sd.log.nu=0.3)
     }
@@ -497,7 +488,6 @@ init.objects <- function(tvec, obs=TRUE,
                  sd.log.gamma=update.par$sd.log.gamma,
                  sd.log.theta=update.par$sd.log.theta,
                  sd.logit.v=update.par$sd.logit.v,
-                 sd.log.w=update.par$sd.log.w,
                  sd.log.alpha=update.par$sd.log.alpha,
                  sd.log.nu=update.par$sd.log.nu,
                  update=update,
@@ -704,6 +694,83 @@ make.state <- function(epar, datlist, fpar, ppar, model) {
 }
 
 
+#' Set default priors
+#'
+#' @export
+set.default.priors <- function(model, datscale) {
+
+   if(model%in%c("CON")) {
+       
+      prior.par <- list(s1=1, s2=2)
+      update.par <- NULL
+      fix.update <- c()
+
+   } else if(model%in%c("IFR","DFR","CIR","CDR",
+                        "LWB","HBT","HCV",
+                        "LCV")) {
+
+      prior.par <- list(s1=2, s2=datscale/2.,
+                        a1=5, a2=3,
+                        b1=2, b2=1/datscale,
+                        g1=2, g2=2,
+                        f1=2, f2=2*datscale)
+      update.par <- list(pequal=0.5, # probability we select a support point with equal probability
+                         sd.log.lambda0=0.3,
+                         sd.log.gamma=0.3,
+                         sd.log.theta=0.3,
+                         sd.logit.v=0.3,
+                         sd.log.alpha=0.3,
+                         sd.log.nu=0.3)
+      fix.update <- c()
+
+      if(model%in%c("CIR","CDR")) {
+        prior.par$b1 <- 1; prior.par$b2 <- 2/(datscale^2);
+        update.par$sd.log.a <- 0.3;
+      }
+
+      if(model%in%c("LWB","HBT")) {
+        prior.par$c1 <- 1; prior.par$c2 <- 2/datscale;
+        update.par$sd.log.a <- 0.3;
+      }
+
+      if(model%in%c("HCV")) {
+        prior.par$b1 <- 1; prior.par$b2 <- 2/(datscale^2);
+        prior.par$c1 <- 1; prior.par$c2 <- 2/datscale;
+        update.par$sd.log.a <- 0.3;
+      }
+
+      if(model%in%c("SBT","SCV","MBT")) {
+        prior.par$f1 <- NULL; prior.par$f2 <- NULL
+        prior.par$g1 <- NULL; prior.par$g2 <- NULL
+        prior.par$f11 <- 1; prior.par$f21 <- datscale/2;
+        prior.par$f12 <- 2; prior.par$f22 <- 2*datscale;
+        prior.par$g11 <- 2; prior.par$g21 <- 2;
+        prior.par$g12 <- 2; prior.par$g22 <- 2;
+      }
+
+      if(model%in%c("LCV")) {
+         prior.par$sigmap.w0=2/datscale;
+         update.par$sd.w0=1./datscale;
+      }
+
+   } else if(model%in%c("MEW")) {
+       
+      prior.par <- list(a1=4, a2=0.5,      # alpha
+                        b1=2, b2=4,        # beta
+                        s1=1, s2=datscale, # mu
+                        t1=1, t2=1)        # nu
+      update.par <- list(sd.log.alpha=1.0,
+                         sd.log.beta=0.3,
+                         sd.log.mu=0.3,
+                         sd.log.nu=0.3)
+      fix.update <- c()
+   }
+
+   defaults <- list(prior.par=prior.par, update.par=update.par,
+                    fix.update=fix.update)
+
+   return(defaults)
+}
 
 ################################################################################
 #' Plot a representation of the current state
