@@ -1,11 +1,11 @@
 #' Fit the MLE of the MEW model
 #' 
-#' @description Parameters are epar=(lambda,alpha,theta,gamma)
+#' @description Parameters are epar=(alpha,beta,mu,nu)
 #' 
 #' @export
 mlefit.mew <- function(epar, datlist, fpar, ppar) {
   parvec <- log(epar)
-  names(parvec) <- c("lambda","alpha","theta","gamma")
+  names(parvec) <- c("alpha","beta","mu","nu")
   o1 <- optim(par=parvec, fn=ofunc.mew, gr=ofunc.gr.mew,
               control=list(fnscale=-1), 
               method="L-BFGS-B",
@@ -25,12 +25,12 @@ mlefit.mew <- function(epar, datlist, fpar, ppar) {
 #' Log Likelihood of the MEW function for use by optim()
 #' Temporary version
 #' 
-#' @description Parameterisation is log(lambda),log(alpha),log(theta),log(gamma)
+#' @description Parameterisation is log(alpha),log(beta),log(mu),log(nu)
 #' 
 #' @export
 ofunc1.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
   epar <- as.list(exp(parvec))
-  names(epar) <- c("lambda","alpha","theta","gamma")
+  names(epar) <- c("alpha","beta","mu","nu")
   
   state <- make.state(epar, datlist, fpar, ppar, model="MEW")
   retval <- llikef(state, datlist, fpar, model="MEW") 
@@ -45,46 +45,67 @@ ofunc1.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
 #' @export
 ofunc.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
   epar <- as.list(exp(parvec))
-  names(epar) <- c("lambda","alpha","theta","gamma")
-  lambda <- epar$lambda
+  names(epar) <- c("alpha","beta","mu","nu")
   alpha <- epar$alpha
-  theta <- epar$theta
-  gamma <- epar$gamma
+  beta <- epar$beta
+  mu <- epar$mu
+  nu <- epar$nu
+
+  evec <- exp( (mu*datlist$tvec)^beta )
+  zvec <- evec - 1
+  zdvec <- (mu*beta)*(mu*datlist$tvec)^(beta-1)*evec 
+  qvec <- nu + alpha*zvec^(alpha-1)
+  ihvec <- nu*zvec + zvec^alpha
+  hvec <- qvec*zdvec
   
-  evec <- exp( (datlist$tvec/theta)^gamma )
-  qvec <- lambda + alpha*(evec-1)^(alpha-1)
-  ihvec <- lambda*(evec-1) + (evec-1)^alpha
-  hvec <- (gamma/theta)*(datlist$tvec/theta)^(gamma-1)*evec*qvec
-  retval <- sum(log(hvec)) - sum(ihvec)
+  llval <- sum(log(hvec[datlist$obs])) - sum(ihvec)
   
-  if(verbose) print(c(as.vector(unlist(epar)),retval))
-  return(retval)
+  if(verbose) print(c(as.vector(unlist(epar)),llval))
+  return(llval)
 }
 
 #' Gradient of Log Likelihood of the MEW function for use by optim()
 #' 
-#' @description Parameterisation is log(lambda),log(alpha),log(theta),log(gamma)
+#' @description Parameterisation is log(alpha),log(beta),log(mu),log(nu)
 #' 
 #' @export
 ofunc.gr.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
   epar <- as.list(exp(parvec))
-  names(epar) <- c("lambda","alpha","theta","gamma")
-  lambda <- epar$lambda
+  names(epar) <- c("alpha","beta","mu","nu")
   alpha <- epar$alpha
-  theta <- epar$theta
-  gamma <- epar$gamma
+  beta <- epar$beta
+  mu <- epar$mu
+  nu <- epar$nu
+
+  evec <- exp( (mu*datlist$tvec)^beta )
+  zvec <- evec - 1
+  zdvec <- (mu*beta)*(mu*datlist$tvec)^(beta-1)*evec 
+  qvec <- nu + alpha*zvec^(alpha-1)
+  ihvec <- nu*zvec + zvec^alpha
+  hvec <- qvec*zdvec
+  llval <- sum(log(hvec[datlist$obs])) - sum(ihvec)
   
-  evec <- exp( (datlist$tvec/theta)^gamma )
-  avec <- evec - 1
-  bvec <- (datlist$tvec/theta)^gamma * evec
-  cvec <- lambda + alpha*avec^(alpha-1)
-  ihvec <- lambda*avec + avec^alpha
-  hvec <- cvec * gamma/datlist$tvec * bvec
+  dzvec.dbeta <- evec*log(mu*tvec)*(mu*datlist$tvec)^beta
+  dzvec.dmu <- beta/mu*(mu*datlist$tvec)^beta * evec
   
-  llval <- sum(log(hvec)) - sum(ihvec)
+  dzdvec.dbeta <- ( zdvec*(1/beta + log(mu*datlist$tvec))
+                    + (mu*beta)*(mu*datlist$tvec)^(beta-1)*dzvec.dbeta )
+  dzdvec.dmu <- NA
   
-  dllval.dlambda <- sum( 1/cvec - avec )
-  dllval.dalpha  <- sum( avec^(alpha-1)*(1+alpha*log(avec))/cvec  - log(avec)*avec^alpha )
+  bvec <- (mu*datlist$tvec)^beta * evec
+  cvec <- nu + alpha*avec^(alpha-1)
+
+  dllval.dalpha  <- sum( (zvec^(alpha-1)*(1+alpha*log(zvec))/qvec)[datlist$obs] )  - sum( log(zvec)*zvec^alpha )
+  dllval.dbeta <- ( 
+    sum( ((alpha*(alpha-1)*zvec^(alpha-2))/(qvec)*dzvec/dbeta)[datlist$obs]) 
+    + 
+    sum( dzdvec.dbeta/zdvec )
+    -
+    sum( qvec*dzvec.dbeta )
+  )
+  dllval.dmu <- NA
+  dllval.dnu <- sum( 1/(qvec[datlist$obs]) ) - sum(zvec)
+  
   dllval.dtheta  <- (gamma/theta)*sum(
     - alpha*(alpha-1)*avec^(alpha-2)*bvec/cvec # note: this term has wrong sign in original paper
     + bvec*cvec   # note: this term is incorrect in the original paper
@@ -96,31 +117,10 @@ ofunc.gr.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
     + log(datlist$tvec/theta)*bvec*( alpha*(alpha-1)*avec^(alpha-2)/cvec - cvec )
     + log(datlist$tvec/theta)*(1 + (datlist$tvec/theta)^gamma)
   )
-  retval <- c(lambda*dllval.dlambda, alpha*dllval.dalpha, theta*dllval.dtheta, gamma*dllval.dgamma)
+
+  retval <- c(alpha*dllval.dalpha, beta*dllval.beta, mu*dllval.mu, nu*dllval.nu)
   
   if(verbose) print(c(as.vector(unlist(epar)),retval))
   return(retval)
 }
 
-#' Gradient of integrated hazard function the MEW function
-#' 
-#' @description Parameterisation is lambda,alpha,theta,gamma
-#' 
-#' @export
-inthaz.gr.mew <- function(tvec, lambda, alpha, theta, gamma) {
-
-  evec <- exp( (tvec/theta)^gamma )
-  avec <- evec - 1
-  bvec <- (tvec/theta)^gamma * evec
-  cvec <- lambda + alpha*avec^(alpha-1)
-  ihvec <- lambda*avec + avec^alpha
-  hvec <- cvec * gamma/tvec * bvec
-  
-  dihvec.dlambda <- avec
-  dihvec.dalpha  <- log(avec) * avec^alpha
-  dihvec.dtheta  <- -gamma*bvec*cvec/theta
-  dihvec.dgamma <- cvec*log(tvec/theta)*bvec
-  
-  retval <- cbind(dihvec.dlambda, dihvec.dalpha, dihvec.dtheta, dihvec.dgamma)
-  return(retval)
-}
