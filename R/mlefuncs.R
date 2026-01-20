@@ -86,38 +86,27 @@ ofunc.gr.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
   llval <- sum(log(hvec[datlist$obs])) - sum(ihvec)
   
   dzvec.dbeta <- evec*log(mu*tvec)*(mu*datlist$tvec)^beta
-  dzvec.dmu <- beta/mu*(mu*datlist$tvec)^beta * evec
+  dzvec.dmu <- (beta/mu)*(mu*datlist$tvec)^beta * evec
   
   dzdvec.dbeta <- ( zdvec*(1/beta + log(mu*datlist$tvec))
                     + (mu*beta)*(mu*datlist$tvec)^(beta-1)*dzvec.dbeta )
-  dzdvec.dmu <- NA
+  dzdvec.dmu <- (beta/mu)*zdvec*(1 + (mu*datlist$tvec)^beta)
   
-  bvec <- (mu*datlist$tvec)^beta * evec
-  cvec <- nu + alpha*avec^(alpha-1)
-
-  dllval.dalpha  <- sum( (zvec^(alpha-1)*(1+alpha*log(zvec))/qvec)[datlist$obs] )  - sum( log(zvec)*zvec^alpha )
+  dllval.dalpha  <- ( sum( (zvec^(alpha-1)*(1+alpha*log(zvec))/qvec)[datlist$obs] )  
+                     -sum( log(zvec)*zvec^alpha )
+                    )
   dllval.dbeta <- ( 
     sum( ((alpha*(alpha-1)*zvec^(alpha-2))/(qvec)*dzvec/dbeta)[datlist$obs]) 
-    + 
-    sum( dzdvec.dbeta/zdvec )
-    -
-    sum( qvec*dzvec.dbeta )
+    + sum( (dzdvec.dbeta/zdvec)[datlist$obs] )
+    - sum( qvec*dzvec.dbeta )
   )
-  dllval.dmu <- NA
+  dllval.dmu <- ( 
+    sum( ((alpha*(alpha-1)*zvec^(alpha-2))/(qvec)*dzvec/dmu)[datlist$obs]) 
+    + sum( (dzdvec.dbeta/zdmu)[datlist$obs] )
+    - sum( qvec*dzvec.dmu )
+  )
   dllval.dnu <- sum( 1/(qvec[datlist$obs]) ) - sum(zvec)
   
-  dllval.dtheta  <- (gamma/theta)*sum(
-    - alpha*(alpha-1)*avec^(alpha-2)*bvec/cvec # note: this term has wrong sign in original paper
-    + bvec*cvec   # note: this term is incorrect in the original paper
-    - (datlist$tvec/theta)^gamma 
-    - 1
-  ) 
-  dllval.dgamma <- sum(
-    1/gamma 
-    + log(datlist$tvec/theta)*bvec*( alpha*(alpha-1)*avec^(alpha-2)/cvec - cvec )
-    + log(datlist$tvec/theta)*(1 + (datlist$tvec/theta)^gamma)
-  )
-
   retval <- c(alpha*dllval.dalpha, beta*dllval.beta, mu*dllval.mu, nu*dllval.nu)
   
   if(verbose) print(c(as.vector(unlist(epar)),retval))
