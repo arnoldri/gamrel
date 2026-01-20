@@ -107,7 +107,7 @@ ofunc.gr.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
   )
   dllval.dnu <- sum( 1/(qvec[datlist$obs]) ) - sum(zvec)
   
-  retval <- c(alpha*dllval.dalpha, beta*dllval.beta, mu*dllval.mu, nu*dllval.nu)
+  retval <- c(alpha*dllval.dalpha, beta*dllval.dbeta, mu*dllval.dmu, nu*dllval.dnu)
   
   if(verbose) print(c(as.vector(unlist(epar)),retval))
   return(retval)
