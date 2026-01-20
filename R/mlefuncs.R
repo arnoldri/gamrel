@@ -96,12 +96,12 @@ ofunc.gr.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
                      -sum( log(zvec)*zvec^alpha )
                     )
   dllval.dbeta <- ( 
-    sum( ((alpha*(alpha-1)*zvec^(alpha-2))/(qvec)*dzvec/dbeta)[datlist$obs]) 
+    sum( ((alpha*(alpha-1)*zvec^(alpha-2))/(qvec)*dzvec.dbeta)[datlist$obs]) 
     + sum( (dzdvec.dbeta/zdvec)[datlist$obs] )
     - sum( qvec*dzvec.dbeta )
   )
   dllval.dmu <- ( 
-    sum( ((alpha*(alpha-1)*zvec^(alpha-2))/(qvec)*dzvec/dmu)[datlist$obs]) 
+    sum( ((alpha*(alpha-1)*zvec^(alpha-2))/(qvec)*dzvec.dmu)[datlist$obs]) 
     + sum( (dzdvec.dbeta/zdmu)[datlist$obs] )
     - sum( qvec*dzvec.dmu )
   )

@@ -8,5 +8,5 @@ Temporary version}
 ofunc1.mew(parvec, datlist, fpar, ppar, verbose = FALSE)
 }
 \description{
-Parameterisation is log(lambda),log(alpha),log(theta),log(gamma)
+Parameterisation is log(alpha),log(beta),log(mu),log(nu)
 }

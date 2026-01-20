@@ -7,5 +7,5 @@
 mlefit.mew(epar, datlist, fpar, ppar)
 }
 \description{
-Parameters are epar=(lambda,alpha,theta,gamma)
+Parameters are epar=(alpha,beta,mu,nu)
 }
