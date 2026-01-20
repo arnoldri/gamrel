@@ -3,7 +3,7 @@
 #' @description Parameters are epar=(alpha,beta,mu,nu)
 #' 
 #' @export
-mlefit.mew <- function(epar, datlist, fpar, ppar) {
+mlefit.mew <- function(epar, datlist, fpar, ppar, verbose=FALSE) {
   parvec <- log(epar)
   names(parvec) <- c("alpha","beta","mu","nu")
   o1 <- optim(par=parvec, fn=ofunc.mew, gr=ofunc.gr.mew,
@@ -11,7 +11,7 @@ mlefit.mew <- function(epar, datlist, fpar, ppar) {
               method="L-BFGS-B",
               datlist=datlist, fpar=fpar, ppar=ppar,
               hessian=TRUE,
-              verbose=FALSE)
+              verbose=verbose)
   o1$est <- exp(o1$par)
   o1$vcov.par <- -solve(o1$hessian)
   o1$vcov.est <- diag(o1$est)%*%o1$vcov.par%*%diag(o1$est)

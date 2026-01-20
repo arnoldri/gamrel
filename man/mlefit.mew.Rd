@@ -4,7 +4,7 @@
 \alias{mlefit.mew}
 \title{Fit the MLE of the MEW model}
 \usage{
-mlefit.mew(epar, datlist, fpar, ppar)
+mlefit.mew(epar, datlist, fpar, ppar, verbose = FALSE)
 }
 \description{
 Parameters are epar=(alpha,beta,mu,nu)
