@@ -102,7 +102,7 @@ ofunc.gr.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
   )
   dllval.dmu <- ( 
     sum( ((alpha*(alpha-1)*zvec^(alpha-2))/(qvec)*dzvec.dmu)[datlist$obs]) 
-    + sum( (dzdvec.dbeta/zdmu)[datlist$obs] )
+    + sum( (dzdvec.dmu/zdvec)[datlist$obs] )
     - sum( qvec*dzvec.dmu )
   )
   dllval.dnu <- sum( 1/(qvec[datlist$obs]) ) - sum(zvec)
