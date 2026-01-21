@@ -3,10 +3,35 @@
 #' @description Parameters are epar=(alpha,beta,mu,nu)
 #' 
 #' @export
-mlefit.mew <- function(epar, datlist, fpar, ppar, verbose=FALSE) {
+mlefit.mew <- function(epar, datlist, fpar, ppar, use.gr=TRUE, verbose=FALSE) {
   parvec <- log(epar)
   names(parvec) <- c("alpha","beta","mu","nu")
-  o1 <- optim(par=parvec, fn=ofunc.mew, gr=ofunc.gr.mew,
+  o1 <- optim(par=parvec, fn=ofunc.mew, 
+              gr=if(use.gr) ofunc.gr.mew else NULL,
+              control=list(fnscale=-1), 
+              method="L-BFGS-B",
+              datlist=datlist, fpar=fpar, ppar=ppar,
+              hessian=TRUE,
+              verbose=verbose)
+  o1$est <- exp(o1$par)
+  o1$vcov.par <- -solve(o1$hessian)
+  o1$vcov.est <- diag(o1$est)%*%o1$vcov.par%*%diag(o1$est)
+  o1$se.par <- sqrt(diag(o1$vcov.par))
+  o1$se.est <- sqrt(diag(o1$vcov.est))
+  o1$ci.par <- cbind(estimate=o1$par, lower=o1$par-1.96*o1$se.par, upper=o1$par+1.96*o1$se.par)
+  o1$ci.est <- exp(o1$ci.par)
+  return(o1)
+}
+
+#' Fit the MLE of the MEW model
+#' 
+#' @description Parameters are epar=(alpha,beta,mu,nu)
+#' 
+#' @export
+mlefit1.mew <- function(epar, datlist, fpar, ppar, verbose=FALSE) {
+  parvec <- log(epar)
+  names(parvec) <- c("alpha","beta","mu","nu")
+  o1 <- optim(par=parvec, fn=ofunc1.mew, 
               control=list(fnscale=-1), 
               method="L-BFGS-B",
               datlist=datlist, fpar=fpar, ppar=ppar,
@@ -34,7 +59,7 @@ ofunc1.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
   
   state <- make.state(epar, datlist, fpar, ppar, model="MEW")
   retval <- llikef(state, datlist, fpar, model="MEW") 
-  if(verbose) print(c(as.vector(unlist(epar)),retval))
+  if(verbose) print(c(log(as.vector(unlist(epar))),as.vector(unlist(epar)),retval))
   return(retval)
 }
 
@@ -60,7 +85,7 @@ ofunc.mew <- function(parvec, datlist, fpar, ppar, verbose=FALSE) {
   
   llval <- sum(log(hvec[datlist$obs])) - sum(ihvec)
   
-  if(verbose) print(c(as.vector(unlist(epar)),llval))
+  if(verbose) print(c(log(as.vector(unlist(epar))),as.vector(unlist(epar)),llval))
   return(llval)
 }
 
