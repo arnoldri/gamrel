@@ -311,7 +311,7 @@ llikef <- function(state, datlist, fpar, model) {
     cat("*")
     retval <- -Inf
   } else {
-    retval <- sum(log(hazfuncs[datlist$obs,1]) - hazfuncs[,2])
+    retval <- sum(log(hazfuncs[datlist$obs,1])) - sum(hazfuncs[,2])
   }
   return(retval)
 }
