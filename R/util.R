@@ -1,15 +1,16 @@
 ################################################################################
+#' Logistic function
+#' 
 #' @export
 logit <- function(p) log(p/(1-p))
+#' Inverse logistic function
+#' 
 #' @export
 expit <- function(x) 1/(1+exp(-x))
 ################################################################################
 
 ################################################################################
 #' Histogram from count data
-#' 
-#' @description Plotting a histogram from a set of counts in bins rather
-#' than a vector of observations
 #' 
 #' @export
 hist.from.counts <- function(counts, mids=NULL, breaks=NULL, col="light grey", 

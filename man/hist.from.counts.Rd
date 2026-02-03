@@ -7,6 +7,5 @@
 \method{hist}{from.counts}(counts, mids = NULL, breaks = NULL, col = "light grey", xlim = NULL, ...)
 }
 \description{
-Plotting a histogram from a set of counts in bins rather
-than a vector of observations
+Histogram from count data
 }
